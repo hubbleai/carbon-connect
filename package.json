@@ -10,6 +10,12 @@
   "author": "",
   "license": "ISC",
   "private": false,
+  "peerDependencies": {
+    "@radix-ui/react-dialog": "^1.0.4",
+    "axios": "^1.4.0",
+    "react": "^18.2.0",
+    "react-icons": "^4.9.0"
+  },
   "devDependencies": {
     "@radix-ui/react-dialog": "^1.0.4",
     "axios": "^1.4.0",
