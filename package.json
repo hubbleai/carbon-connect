@@ -1,6 +1,6 @@
 {
   "name": "carbon-connect",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,5 +8,12 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "private": false,
+  "devDependencies": {
+    "@radix-ui/react-dialog": "^1.0.4",
+    "axios": "^1.4.0",
+    "react": "^18.2.0",
+    "react-icons": "^4.9.0"
+  }
 }
