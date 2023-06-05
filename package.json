@@ -3,17 +3,32 @@
   "version": "0.0.6",
   "description": "",
   "main": "index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c",
+    "start": "rollup -c -w"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "private": false,
   "peerDependencies": {
-    "@radix-ui/react-dialog": "~1.0.3",
-    "axios": "~1.4.0",
-    "react": "~18.2.0",
-    "react-icons": "~4.9.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "@radix-ui/react-dialog": "^1.0.1",
+    "axios": "^1.4.0",
+    "react-icons": "^4.9.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.8",
+    "@types/react-dom": "^18.2.4",
+    "babel-core": "^6.26.3",
+    "babel-runtime": "^6.26.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rollup": "^3.23.1",
+    "typescript": "^5.1.3"
   }
 }
