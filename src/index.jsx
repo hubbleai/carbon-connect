@@ -83,8 +83,6 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
 };
 
 const ThirdPartyList = ({ setActiveStep }) => {
-  const { appUser } = useAppUser();
-
   const integrationsList = [
     {
       id: 'notion',
@@ -216,7 +214,7 @@ const ThirdPartyList = ({ setActiveStep }) => {
   );
 };
 
-const IntegrationsModal = () => {
+const CarbonConnect = () => {
   const [activeStep, setActiveStep] = React.useState(0);
 
   return (
@@ -246,4 +244,4 @@ const IntegrationsModal = () => {
   );
 };
 
-export default IntegrationsModal;
+export default CarbonConnect;
