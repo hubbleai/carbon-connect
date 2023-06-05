@@ -3,7 +3,6 @@
 import React from 'react';
 // Rest of the imports
 
-import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiPlus, HiX } from 'react-icons/hi';
 import { BsGoogle, BsDiscord, BsCloudUpload } from 'react-icons/bs';
