@@ -1,10 +1,10 @@
 // index.js
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 // Rest of the imports
 
 import * as Dialog from '@radix-ui/react-dialog';
-import { HiPlus, HiX } from 'react-icons/hi';
+import { HiCheckCircle, HiPlus, HiX } from 'react-icons/hi';
 import { BsGoogle, BsDiscord, BsCloudUpload } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { SiSlack } from 'react-icons/si';
@@ -82,7 +82,12 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
   );
 };
 
-const ThirdPartyList = ({ setActiveStep }) => {
+const ThirdPartyList = ({
+  setActiveStep,
+  apikey,
+  userid,
+  activeIntegrations,
+}) => {
   const integrationsList = [
     {
       id: 'notion',
@@ -100,6 +105,7 @@ const ThirdPartyList = ({ setActiveStep }) => {
       description: 'Lets your users connect their Google Docs to Carbon.',
       scope: 'docs',
       icon: <BsGoogle className="w-7 h-7" />,
+      data_source_type: 'GOOGLE_DOCS',
     },
     {
       active: true,
@@ -145,13 +151,13 @@ const ThirdPartyList = ({ setActiveStep }) => {
     },
   ];
 
-  const handleServiceClick = async (service) => {
+  const handleServiceOAuthFlow = async (service) => {
     const oAuthURLResponse = await axios.get(
       `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
       {
         params: {
-          id: 'kailash@hubble.ai',
-          apikey: '1',
+          id: userid,
+          apikey: apikey,
           scope: service.scope,
         },
       }
@@ -174,48 +180,172 @@ const ThirdPartyList = ({ setActiveStep }) => {
         </div>
       </Dialog.Title>
       <ul className="flex flex-col space-y-3 w-full py-2 overflow-y-auto">
-        {integrationsList.map((integration) => (
-          <li
-            key={integration.id}
-            className={`border rounded-md h-fit items-center px-4 w-full ${
-              !integration.active
-                ? 'bg-gray-200 cursor-not-allowed'
-                : 'bg-white cursor-pointer hover:bg-gray-100'
-            }`}
-          >
-            <div
-              className={`flex flex-row items-center w-full space-x-3 py-4 justify-between ${
+        {integrationsList.map((integration) => {
+          const activeIntegrationsList = activeIntegrations.map(
+            (i) => i.data_source_type
+          );
+
+          const integrationStatus = activeIntegrationsList.includes(
+            integration.data_source_type
+          );
+
+          // console.log('Active Integrations: ', activeIntegrations);
+          return (
+            <li
+              key={integration.id}
+              className={`border rounded-md h-fit items-center px-4 w-full ${
                 !integration.active
                   ? 'bg-gray-200 cursor-not-allowed'
                   : 'bg-white cursor-pointer hover:bg-gray-100'
               }`}
-              onClick={() =>
-                integration.active && handleServiceClick(integration)
-              }
             >
-              <div className="flex flex-row items-center">
-                <span className="mr-4">{integration.icon}</span>
-                <h1 className="text-md font-normal">{integration.name}</h1>
-              </div>
-              <div className="flex flex-col">
-                <div className="flex flex-row w-full items-center space-x-4">
-                  {!integration.active && (
-                    <p className="text-xs text-gray-600 bg-white px-4 py-1 rounded-full ">
-                      Coming Soon
-                    </p>
-                  )}
+              <div
+                className={`flex flex-row items-center w-full space-x-3 py-4 justify-between ${
+                  !integration.active
+                    ? 'bg-gray-200 cursor-not-allowed'
+                    : 'bg-white cursor-pointer hover:bg-gray-100'
+                }`}
+                onClick={() => {
+                  if (integration.active) {
+                    if (integrationStatus) {
+                      console.log('Integration already active');
+                      setActiveStep('GOOGLE_DOCS');
+                    } else {
+                      handleServiceOAuthFlow(integration);
+                    }
+                  }
+                }}
+              >
+                <div className="flex flex-row items-center">
+                  <span className="mr-4">{integration.icon}</span>
+                  <h1 className="text-md font-normal">{integration.name}</h1>
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex flex-row w-full items-center space-x-4">
+                    {!integration.active && (
+                      <p className="text-xs text-gray-600 bg-white px-4 py-1 rounded-full ">
+                        Coming Soon
+                      </p>
+                    )}
+
+                    {integration.active && integrationStatus && (
+                      <HiCheckCircle className="text-green-500 w-6 h-6" />
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
 };
 
-const CarbonConnect = () => {
+const GoogleDocsSelector = ({
+  integrationData,
+  setActiveStep,
+  apikey,
+  userid,
+}) => {
+  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const syncSelectedFiles = async () => {
+    const syncResponse = await axios.post(
+      `http://localhost:8000/integrations/google/sync`,
+      {
+        user_id: userid,
+        api_key: apikey,
+        file_ids: selectedFiles,
+      }
+    );
+
+    if (syncResponse.status === 200 && syncResponse.data) {
+      console.log('Sync Response: ', syncResponse.data);
+      setActiveStep(2);
+    }
+  };
+
+  return (
+    <div className="flex flex-col h-[540px] items-center">
+      <Dialog.Title className="text-lg mb-4 font-medium w-full">
+        <div className="w-full flex items-center space-x-4">
+          <ArrowLeftIcon
+            onClick={() => setActiveStep(1)}
+            className="cursor-pointer h-6 w-6 text-gray-400"
+          />
+          <h1>Select Files</h1>
+        </div>
+      </Dialog.Title>
+      <div className="flex flex-col space-y-3 w-full py-2 overflow-y-auto">
+        {integrationData.token.all_files.map((fileData) => {
+          const isSelected = selectedFiles.includes(fileData.id);
+
+          return (
+            <div
+              key={fileData.id}
+              className={`border rounded-md h-fit items-center p-4 w-full cursor-pointer ${
+                isSelected ? 'bg-green-200' : 'bg-white hover:bg-gray-100'
+              }`}
+              onClick={() => {
+                setSelectedFiles((prev) => {
+                  if (prev.includes(fileData.id)) {
+                    return prev.filter((id) => id !== fileData.id);
+                  } else {
+                    return [...prev, fileData.id];
+                  }
+                });
+              }}
+            >
+              <h1 className="text-md font-normal">{fileData.name}</h1>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="flex flex-col h-full space-y-2 w-full">
+        <button
+          className="w-full h-12 flex flex-row bg-black text-white items-center justify-center rounded-md cursor-pointer"
+          onClick={() => syncSelectedFiles()}
+        >
+          Sync Files
+        </button>
+      </div>
+    </div>
+  );
+};
+
+const CarbonConnect = ({ apikey, userid }) => {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [activeIntegrations, setActiveIntegrations] = React.useState([]);
+
+  const fetchUserIntegrations = async () => {
+    const userIntegrationsResponse = await axios.get(
+      `http://localhost:8000/integrations`,
+      {
+        params: {
+          id: userid,
+          apikey: apikey,
+        },
+      }
+    );
+
+    if (userIntegrationsResponse.status === 200) {
+      setActiveIntegrations(
+        userIntegrationsResponse.data['active_integrations']
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchUserIntegrations();
+
+    // Then set up the interval to call it every 10 seconds
+    const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+
+    // Make sure to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <Dialog.Root>
@@ -225,7 +355,7 @@ const CarbonConnect = () => {
 
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 bg-black/30" />
-        <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[540px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
+        <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[740px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
           <Dialog.Close asChild>
             <button
               className="absolute inline-flex h-fit appearance-none focus:outline-none justify-end pb-4 cursor-pointer top-7 right-5"
@@ -237,7 +367,25 @@ const CarbonConnect = () => {
           {activeStep === 0 && (
             <CarbonAnnouncement setActiveStep={setActiveStep} />
           )}
-          {activeStep === 1 && <ThirdPartyList setActiveStep={setActiveStep} />}
+          {activeStep === 1 && (
+            <ThirdPartyList
+              setActiveStep={setActiveStep}
+              apikey={apikey}
+              userid={userid}
+              activeIntegrations={activeIntegrations}
+            />
+          )}
+
+          {activeStep === 'GOOGLE_DOCS' && (
+            <GoogleDocsSelector
+              integrationData={activeIntegrations.find(
+                (i) => i.data_source_type === 'GOOGLE_DOCS'
+              )}
+              apikey={apikey}
+              userid={userid}
+              setActiveStep={setActiveStep}
+            />
+          )}
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
