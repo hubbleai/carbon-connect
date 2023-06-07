@@ -1,4 +1,5 @@
 // index.js
+import './index.css';
 
 import React, { useEffect, useState } from 'react';
 // Rest of the imports
