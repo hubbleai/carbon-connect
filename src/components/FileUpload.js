@@ -8,10 +8,17 @@ import { AiOutlineCloudUpload } from 'react-icons/ai';
 import { toast } from 'react-toastify';
 
 import '../index.css';
+import { BASE_URL } from '../constants';
 
 const fileTypes = ['txt', 'csv'];
 
-function FileUpload({ setActiveStep, apikey, userid }) {
+function FileUpload({
+  setActiveStep,
+  apikey,
+  userid,
+  entryPoint,
+  environment,
+}) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
 
@@ -22,7 +29,8 @@ function FileUpload({ setActiveStep, apikey, userid }) {
 
       const uploadResponse = await axios.post(
         // `https://api.dev.carbon.ai/uploadfile`,
-        'http://localhost:8000/uploadfile',
+        // 'http://localhost:8000/uploadfile',
+        `${BASE_URL[environment]}/uploadfile`,
         formData,
         {
           headers: {
@@ -52,10 +60,12 @@ function FileUpload({ setActiveStep, apikey, userid }) {
     <div className="flex flex-col h-[540px] items-center relative">
       <Dialog.Title className="text-lg mb-4 font-medium w-full">
         <div className="w-full flex items-center space-x-4">
-          <HiArrowLeft
-            onClick={() => setActiveStep(1)}
-            className="cursor-pointer h-6 w-6 text-gray-400"
-          />
+          {!entryPoint && (
+            <HiArrowLeft
+              onClick={() => setActiveStep(1)}
+              className="cursor-pointer h-6 w-6 text-gray-400"
+            />
+          )}
           <h1>Upload Files</h1>
         </div>
       </Dialog.Title>

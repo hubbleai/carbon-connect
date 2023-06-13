@@ -12,6 +12,7 @@ const ThirdPartyList = ({
   apikey,
   userid,
   activeIntegrations,
+  environment,
 }) => {
   const integrationsList = [
     // {
@@ -80,7 +81,8 @@ const ThirdPartyList = ({
   const handleServiceOAuthFlow = async (service) => {
     const oAuthURLResponse = await axios.get(
       //   `https://api.dev.carbon.ai/integrations/${service.subpath}/oauth_url`,
-      `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
+      // `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
+      `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
       {
         params: {
           id: userid,

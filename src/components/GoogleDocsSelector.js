@@ -8,12 +8,15 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiXCircle, HiArrowLeft } from 'react-icons/hi';
 
 import axios from 'axios';
+import { BASE_URL } from '../constants';
 
 const GoogleDocsSelector = ({
   integrationData,
   setActiveStep,
   apikey,
   userid,
+  entryPoint,
+  environment,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
@@ -21,7 +24,8 @@ const GoogleDocsSelector = ({
   const syncSelectedFiles = async () => {
     const syncResponse = await axios.post(
       //   `https://api.dev.carbon.ai/integrations/google/sync`,
-      `http://localhost:8000/integrations/google/sync`,
+      // `http://localhost:8000/integrations/google/sync`,
+      `${BASE_URL[environment]}/integrations/google/sync`,
       {
         user_id: userid,
         api_key: apikey,
@@ -44,10 +48,12 @@ const GoogleDocsSelector = ({
     <div className="flex flex-col h-[540px] items-center">
       <Dialog.Title className="text-lg mb-4 font-medium w-full">
         <div className="w-full flex items-center space-x-4">
-          <HiArrowLeft
-            onClick={() => setActiveStep(1)}
-            className="cursor-pointer h-6 w-6 text-gray-400"
-          />
+          {!entryPoint && (
+            <HiArrowLeft
+              onClick={() => setActiveStep(1)}
+              className="cursor-pointer h-6 w-6 text-gray-400"
+            />
+          )}
           <h1>Select Files</h1>
         </div>
       </Dialog.Title>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
-// import carbonLogo from '../carbon.svg';
+import carbonLogo from '../carbon.svg';
 
 const CarbonAnnouncement = ({ setActiveStep }) => {
   return (
@@ -34,7 +34,7 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
         />
 
         <img
-          src="../CarbonIcon.svg"
+          src={carbonLogo}
           alt="Carbon Icon"
           className="rounded-full border w-16"
           //   style={{

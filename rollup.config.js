@@ -6,6 +6,7 @@ import terser from '@rollup/plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
+import image from '@rollup/plugin-image';
 
 export default {
   input: 'src/index.js',
@@ -27,6 +28,7 @@ export default {
         insertAt: 'top',
       },
     }),
+    image(),
     resolve(),
     commonjs(),
     terser(),

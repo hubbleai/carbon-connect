@@ -9,29 +9,24 @@ import GoogleDocsSelector from './components/GoogleDocsSelector';
 import FileUpload from './components/FileUpload';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import { BASE_URL } from './constants';
 
-const CounterComponent = () => {
-  const [count, setCount] = useState(0);
-
-  return (
-    <div>
-      <p className="text-4xl text-center font-bold text-red-800">
-        Currently, the count is {count}
-      </p>
-      <button onClick={() => setCount(count - 1)}>Subtract</button>
-      <button onClick={() => setCount(count + 1)}>Add</button>
-    </div>
-  );
-};
-
-const IntegrationsModal = ({ apikey, userid }) => {
-  const [activeStep, setActiveStep] = React.useState(0);
+const CarbonConnect = ({
+  apikey,
+  userid,
+  orgName,
+  brandIcon,
+  environment = 'PRODUCTION',
+  entryPoint = null,
+}) => {
+  const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
 
   const fetchUserIntegrations = async () => {
     const userIntegrationsResponse = await axios.get(
       //   `https://api.dev.carbon.ai/integrations`,
-      `http://localhost:8000/integrations`,
+      // `http://localhost:8000/integrations`
+      `${BASE_URL[environment]}/integrations`,
       {
         params: {
           id: userid,
@@ -58,55 +53,6 @@ const IntegrationsModal = ({ apikey, userid }) => {
   }, []);
 
   return (
-    // <Dialog.Root>
-    //   <Dialog.Trigger asChild>
-    //     <HiPlus className="trigger" />
-    //   </Dialog.Trigger>
-
-    //   <Dialog.Portal>
-    //     <Dialog.Overlay className="overlay" />
-    //     <Dialog.Content className="content">
-    //       <Dialog.Close asChild>
-    //         <HiX className="close-button" />
-    //       </Dialog.Close>
-    //       {activeStep === 0 && (
-    //         <CarbonAnnouncement setActiveStep={setActiveStep} />
-    //       )}
-    //       {activeStep === 1 && (
-    //         <ThirdPartyList
-    //           setActiveStep={setActiveStep}
-    //           apikey={apikey}
-    //           userid={userid}
-    //           activeIntegrations={activeIntegrations}
-    //         />
-    //       )}
-
-    //       {activeStep === 'GOOGLE_DOCS' && (
-    //         <GoogleDocsSelector
-    //           integrationData={activeIntegrations.find(
-    //             (i) => i.data_source_type === 'GOOGLE_DOCS'
-    //           )}
-    //           apikey={apikey}
-    //           userid={userid}
-    //           setActiveStep={setActiveStep}
-    //         />
-    //       )}
-    //       {activeStep === 'LOCAL_FILE' && (
-    //         <FileUpload
-    //           apikey={apikey}
-    //           userid={userid}
-    //           setActiveStep={setActiveStep}
-    //         />
-    //       )}
-    //     </Dialog.Content>
-    //     <ToastContainer
-    //       position="bottom-right"
-    //       pauseOnFocusLoss={false}
-    //       pauseOnHover={false}
-    //     />
-    //   </Dialog.Portal>
-    // </Dialog.Root>
-
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <HiPlus className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer" />
@@ -124,7 +70,11 @@ const IntegrationsModal = ({ apikey, userid }) => {
             </button>
           </Dialog.Close>
           {activeStep === 0 && (
-            <CarbonAnnouncement setActiveStep={setActiveStep} />
+            <CarbonAnnouncement
+              setActiveStep={setActiveStep}
+              orgName={orgName}
+              brandIcon={brandIcon}
+            />
           )}
           {activeStep === 1 && (
             <ThirdPartyList
@@ -132,6 +82,7 @@ const IntegrationsModal = ({ apikey, userid }) => {
               apikey={apikey}
               userid={userid}
               activeIntegrations={activeIntegrations}
+              environment={environment}
             />
           )}
 
@@ -143,6 +94,8 @@ const IntegrationsModal = ({ apikey, userid }) => {
               apikey={apikey}
               userid={userid}
               setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
             />
           )}
           {activeStep === 'LOCAL_FILE' && (
@@ -150,6 +103,8 @@ const IntegrationsModal = ({ apikey, userid }) => {
               apikey={apikey}
               userid={userid}
               setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
             />
           )}
         </Dialog.Content>
@@ -164,4 +119,4 @@ const IntegrationsModal = ({ apikey, userid }) => {
   );
 };
 
-export { CounterComponent, IntegrationsModal };
+export { CarbonConnect };
