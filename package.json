@@ -1,13 +1,19 @@
 {
   "name": "carbon-connect",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup -c"
   },
-  "keywords": [],
+  "keywords": [
+    "carbon",
+    "LLM",
+    "ai",
+    "react",
+    "embeddings"
+  ],
   "author": "",
   "license": "ISC",
   "type": "module",
