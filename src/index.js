@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-// import { HiPlus, HiX } from 'react-icons/hi';
 import './index.css';
+
+import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
+import CarbonAnnouncement from './components/CarbonAnnouncement';
+import ThirdPartyList from './components/ThirdPartyList';
+import GoogleDocsSelector from './components/GoogleDocsSelector';
+import FileUpload from './components/FileUpload';
+import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 const CounterComponent = () => {
   const [count, setCount] = useState(0);
@@ -17,33 +24,144 @@ const CounterComponent = () => {
   );
 };
 
-const IntegrationsModal = () => {
+const IntegrationsModal = ({ apikey, userid }) => {
   const [activeStep, setActiveStep] = React.useState(0);
+  const [activeIntegrations, setActiveIntegrations] = React.useState([]);
+
+  const fetchUserIntegrations = async () => {
+    const userIntegrationsResponse = await axios.get(
+      //   `https://api.dev.carbon.ai/integrations`,
+      `http://localhost:8000/integrations`,
+      {
+        params: {
+          id: userid,
+          apikey: apikey,
+        },
+      }
+    );
+
+    if (userIntegrationsResponse.status === 200) {
+      setActiveIntegrations(
+        userIntegrationsResponse.data['active_integrations']
+      );
+    }
+  };
+
+  useEffect(() => {
+    fetchUserIntegrations();
+
+    // Then set up the interval to call it every 10 seconds
+    const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+
+    // Make sure to clear the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
+    // <Dialog.Root>
+    //   <Dialog.Trigger asChild>
+    //     <HiPlus className="trigger" />
+    //   </Dialog.Trigger>
+
+    //   <Dialog.Portal>
+    //     <Dialog.Overlay className="overlay" />
+    //     <Dialog.Content className="content">
+    //       <Dialog.Close asChild>
+    //         <HiX className="close-button" />
+    //       </Dialog.Close>
+    //       {activeStep === 0 && (
+    //         <CarbonAnnouncement setActiveStep={setActiveStep} />
+    //       )}
+    //       {activeStep === 1 && (
+    //         <ThirdPartyList
+    //           setActiveStep={setActiveStep}
+    //           apikey={apikey}
+    //           userid={userid}
+    //           activeIntegrations={activeIntegrations}
+    //         />
+    //       )}
+
+    //       {activeStep === 'GOOGLE_DOCS' && (
+    //         <GoogleDocsSelector
+    //           integrationData={activeIntegrations.find(
+    //             (i) => i.data_source_type === 'GOOGLE_DOCS'
+    //           )}
+    //           apikey={apikey}
+    //           userid={userid}
+    //           setActiveStep={setActiveStep}
+    //         />
+    //       )}
+    //       {activeStep === 'LOCAL_FILE' && (
+    //         <FileUpload
+    //           apikey={apikey}
+    //           userid={userid}
+    //           setActiveStep={setActiveStep}
+    //         />
+    //       )}
+    //     </Dialog.Content>
+    //     <ToastContainer
+    //       position="bottom-right"
+    //       pauseOnFocusLoss={false}
+    //       pauseOnHover={false}
+    //     />
+    //   </Dialog.Portal>
+    // </Dialog.Root>
+
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <p className="trigger">Click</p>
+        <HiPlus className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer" />
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="overlay" />
-        <Dialog.Content className="content">
+        <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 bg-black/30" />
+        <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[740px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
           <Dialog.Close asChild>
-            <button className="close-button" aria-label="Close">
-              <button className="icon">X</button>
+            <button
+              className="absolute inline-flex h-fit appearance-none focus:outline-none justify-end pb-4 cursor-pointer top-7 right-5"
+              aria-label="Close"
+            >
+              <HiX className="w-6 h-6 text-gray-400" />
             </button>
           </Dialog.Close>
-          {/* {activeStep === 0 && (
-
+          {activeStep === 0 && (
             <CarbonAnnouncement setActiveStep={setActiveStep} />
           )}
-          {activeStep === 1 && <ThirdPartyList setActiveStep={setActiveStep} />} */}
+          {activeStep === 1 && (
+            <ThirdPartyList
+              setActiveStep={setActiveStep}
+              apikey={apikey}
+              userid={userid}
+              activeIntegrations={activeIntegrations}
+            />
+          )}
 
-          <h1>Testing radix UI elements</h1>
+          {activeStep === 'GOOGLE_DOCS' && (
+            <GoogleDocsSelector
+              integrationData={activeIntegrations.find(
+                (i) => i.data_source_type === 'GOOGLE_DOCS'
+              )}
+              apikey={apikey}
+              userid={userid}
+              setActiveStep={setActiveStep}
+            />
+          )}
+          {activeStep === 'LOCAL_FILE' && (
+            <FileUpload
+              apikey={apikey}
+              userid={userid}
+              setActiveStep={setActiveStep}
+            />
+          )}
         </Dialog.Content>
+
+        <ToastContainer
+          position="bottom-right"
+          pauseOnFocusLoss={false}
+          pauseOnHover={false}
+        />
       </Dialog.Portal>
     </Dialog.Root>
   );
 };
+
 export { CounterComponent, IntegrationsModal };

@@ -5,6 +5,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import terser from '@rollup/plugin-terser';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
+import tailwindcss from 'tailwindcss';
 
 export default {
   input: 'src/index.js',
@@ -19,7 +20,7 @@ export default {
       presets: ['@babel/preset-env', '@babel/preset-react'],
     }),
     postcss({
-      plugins: [autoprefixer()],
+      plugins: [tailwindcss(), autoprefixer()],
       extensions: ['.css'],
       minimize: true,
       inject: {
