@@ -8,7 +8,6 @@ Use npm to install Carbon Connect:
 
 ```
 npm install carbon-connect
-
 ```
 
 ## Usage
