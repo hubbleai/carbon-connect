@@ -1,8 +1,8 @@
 {
   "name": "carbon-connect",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "description": "",
-  "main": "dist/index.cjs.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
   "scripts": {
     "build": "rollup -c"
@@ -16,6 +16,7 @@
   ],
   "author": "",
   "license": "ISC",
+  "type": "module",
   "devDependencies": {
     "@babel/core": "^7.22.5",
     "@babel/preset-env": "^7.22.5",

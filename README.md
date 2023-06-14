@@ -13,7 +13,7 @@ npm install carbon-connect
 ## Usage
 
 ```jsx
-import CarbonConnect from 'carbon-connect';
+import { CarbonConnect } from 'carbon-connect';
 
 <CarbonConnect
   apikey={your_api_key}
@@ -32,7 +32,7 @@ import CarbonConnect from 'carbon-connect';
 | `userid`     | Yes       | The ID of the user. This is required to uniquely identify a user on your platform.                                                   |
 | `orgName`    | Yes       | The name of your organization. This value is used to show the initial announcement modal view. You can you any value of your choice. |
 | `brandIcon`  | Yes       | The icon for your brand. A public URL or path to your icon in your code base                                                         |
-| `entryPoint` | No        | The initial active step when the component loads. It can be 'GOOGLE_DOCS', or 'LOCAL_FILE'.                                          |
+| `entryPoint` | No        | The initial active step when the component loads. It can be 'LOCAL_FILE'. More integrations in pipeline                              |
 
 ## Contact Information
 
