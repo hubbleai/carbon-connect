@@ -5,7 +5,9 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
+import { RxNotionLogo } from 'react-icons/rx';
 import axios from 'axios';
+import { BASE_URL } from '../constants';
 
 const ThirdPartyList = ({
   setActiveStep,
@@ -15,24 +17,24 @@ const ThirdPartyList = ({
   environment,
 }) => {
   const integrationsList = [
-    // {
-    //   id: 'notion',
-    //   subpath: 'notion',
-    //   name: 'Notion',
-    //   icon: <RxNotionLogo className="w-8 h-8" />,
-    //   description: 'Lets your users connect their Notion accounts to Carbon.',
-    //   active: true,
-    // },
-    // {
-    //   active: true,
-    //   name: 'Google Docs',
-    //   subpath: 'google',
-    //   id: 'googleDocs',
-    //   description: 'Lets your users connect their Google Docs to Carbon.',
-    //   scope: 'docs',
-    //   icon: <BsGoogle className="w-7 h-7" />,
-    //   data_source_type: 'GOOGLE_DOCS',
-    // },
+    {
+      id: 'notion',
+      subpath: 'notion',
+      name: 'Notion',
+      icon: <RxNotionLogo className="w-8 h-8" />,
+      description: 'Lets your users connect their Notion accounts to Carbon.',
+      active: true,
+    },
+    {
+      active: true,
+      name: 'Google Docs',
+      subpath: 'google',
+      id: 'googleDocs',
+      description: 'Lets your users connect their Google Docs to Carbon.',
+      scope: 'docs',
+      icon: <BsGoogle className="w-7 h-7" />,
+      data_source_type: 'GOOGLE_DOCS',
+    },
     // {
     //   active: true,
     //   name: 'Google Drive',
@@ -79,26 +81,30 @@ const ThirdPartyList = ({
   ];
 
   const handleServiceOAuthFlow = async (service) => {
-    const oAuthURLResponse = await axios.get(
-      //   `https://api.dev.carbon.ai/integrations/${service.subpath}/oauth_url`,
-      // `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
-      `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
-      {
-        params: {
-          id: userid,
-          apikey: apikey,
-          scope: service.scope,
-        },
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Bearer ${apikey}`,
-          'customer-id': userid,
-        },
-      }
-    );
+    try {
+      const oAuthURLResponse = await axios.get(
+        //   `https://api.dev.carbon.ai/integrations/${service.subpath}/oauth_url`,
+        // `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
+        `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
+        {
+          params: {
+            id: userid,
+            apikey: apikey,
+            scope: service.scope,
+          },
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Bearer ${apikey}`,
+            'customer-id': userid,
+          },
+        }
+      );
 
-    if (oAuthURLResponse.status === 200 && oAuthURLResponse.data) {
-      window.open(oAuthURLResponse.data.oauth_url, '_blank');
+      if (oAuthURLResponse.status === 200 && oAuthURLResponse.data) {
+        window.open(oAuthURLResponse.data.oauth_url, '_blank');
+      }
+    } catch (err) {
+      console.log('Error in OAuth URL flow: ', err);
     }
   };
 

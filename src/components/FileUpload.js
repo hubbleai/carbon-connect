@@ -14,8 +14,9 @@ import { toast } from 'react-toastify';
 
 import '../index.css';
 import { BASE_URL } from '../constants';
+import { LuLoader2 } from 'react-icons/lu';
 
-const fileTypes = ['txt', 'csv'];
+const fileTypes = ['txt', 'csv', 'pdf'];
 
 function FileUpload({
   setActiveStep,
