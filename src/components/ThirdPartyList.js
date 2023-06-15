@@ -17,24 +17,24 @@ const ThirdPartyList = ({
   environment,
 }) => {
   const integrationsList = [
-    {
-      id: 'notion',
-      subpath: 'notion',
-      name: 'Notion',
-      icon: <RxNotionLogo className="w-8 h-8" />,
-      description: 'Lets your users connect their Notion accounts to Carbon.',
-      active: true,
-    },
-    {
-      active: true,
-      name: 'Google Docs',
-      subpath: 'google',
-      id: 'googleDocs',
-      description: 'Lets your users connect their Google Docs to Carbon.',
-      scope: 'docs',
-      icon: <BsGoogle className="w-7 h-7" />,
-      data_source_type: 'GOOGLE_DOCS',
-    },
+    // {
+    //   id: 'notion',
+    //   subpath: 'notion',
+    //   name: 'Notion',
+    //   icon: <RxNotionLogo className="w-8 h-8" />,
+    //   description: 'Lets your users connect their Notion accounts to Carbon.',
+    //   active: true,
+    // },
+    // {
+    //   active: true,
+    //   name: 'Google Docs',
+    //   subpath: 'google',
+    //   id: 'googleDocs',
+    //   description: 'Lets your users connect their Google Docs to Carbon.',
+    //   scope: 'docs',
+    //   icon: <BsGoogle className="w-7 h-7" />,
+    //   data_source_type: 'GOOGLE_DOCS',
+    // },
     // {
     //   active: true,
     //   name: 'Google Drive',
