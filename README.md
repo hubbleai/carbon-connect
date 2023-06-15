@@ -16,7 +16,7 @@ npm install carbon-connect
 import { CarbonConnect } from 'carbon-connect';
 
 <CarbonConnect
-  apikey={your_api_key}
+  token={your_token}
   userid={your_user_id}
   orgName={your_organization_name}
   brandIcon={your_brand_icon}
@@ -28,7 +28,7 @@ import { CarbonConnect } from 'carbon-connect';
 
 | Prop         | Required? | Description                                                                                                                          |
 | ------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| `apikey`     | Yes       | Your API key. The carbon team will share the API key with you.                                                                       |
+| `token`      | Yes       | Your token. The carbon team will share the token with you.                                                                           |
 | `userid`     | Yes       | The ID of the user. This is required to uniquely identify a user on your platform.                                                   |
 | `orgName`    | Yes       | The name of your organization. This value is used to show the initial announcement modal view. You can you any value of your choice. |
 | `brandIcon`  | Yes       | The icon for your brand. A public URL or path to your icon in your code base                                                         |

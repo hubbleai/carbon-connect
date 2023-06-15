@@ -18,13 +18,7 @@ import { LuLoader2 } from 'react-icons/lu';
 
 const fileTypes = ['txt', 'csv', 'pdf'];
 
-function FileUpload({
-  setActiveStep,
-  apikey,
-  userid,
-  entryPoint,
-  environment,
-}) {
+function FileUpload({ setActiveStep, token, userid, entryPoint, environment }) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +37,7 @@ function FileUpload({
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${apikey}`,
+            Authorization: `Bearer ${token}`,
             'customer-id': userid,
           },
         }

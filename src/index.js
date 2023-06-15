@@ -12,7 +12,7 @@ import axios from 'axios';
 import { BASE_URL } from './constants';
 
 const CarbonConnect = ({
-  apikey,
+  token,
   userid,
   orgName,
   brandIcon,
@@ -30,7 +30,7 @@ const CarbonConnect = ({
       {
         params: {
           id: userid,
-          apikey: apikey,
+          token: token,
         },
       }
     );
@@ -77,7 +77,7 @@ const CarbonConnect = ({
           {activeStep === 1 && (
             <ThirdPartyList
               setActiveStep={setActiveStep}
-              apikey={apikey}
+              token={token}
               userid={userid}
               activeIntegrations={activeIntegrations}
               environment={environment}
@@ -89,7 +89,7 @@ const CarbonConnect = ({
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
-              apikey={apikey}
+              token={token}
               userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
@@ -98,7 +98,7 @@ const CarbonConnect = ({
           )}
           {activeStep === 'LOCAL_FILE' && (
             <FileUpload
-              apikey={apikey}
+              token={token}
               userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}

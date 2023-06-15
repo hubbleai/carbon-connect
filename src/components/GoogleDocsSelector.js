@@ -13,7 +13,7 @@ import { BASE_URL } from '../constants';
 const GoogleDocsSelector = ({
   integrationData,
   setActiveStep,
-  apikey,
+  token,
   userid,
   entryPoint,
   environment,
@@ -28,7 +28,7 @@ const GoogleDocsSelector = ({
       `${BASE_URL[environment]}/integrations/google/sync`,
       {
         user_id: userid,
-        api_key: apikey,
+        api_key: token,
         file_ids: selectedFiles,
       }
     );

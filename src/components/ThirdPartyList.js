@@ -11,7 +11,7 @@ import { BASE_URL } from '../constants';
 
 const ThirdPartyList = ({
   setActiveStep,
-  apikey,
+  token,
   userid,
   activeIntegrations,
   environment,
@@ -89,12 +89,12 @@ const ThirdPartyList = ({
         {
           params: {
             id: userid,
-            apikey: apikey,
+            token: token,
             scope: service.scope,
           },
           headers: {
             'Content-Type': 'application/json',
-            authorization: `Bearer ${apikey}`,
+            authorization: `Bearer ${token}`,
             'customer-id': userid,
           },
         }
