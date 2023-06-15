@@ -30,7 +30,11 @@ const CarbonConnect = ({
       {
         params: {
           id: userid,
-          token: token,
+          apikey: token,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'customer-id': userid,
         },
       }
     );
@@ -43,11 +47,11 @@ const CarbonConnect = ({
   };
 
   useEffect(() => {
-    // fetchUserIntegrations();
+    fetchUserIntegrations();
     // Then set up the interval to call it every 10 seconds
-    // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+    const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
     // Make sure to clear the interval when the component unmounts
-    // return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId);
   }, []);
 
   return (

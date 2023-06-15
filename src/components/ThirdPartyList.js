@@ -89,7 +89,7 @@ const ThirdPartyList = ({
         {
           params: {
             id: userid,
-            token: token,
+            apikey: token,
             scope: service.scope,
           },
           headers: {
