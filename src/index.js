@@ -47,11 +47,11 @@ const CarbonConnect = ({
   };
 
   useEffect(() => {
-    fetchUserIntegrations();
+    // fetchUserIntegrations();
     // Then set up the interval to call it every 10 seconds
-    const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+    // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
     // Make sure to clear the interval when the component unmounts
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, []);
 
   return (
@@ -63,14 +63,14 @@ const CarbonConnect = ({
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 bg-black/30" />
         <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[600px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
-          <Dialog.Close asChild>
+          {/* <Dialog.Close asChild>
             <button
               className="absolute inline-flex h-fit appearance-none focus:outline-none justify-end pb-4 cursor-pointer top-7 right-5"
               aria-label="Close"
             >
               <HiX className="w-6 h-6 text-gray-400" />
             </button>
-          </Dialog.Close>
+          </Dialog.Close> */}
           {activeStep === 0 && (
             <CarbonAnnouncement
               setActiveStep={setActiveStep}

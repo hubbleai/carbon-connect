@@ -108,7 +108,7 @@ function FileUpload({ setActiveStep, token, userid, entryPoint, environment }) {
 
           <div className="flex flex-row h-full justify-end space-y-2 w-full">
             <button
-              className="w-full h-12 flex flex-row bg-black text-white items-center justify-center rounded-md cursor-pointer"
+              className="w-full h-12 flex flex-row bg-black text-white items-center justify-center rounded-md cursor-pointer space-x-2"
               onClick={() => {
                 if (file) uploadSelectedFile();
                 else toast.error('Please select a file to upload');
