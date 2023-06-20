@@ -10,49 +10,73 @@ import FileUpload from './components/FileUpload';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { BASE_URL } from './constants';
+import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
 
-const CarbonConnect = ({
+const IntegrationModal = ({
   token,
   userid,
   orgName,
   brandIcon,
+  tags = [],
   environment = 'PRODUCTION',
   entryPoint = null,
 }) => {
   const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
 
-  const fetchUserIntegrations = async () => {
-    const userIntegrationsResponse = await axios.get(
-      //   `https://api.dev.carbon.ai/integrations`,
-      // `http://localhost:8000/integrations`
-      `${BASE_URL[environment]}/integrations`,
-      {
-        params: {
-          id: userid,
-          apikey: token,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'customer-id': userid,
-        },
-      }
-    );
+  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
 
-    if (userIntegrationsResponse.status === 200) {
-      setActiveIntegrations(
-        userIntegrationsResponse.data['active_integrations']
+  const fetchUserIntegrations = async () => {
+    try {
+      const userIntegrationsResponse = await axios.get(
+        `${BASE_URL[environment]}/integrations`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
+
+      if (userIntegrationsResponse.status === 200) {
+        setActiveIntegrations(
+          userIntegrationsResponse.data['active_integrations']
+        );
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log('Error Message: ', error.response.data['detail']);
+        try {
+          const refreshResponse = await axios.get(
+            `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+
+          if (refreshResponse.status === 200) {
+            const newAccessToken = refreshResponse.data['access_token'];
+            setAccessToken(newAccessToken);
+          }
+        } catch (refreshError) {
+          if (refreshError.response && refreshError.response.status === 401) {
+            console.log('Refresh token expired, fetching new tokens...');
+          }
+        }
+      }
     }
   };
 
   useEffect(() => {
-    // fetchUserIntegrations();
-    // Then set up the interval to call it every 10 seconds
-    // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
-    // Make sure to clear the interval when the component unmounts
-    // return () => clearInterval(intervalId);
-  }, []);
+    if (accessToken && refreshToken) {
+      fetchUserIntegrations();
+      // Then set up the interval to call it every 10 seconds
+      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      // Make sure to clear the interval when the component unmounts
+      return () => clearInterval(intervalId);
+    }
+  }, [accessToken, refreshToken]);
 
   return (
     <Dialog.Root>
@@ -118,6 +142,31 @@ const CarbonConnect = ({
         />
       </Dialog.Portal>
     </Dialog.Root>
+  );
+};
+
+const CarbonConnect = ({
+  token,
+  userid,
+  orgName,
+  brandIcon,
+  tokenUrl,
+  tags = [],
+  environment = 'PRODUCTION',
+  entryPoint = null,
+}) => {
+  return (
+    <AuthProvider tokenUrl={tokenUrl} userid={userid}>
+      <IntegrationModal
+        token={token}
+        userid={userid}
+        orgName={orgName}
+        brandIcon={brandIcon}
+        environment={environment}
+        entryPoint={entryPoint}
+        tags={tags}
+      />
+    </AuthProvider>
   );
 };
 
