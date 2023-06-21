@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 const AuthContext = createContext();
 
-export const AuthProvider = ({ tokenUrl, userid, children }) => {
+export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
   // const createApiClient = async (access_token, refresh_token) => {
@@ -43,18 +43,13 @@ export const AuthProvider = ({ tokenUrl, userid, children }) => {
   //   return client;
   // };
 
-  const fetchTokens = async (callbackMethod) => {
+  const fetchTokens = async () => {
     try {
-      const response = await axios.get(tokenUrl, {
-        params: { customer_id: userid },
-      });
+      const response = await tokenFetcher();
 
       if (response.status === 200) {
         setAccessToken(response.data.access_token);
         setRefreshToken(response.data.refresh_token);
-        if (typeof callbackMethod === 'function') {
-          callbackMethod();
-        }
       }
     } catch (err) {
       console.error(err);
@@ -71,6 +66,7 @@ export const AuthProvider = ({ tokenUrl, userid, children }) => {
     refreshToken,
     setAccessToken,
     setRefreshToken,
+    fetchTokens,
   };
 
   return (

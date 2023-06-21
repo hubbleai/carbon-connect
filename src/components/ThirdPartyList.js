@@ -8,14 +8,9 @@ import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import axios from 'axios';
 import { BASE_URL } from '../constants';
+import { useCarbonAuth } from '../contexts/AuthContext';
 
-const ThirdPartyList = ({
-  setActiveStep,
-  token,
-  userid,
-  activeIntegrations,
-  environment,
-}) => {
+const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
   const integrationsList = [
     // {
     //   id: 'notion',
@@ -80,22 +75,19 @@ const ThirdPartyList = ({
     },
   ];
 
+  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
+
   const handleServiceOAuthFlow = async (service) => {
     try {
       const oAuthURLResponse = await axios.get(
-        //   `https://api.dev.carbon.ai/integrations/${service.subpath}/oauth_url`,
-        // `http://localhost:8000/integrations/${service.subpath}/oauth_url`,
         `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
         {
           params: {
-            id: userid,
-            apikey: token,
             scope: service.scope,
           },
           headers: {
             'Content-Type': 'application/json',
-            authorization: `Bearer ${token}`,
-            'customer-id': userid,
+            authorization: `Token ${accessToken}`,
           },
         }
       );

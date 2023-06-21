@@ -15,13 +15,16 @@ import { toast } from 'react-toastify';
 import '../index.css';
 import { BASE_URL } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
+import { useCarbonAuth } from '../contexts/AuthContext';
 
 const fileTypes = ['txt', 'csv', 'pdf'];
 
-function FileUpload({ setActiveStep, token, userid, entryPoint, environment }) {
+function FileUpload({ setActiveStep, entryPoint, environment, tags }) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
 
   const uploadSelectedFile = async () => {
     try {
@@ -30,15 +33,12 @@ function FileUpload({ setActiveStep, token, userid, entryPoint, environment }) {
       formData.append('file', file);
 
       const uploadResponse = await axios.post(
-        // `https://api.dev.carbon.ai/uploadfile`,
-        // 'http://localhost:8000/uploadfile',
         `${BASE_URL[environment]}/uploadfile`,
         formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${token}`,
-            'customer-id': userid,
+            Authorization: `Token ${accessToken}`,
           },
         }
       );
@@ -47,11 +47,39 @@ function FileUpload({ setActiveStep, token, userid, entryPoint, environment }) {
         setSyncResponse(uploadResponse.data);
         toast.success('Successfully uploaded file');
         setIsLoading(false);
+
+        const appendTagsResponse = await axios.post(
+          `${BASE_URL[environment]}/create_user_file_tags`,
+          { tags: tags, organization_user_file_id: uploadResponse.data['id'] },
+          {
+            headers: {
+              Authorization: `Token ${accessToken}`,
+            },
+          }
+        );
       }
-    } catch (err) {
-      console.log(err);
-      toast.error('Error uploading file');
-      setIsLoading(false);
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        try {
+          const refreshResponse = await axios.get(
+            `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
+            {
+              headers: {
+                Authorization: `Token ${refreshToken}`,
+              },
+            }
+          );
+
+          if (refreshResponse.status === 200) {
+            const newAccessToken = refreshResponse.data['access_token'];
+            setAccessToken(newAccessToken);
+          }
+        } catch (refreshError) {
+          if (refreshError.response && refreshError.response.status === 401) {
+            // console.log('Refresh token expired, fetching new tokens...');
+          }
+        }
+      }
     }
   };
 

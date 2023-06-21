@@ -13,26 +13,25 @@ import { BASE_URL } from './constants';
 import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
 
 const IntegrationModal = ({
-  token,
-  userid,
   orgName,
   brandIcon,
-  tags = [],
+  tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
 }) => {
   const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
 
-  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, refreshToken, setAccessToken, fetchTokens } =
+    useCarbonAuth();
 
   const fetchUserIntegrations = async () => {
     try {
       const userIntegrationsResponse = await axios.get(
-        `${BASE_URL[environment]}/integrations`,
+        `${BASE_URL[environment]}/integrations/`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Token ${accessToken}`,
           },
         }
       );
@@ -50,7 +49,7 @@ const IntegrationModal = ({
             `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
             {
               headers: {
-                Authorization: `Bearer ${refreshToken}`,
+                Authorization: `Token ${refreshToken}`,
               },
             }
           );
@@ -72,29 +71,24 @@ const IntegrationModal = ({
     if (accessToken && refreshToken) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      return () => clearInterval(intervalId);
+      // return () => clearInterval(intervalId);
     }
   }, [accessToken, refreshToken]);
 
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <HiPlus className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer" />
+        <HiPlus
+          className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer"
+          onClick={fetchTokens}
+        />
       </Dialog.Trigger>
 
       <Dialog.Portal>
         <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 bg-black/30" />
         <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[600px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
-          {/* <Dialog.Close asChild>
-            <button
-              className="absolute inline-flex h-fit appearance-none focus:outline-none justify-end pb-4 cursor-pointer top-7 right-5"
-              aria-label="Close"
-            >
-              <HiX className="w-6 h-6 text-gray-400" />
-            </button>
-          </Dialog.Close> */}
           {activeStep === 0 && (
             <CarbonAnnouncement
               setActiveStep={setActiveStep}
@@ -105,32 +99,31 @@ const IntegrationModal = ({
           {activeStep === 1 && (
             <ThirdPartyList
               setActiveStep={setActiveStep}
-              token={token}
-              userid={userid}
               activeIntegrations={activeIntegrations}
               environment={environment}
             />
           )}
 
-          {activeStep === 'GOOGLE_DOCS' && (
+          {/* {activeStep === 'GOOGLE_DOCS' && (
             <GoogleDocsSelector
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
-              token={token}
-              userid={userid}
+              // token={token}
+              // userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
             />
-          )}
+          )} */}
           {activeStep === 'LOCAL_FILE' && (
             <FileUpload
-              token={token}
-              userid={userid}
+              // token={token}
+              // userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
+              tags={tags}
             />
           )}
         </Dialog.Content>
@@ -146,20 +139,16 @@ const IntegrationModal = ({
 };
 
 const CarbonConnect = ({
-  token,
-  userid,
   orgName,
   brandIcon,
-  tokenUrl,
+  tokenFetcher = () => {},
   tags = [],
   environment = 'PRODUCTION',
   entryPoint = null,
 }) => {
   return (
-    <AuthProvider tokenUrl={tokenUrl} userid={userid}>
+    <AuthProvider tokenFetcher={tokenFetcher}>
       <IntegrationModal
-        token={token}
-        userid={userid}
         orgName={orgName}
         brandIcon={brandIcon}
         environment={environment}
