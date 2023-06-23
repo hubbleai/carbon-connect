@@ -115,7 +115,7 @@ function FileUpload({
             handleChange={setFile}
             name="file"
             types={fileTypes}
-            maxSize={maxFileSize ? maxFileSize / 1048576 : 20}
+            maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
             label="Upload or drag a file here to embed."
             classes="focus:outline-none"
           >
@@ -123,7 +123,9 @@ function FileUpload({
               <div>
                 <AiOutlineCloudUpload className="w-10 text-[#484848] h-10 mb-4 mx-auto" />
                 <p className="text-[#484848]">Upload a TXT, PDF or CSV File.</p>
-                <p className="text-[#919191]">Max 20 MB per File</p>
+                <p className="text-[#919191]">
+                  Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
+                </p>
               </div>
             </div>
           </FileUploader>

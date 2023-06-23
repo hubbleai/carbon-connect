@@ -10,7 +10,12 @@ import axios from 'axios';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
+const ThirdPartyList = ({
+  setActiveStep,
+  activeIntegrations,
+  environment,
+  enabledIntegrations,
+}) => {
   const integrationsList = [
     {
       id: 'notion',
@@ -19,6 +24,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
       icon: <RxNotionLogo className="w-8 h-8" />,
       description: 'Lets your users connect their Notion accounts to Carbon.',
       active: true,
+      data_source_type: 'NOTION',
+      requiresOAuth: true,
     },
     // {
     //   active: true,
@@ -68,10 +75,10 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
       active: true,
       name: 'File Upload',
       subpath: 'local',
-      id: 'localFiles',
+      id: 'local_files',
       description: 'Lets your users upload local files to Carbon.',
       icon: <BsCloudUpload className="w-7 h-7" />,
-      data_source_type: 'LOCAL_FILE',
+      data_source_type: 'LOCAL_FILES',
     },
   ];
 
@@ -108,7 +115,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
             onClick={() => setActiveStep(0)}
             className="cursor-pointer h-6 w-6 text-gray-400"
           />
-          {/*<h1>Integrations</h1>*/}
+          <h1>Integrations</h1>
         </div>
       </Dialog.Title>
       <ul className="flex flex-col space-y-3 w-full py-2 overflow-y-auto">
@@ -121,7 +128,10 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
             integration.data_source_type
           );
 
-          // console.log('Active Integrations: ', activeIntegrations);
+          if (!enabledIntegrations.includes(integration.data_source_type)) {
+            return null;
+          }
+
           return (
             <li
               key={integration.id}
@@ -139,11 +149,11 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
                 }`}
                 onClick={() => {
                   if (integration.active) {
-                    if (integration.data_source_type === 'LOCAL_FILE') {
+                    if (integration.data_source_type === 'LOCAL_FILES') {
                       setActiveStep(integration.data_source_type);
                       return;
                     }
-                    if (integrationStatus) {
+                    if (!integration.requiresOAuth) {
                       // handleServiceOAuthFlow(integration);
                       // console.log('Integration already active');
                       setActiveStep(integration.data_source_type);

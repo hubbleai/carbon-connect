@@ -10,18 +10,22 @@ To install Carbon Connect, use npm as follows:
 npm install carbon-connect
 ```
 
+Here's an updated version of your table:
+
 ## Component Properties
 
 The `CarbonConnect` component accepts the following properties:
 
-| Property       | Required? | Description                                                                                                            |
-| -------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `brandIcon`    | Yes       | A URL or a local path to your organization's brand icon.                                                               |
-| `orgName`      | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                               |
-| `tokenFetcher` | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                   |
-| `entryPoint`   | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILE'. More integrations are upcoming. |
-| `maxFileSize`  | No        | Maximum file size that is allowed to be uploaded. Defaults to 10 MB                                                    |
-| `tags`         | No        | Any additional data you want to associate with the component's state, such as an app ID.                               |
+| Property              | Type             | Required? | Description                                                                                                             | Example                                                 | Default Value              |
+| --------------------- | ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------- |
+| `brandIcon`           | String           | Yes       | A URL or a local path to your organization's brand icon.                                                                | `"https://myorg.com/icon.png"` or `"./assets/icon.png"` | None                       |
+| `orgName`             | String           | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                                | `"My Organization"`                                     | None                       |
+| `tokenFetcher`        | Function         | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                    | `() => {}`                                              | None                       |
+| `children`            | React Node(JSX)  | No        | You can pass any valid React node that will be used as a trigger to open the component.                                 | `<Button>Open</Button>`                                 | A `+` icon from Hero Icons |
+| `entryPoint`          | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. | `"LOCAL_FILES"`                                         | `"LOCAL_FILES"`            |
+| `maxFileSize`         | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            | `10000000`                                              | `20000000`                 |
+| `tags`                | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                | `{ appId: "12345" }`                                    | `{}`                       |
+| `enabledIntegrations` | Array of Strings | No        | Lets you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                      | `["LOCAL_FILES", "NOTION"]`                             | `["LOCAL_FILES"]`          |
 
 ## Usage
 

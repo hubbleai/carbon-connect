@@ -20,6 +20,7 @@ const IntegrationModal = ({
   entryPoint = null,
   maxFileSize,
   children,
+  enabledIntegrations,
 }) => {
   const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
@@ -111,6 +112,7 @@ const IntegrationModal = ({
               setActiveStep={setActiveStep}
               activeIntegrations={activeIntegrations}
               environment={environment}
+              enabledIntegrations={enabledIntegrations}
             />
           )}
 
@@ -126,7 +128,7 @@ const IntegrationModal = ({
               environment={environment}
             />
           )} */}
-          {activeStep === 'LOCAL_FILE' && (
+          {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               // token={token}
               // userid={userid}
@@ -153,11 +155,12 @@ const CarbonConnect = ({
   orgName,
   brandIcon,
   tokenFetcher = () => {},
+  children,
   tags = [],
   maxFileSize = 20000000,
   environment = 'PRODUCTION',
   entryPoint = null,
-  children,
+  enabledIntegrations = ['LOCAL_FILES'],
 }) => {
   return (
     <AuthProvider tokenFetcher={tokenFetcher}>
@@ -168,6 +171,7 @@ const CarbonConnect = ({
         entryPoint={entryPoint}
         tags={tags}
         maxFileSize={maxFileSize}
+        enabledIntegrations={enabledIntegrations}
       >
         {children}
       </IntegrationModal>
