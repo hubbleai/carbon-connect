@@ -1,6 +1,6 @@
 # Carbon Connect
 
-Carbon Connect is a robust React component designed for managing integrations with a variety of data sources. Carbon Connect provides an intuitive and flexible interface for your data management needs.
+Carbon Connect is a React component designed for managing integrations with a variety of data sources.
 
 ## Installation
 
@@ -9,8 +9,6 @@ To install Carbon Connect, use npm as follows:
 ```bash
 npm install carbon-connect
 ```
-
-Here's an updated version of your table:
 
 ## Component Properties
 
