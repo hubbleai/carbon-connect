@@ -12,14 +12,14 @@ import { useCarbonAuth } from '../contexts/AuthContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations, environment }) => {
   const integrationsList = [
-    // {
-    //   id: 'notion',
-    //   subpath: 'notion',
-    //   name: 'Notion',
-    //   icon: <RxNotionLogo className="w-8 h-8" />,
-    //   description: 'Lets your users connect their Notion accounts to Carbon.',
-    //   active: true,
-    // },
+    {
+      id: 'notion',
+      subpath: 'notion',
+      name: 'Notion',
+      icon: <RxNotionLogo className="w-8 h-8" />,
+      description: 'Lets your users connect their Notion accounts to Carbon.',
+      active: true,
+    },
     // {
     //   active: true,
     //   name: 'Google Docs',

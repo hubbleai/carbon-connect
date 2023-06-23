@@ -18,6 +18,8 @@ const IntegrationModal = ({
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
+  maxFileSize,
+  children,
 }) => {
   const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
@@ -78,12 +80,20 @@ const IntegrationModal = ({
   }, [accessToken, refreshToken]);
 
   return (
-    <Dialog.Root>
+    <Dialog.Root
+      onOpenChange={(open) => {
+        if (!open) setActiveStep(entryPoint || 0);
+      }}
+    >
       <Dialog.Trigger asChild>
-        <HiPlus
-          className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer"
-          onClick={fetchTokens}
-        />
+        {children ? (
+          <div onClick={fetchTokens}>{children}</div>
+        ) : (
+          <HiPlus
+            className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer"
+            onClick={fetchTokens}
+          />
+        )}
       </Dialog.Trigger>
 
       <Dialog.Portal>
@@ -124,6 +134,7 @@ const IntegrationModal = ({
               entryPoint={entryPoint}
               environment={environment}
               tags={tags}
+              maxFileSize={maxFileSize}
             />
           )}
         </Dialog.Content>
@@ -143,8 +154,10 @@ const CarbonConnect = ({
   brandIcon,
   tokenFetcher = () => {},
   tags = [],
+  maxFileSize = 20000000,
   environment = 'PRODUCTION',
   entryPoint = null,
+  children,
 }) => {
   return (
     <AuthProvider tokenFetcher={tokenFetcher}>
@@ -154,7 +167,10 @@ const CarbonConnect = ({
         environment={environment}
         entryPoint={entryPoint}
         tags={tags}
-      />
+        maxFileSize={maxFileSize}
+      >
+        {children}
+      </IntegrationModal>
     </AuthProvider>
   );
 };

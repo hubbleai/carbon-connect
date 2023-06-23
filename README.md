@@ -16,11 +16,12 @@ The `CarbonConnect` component accepts the following properties:
 
 | Property       | Required? | Description                                                                                                            |
 | -------------- | --------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `tokenFetcher` | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                   |
-| `orgName`      | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                               |
 | `brandIcon`    | Yes       | A URL or a local path to your organization's brand icon.                                                               |
-| `tags`         | No        | Any additional data you want to associate with the component's state, such as an app ID.                               |
+| `orgName`      | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                               |
+| `tokenFetcher` | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                   |
 | `entryPoint`   | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILE'. More integrations are upcoming. |
+| `maxFileSize`  | No        | Maximum file size that is allowed to be uploaded. Defaults to 10 MB                                                    |
+| `tags`         | No        | Any additional data you want to associate with the component's state, such as an app ID.                               |
 
 ## Usage
 
@@ -42,10 +43,13 @@ const tokenFetcher = async () => {
   orgName="Your Organization"
   brandIcon="path/to/your/brand/icon"
   tags={{ appId: 'your_app_id' }}
-/>;
+  maxFileSize={25000000}
+>
+  <button>Open Dialog</button>
+</CarbonConnect>;
 ```
 
-In this example, `tokenFetcher` is a helper function that retrieves the necessary tokens for authentication. This function should be implemented in your client-side code and is designed to hit an API on your backend server. This API, in turn, requests tokens from the Carbon token creation endpoint.
+In this example, `tokenFetcher` is a helper function that retrieves the necessary tokens for authentication. This function should be implemented in your client-side code and is designed to hit an API on your backend server. This API, in turn, requests tokens from the Carbon token creation endpoint. `maxFileSize` is set to 25,000,000 bytes and a custom button is used as the trigger to open the dialog.
 
 Below is an example of how the backend server might request new access tokens:
 

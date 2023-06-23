@@ -19,7 +19,13 @@ import { useCarbonAuth } from '../contexts/AuthContext';
 
 const fileTypes = ['txt', 'csv', 'pdf'];
 
-function FileUpload({ setActiveStep, entryPoint, environment, tags }) {
+function FileUpload({
+  setActiveStep,
+  entryPoint,
+  environment,
+  tags,
+  maxFileSize,
+}) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,29 +63,35 @@ function FileUpload({ setActiveStep, entryPoint, environment, tags }) {
             },
           }
         );
+      } else {
+        toast.success('Error uploading file. Please try again.');
+        setIsLoading(false);
       }
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        try {
-          const refreshResponse = await axios.get(
-            `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
-            {
-              headers: {
-                Authorization: `Token ${refreshToken}`,
-              },
-            }
-          );
+      // if (error.response && error.response.status === 401) {
+      //   try {
+      //     const refreshResponse = await axios.get(
+      //       `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
+      //       {
+      //         headers: {
+      //           Authorization: `Token ${refreshToken}`,
+      //         },
+      //       }
+      //     );
 
-          if (refreshResponse.status === 200) {
-            const newAccessToken = refreshResponse.data['access_token'];
-            setAccessToken(newAccessToken);
-          }
-        } catch (refreshError) {
-          if (refreshError.response && refreshError.response.status === 401) {
-            // console.log('Refresh token expired, fetching new tokens...');
-          }
-        }
-      }
+      //     if (refreshResponse.status === 200) {
+      //       const newAccessToken = refreshResponse.data['access_token'];
+      //       setAccessToken(newAccessToken);
+      //     }
+      //   } catch (refreshError) {
+      //     if (refreshError.response && refreshError.response.status === 401) {
+      //       // console.log('Refresh token expired, fetching new tokens...');
+      //     }
+      //   }
+      // }
+
+      toast.success('Error uploading file. Please try again.');
+      setIsLoading(false);
     }
   };
 
@@ -103,10 +115,11 @@ function FileUpload({ setActiveStep, entryPoint, environment, tags }) {
             handleChange={setFile}
             name="file"
             types={fileTypes}
-            maxSize="20"
+            maxSize={maxFileSize ? maxFileSize / 1048576 : 20}
             label="Upload or drag a file here to embed."
+            classes="focus:outline-none"
           >
-            <div className="rounded-lg flex py-2 h-60 w-full mt-4 mb-1 cursor-pointer text-center border justify-center items-center gap-x-2  overflow-hidden text-black space-x-2">
+            <div className="rounded-lg flex py-2 h-60 w-full mt-4 mb-1 cursor-pointer text-center border-2 justify-center items-center gap-x-2 overflow-hidden text-black space-x-2 outline-none">
               <div>
                 <AiOutlineCloudUpload className="w-10 text-[#484848] h-10 mb-4 mx-auto" />
                 <p className="text-[#484848]">Upload a TXT, PDF or CSV File.</p>
