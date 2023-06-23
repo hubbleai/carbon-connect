@@ -16,16 +16,16 @@ Here's an updated version of your table:
 
 The `CarbonConnect` component accepts the following properties:
 
-| Property              | Type             | Required? | Description                                                                                                             | Example                                                 | Default Value              |
-| --------------------- | ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------- |
-| `brandIcon`           | String           | Yes       | A URL or a local path to your organization's brand icon.                                                                | `"https://myorg.com/icon.png"` or `"./assets/icon.png"` | None                       |
-| `orgName`             | String           | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                                | `"My Organization"`                                     | None                       |
-| `tokenFetcher`        | Function         | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                    | `() => {}`                                              | None                       |
-| `children`            | React Node(JSX)  | No        | You can pass any valid React node that will be used as a trigger to open the component.                                 | `<Button>Open</Button>`                                 | A `+` icon from Hero Icons |
-| `entryPoint`          | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. | `"LOCAL_FILES"`                                         | `"LOCAL_FILES"`            |
-| `maxFileSize`         | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            | `10000000`                                              | `20000000`                 |
-| `tags`                | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                | `{ appId: "12345" }`                                    | `{}`                       |
-| `enabledIntegrations` | Array of Strings | No        | Lets you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                      | `["LOCAL_FILES", "NOTION"]`                             | `["LOCAL_FILES"]`          |
+| Property              | Type             | Required? | Description                                                                                                             |
+| --------------------- | ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `brandIcon`           | String           | Yes       | A URL or a local path to your organization's brand icon.                                                                |
+| `orgName`             | String           | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                                |
+| `tokenFetcher`        | Function         | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                    |
+| `children`            | React Node(JSX)  | No        | You can pass any valid React node that will be used as a trigger to open the component.                                 |
+| `entryPoint`          | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. |
+| `maxFileSize`         | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
+| `tags`                | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
+| `enabledIntegrations` | Array of Strings | No        | Lets you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                      |
 
 ## Usage
 
