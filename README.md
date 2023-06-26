@@ -23,7 +23,7 @@ The `CarbonConnect` component accepts the following properties:
 | `entryPoint`          | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. |
 | `maxFileSize`         | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
 | `tags`                | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
-| `enabledIntegrations` | Array of Strings | No        | Lets you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                      |
+| `enabledIntegrations` | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
 
 ## Usage
 
@@ -37,7 +37,10 @@ const tokenFetcher = async () => {
   const response = await axios.get('/api/auth/fetchCarbonTokens', {
     params: { customer_id: 'your_customer_id' },
   });
-  return response.data;
+
+  // We expect the entire promise without any processing from your side.
+  // Carbon Connect would rely on the Axios response's promise object to check the status and fetch the tokens
+  return response;
 };
 
 <CarbonConnect
@@ -66,6 +69,24 @@ const response = await axios.get('https://api.carbon.ai/auth/v1/access_token', {
 if (response.status === 200 && response.data) {
   res.status(200).json(response.data);
 }
+```
+
+## Regarding the return value from tokenFetcher
+
+CarbonConnect expects a promise which will eventually resolve to an object of this structure:
+
+```
+{ status: 200; data: { access_token: string; refresh_token: string; } }
+```
+
+CC will do all the processing and extract the tokens if the tokenFetcher returned promise, which inturn resolves to the above object structure.
+
+If you are using React or Next.js for your project, you can use the above tokenFetcher code without any modification. CC will take the response from axios and rely on the API call's response status.
+
+If you are using any other framework, which does not fit into the above setup, please ensure the return value from tokenFetcher is same to the following Promise:
+
+```
+Promise<{ status: 200; data: { access_token: string; refresh_token: string; } }>
 ```
 
 ## Get in Touch

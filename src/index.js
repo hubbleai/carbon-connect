@@ -15,12 +15,12 @@ import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
 const IntegrationModal = ({
   orgName,
   brandIcon,
-  tags = {},
-  environment = 'PRODUCTION',
-  entryPoint = null,
   maxFileSize,
   children,
   enabledIntegrations,
+  tags = {},
+  environment = 'PRODUCTION',
+  entryPoint = null,
 }) => {
   const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = React.useState([]);
