@@ -8,8 +8,10 @@ import {
   HiCheckCircle,
   HiArrowLeft,
   HiUpload,
+  HiX,
 } from 'react-icons/hi';
-import { AiOutlineCloudUpload } from 'react-icons/ai';
+import { AiOutlineCloudUpload, AiOutlineFileUnknown } from 'react-icons/ai';
+import { BsFiletypeCsv, BsFiletypePdf, BsFiletypeTxt } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -113,67 +115,53 @@ function FileUpload({
       </Dialog.Title>
       {!syncResponse && (
         <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
-          <FileUploader
-            multiple={false}
-            handleChange={setFile}
-            name="file"
-            types={fileTypes}
-            maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
-            label="Upload or drag a file here to embed."
-            classes="focus:cc-outline-none"
-          >
-            <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none">
-              <div>
-                <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" />
-                <p className="cc-text-[#484848]">
-                  Upload a TXT, PDF or CSV File.
-                </p>
-                <p className="cc-text-[#919191]">
-                  Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
-                </p>
+          {!file ? (
+            <FileUploader
+              multiple={false}
+              handleChange={setFile}
+              name="file"
+              types={fileTypes}
+              maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
+              label="Upload or drag a file here to embed."
+              classes="focus:cc-outline-none"
+            >
+              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
+                <div>
+                  <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" />
+                  <p className="cc-text-[#484848]">
+                    Upload a TXT, PDF or CSV File.
+                  </p>
+                  <p className="cc-text-[#919191]">
+                    Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
+                  </p>
+                </div>
               </div>
-            </div>
-          </FileUploader>
-
-          {file && (
-            <div class="relative">
-              <button
-                class="cc-absolute cc-top-1 cc-bg-red-500 hover:cc-bg-red-700 cc-text-white cc-py-1 cc-px-2 cc-rounded-full cc-text-xs -cc-right-2 cc-cursor-pointer"
-                onClick={() => setFile(null)}
-              >
-                X
-              </button>
-              <table class="cc-my-3 cc-w-full cc-rounded-lg cc-bg-blue-400/20 cc-items-center">
-                <tr>
-                  <td class="cc-py-4 cc-px-6 cc-text-sm cc-font-medium">
-                    Name
-                  </td>
-                  <td class="cc-py-4 cc-px-6 cc-text-left cc-text-sm">
+            </FileUploader>
+          ) : (
+            <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
+              <div className="cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center">
+                {file.name.split('.').pop() === 'pdf' ? (
+                  <BsFiletypePdf className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mx-auto" />
+                ) : file.name.split('.').pop() === 'csv' ? (
+                  <BsFiletypeCsv className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
+                ) : file.name.split('.').pop() === 'txt' ? (
+                  <BsFiletypeTxt className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
+                ) : (
+                  <AiOutlineFileUnknown className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
+                )}
+                <div className="cc-flex cc-flex-col cc-grow">
+                  <h1 className="cc-text-base cc-font-medium cc-mb-1">
                     {file.name}
-                  </td>
-                </tr>
-                <tr>
-                  <td class="cc-py-2 cc-px-6 cc-text-sm cc-font-medium">
-                    Size
-                  </td>
-                  <td class="cc-py-2 cc-px-6 cc-text-left cc-text-sm">{`${parseFloat(
-                    file.size / 1024
-                  ).toFixed(2)} KB`}</td>
-                </tr>
-                <tr>
-                  <td class="cc-py-4 cc-px-6 cc-text-sm cc-font-medium">
-                    Type
-                  </td>
-                  <td class="cc-py-4 cc-px-6 cc-text-left cc-text-sm ">
-                    {file.type}
-                  </td>
-                </tr>
-              </table>
-            </div>
-          )}
-
-          {file && (
-            <div className="cc-flex cc-flex-row cc-h-full cc-justify-end cc-space-y-2 cc-w-full">
+                  </h1>
+                  <p className="cc-text-sm cc-text-gray-400">
+                    {`${parseFloat(file.size / 1024).toFixed(2)} KB`}
+                  </p>
+                </div>
+                <HiX
+                  className="cc-ml-auto cc-text-gray-400 cc-cursor-pointer"
+                  onClick={() => setFile(null)}
+                />
+              </div>
               <button
                 className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
                 onClick={() => {

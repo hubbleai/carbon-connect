@@ -50,7 +50,22 @@ const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
         <p className="cc-text-xs cc-text-center cc-text-gray-400">
           {`By continuing, you agree to Carbon's`}
           <br></br>
-          <u>{`User Terms and Privacy Policy.`}</u>
+          <a
+            href="https://carbon.ai/terms"
+            target="_blank"
+            className="cc-cursor-pointer"
+          >
+            <u>Terms of Service</u>
+          </a>
+          {` and `}
+          <a
+            href="https://carbon.ai/privacy"
+            target="_blank"
+            className="cc-cursor-pointer"
+          >
+            <u>Privacy Policy</u>
+          </a>
+          {`.`}
         </p>
         <button
           className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
