@@ -8,7 +8,7 @@ import ThirdPartyList from './components/ThirdPartyList';
 import GoogleDocsSelector from './components/GoogleDocsSelector';
 import FileUpload from './components/FileUpload';
 import { ToastContainer, toast } from 'react-toastify';
-import axios from 'axios';
+
 import { BASE_URL } from './constants';
 import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
 
@@ -18,6 +18,8 @@ const IntegrationModal = ({
   maxFileSize,
   children,
   enabledIntegrations,
+  onSuccess,
+  onError,
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
@@ -30,7 +32,7 @@ const IntegrationModal = ({
 
   const fetchUserIntegrations = async () => {
     try {
-      const userIntegrationsResponse = await axios.get(
+      const userIntegrationsResponse = await fetch(
         `${BASE_URL[environment]}/integrations/`,
         {
           headers: {
@@ -40,15 +42,14 @@ const IntegrationModal = ({
       );
 
       if (userIntegrationsResponse.status === 200) {
-        setActiveIntegrations(
-          userIntegrationsResponse.data['active_integrations']
-        );
+        const responseBody = await userIntegrationsResponse.json();
+        setActiveIntegrations(responseBody['active_integrations']);
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log('Error Message: ', error.response.data['detail']);
         try {
-          const refreshResponse = await axios.get(
+          const refreshResponse = await fetch(
             `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
             {
               headers: {
@@ -58,7 +59,8 @@ const IntegrationModal = ({
           );
 
           if (refreshResponse.status === 200) {
-            const newAccessToken = refreshResponse.data['access_token'];
+            const responseBody = await refreshResponse.json();
+            const newAccessToken = responseBody['access_token'];
             setAccessToken(newAccessToken);
           }
         } catch (refreshError) {
@@ -91,15 +93,15 @@ const IntegrationModal = ({
           <div onClick={fetchTokens}>{children}</div>
         ) : (
           <HiPlus
-            className="w-6 h-6 hover:bg-gray-300 rounded-md p-1 mr-5 cursor-pointer"
+            className="cc-w-6 cc-h-6 hover:cc-bg-gray-300 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer"
             onClick={fetchTokens}
           />
         )}
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="bg-blackA9 data-[state=open]:animate-overlayShow fixed inset-0 bg-black/30" />
-        <Dialog.Content className="flex flex-col data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] h-[600px] w-[375px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] focus:outline-none">
+        <Dialog.Overlay className="cc-bg-blackA9 data-[state=open]:cc-animate-overlayShow cc-fixed cc-inset-0 cc-bg-black/30" />
+        <Dialog.Content className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none">
           {activeStep === 0 && (
             <CarbonAnnouncement
               setActiveStep={setActiveStep}
@@ -137,6 +139,8 @@ const IntegrationModal = ({
               environment={environment}
               tags={tags}
               maxFileSize={maxFileSize}
+              onSuccess={onSuccess}
+              onError={onError}
             />
           )}
         </Dialog.Content>
@@ -154,8 +158,10 @@ const IntegrationModal = ({
 const CarbonConnect = ({
   orgName,
   brandIcon,
-  tokenFetcher = () => {},
   children,
+  tokenFetcher = () => {},
+  onSuccess = () => {},
+  onError = () => {},
   tags = [],
   maxFileSize = 20000000,
   environment = 'PRODUCTION',
@@ -172,6 +178,8 @@ const CarbonConnect = ({
         tags={tags}
         maxFileSize={maxFileSize}
         enabledIntegrations={enabledIntegrations}
+        onSuccess={onSuccess}
+        onError={onError}
       >
         {children}
       </IntegrationModal>

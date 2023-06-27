@@ -7,7 +7,6 @@ import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiXCircle, HiArrowLeft } from 'react-icons/hi';
 
-import axios from 'axios';
 import { BASE_URL } from '../constants';
 
 const GoogleDocsSelector = ({
@@ -22,36 +21,35 @@ const GoogleDocsSelector = ({
   const [syncResponse, setSyncResponse] = useState(null);
 
   const syncSelectedFiles = async () => {
-    const syncResponse = await axios.post(
-      //   `https://api.dev.carbon.ai/integrations/google/sync`,
-      // `http://localhost:8000/integrations/google/sync`,
+    const syncResponse = await fetch(
       `${BASE_URL[environment]}/integrations/google/sync`,
       {
-        user_id: userid,
-        api_key: token,
-        file_ids: selectedFiles,
+        method: 'POST',
+        body: JSON.stringify({
+          user_id: userid,
+          api_key: token,
+          file_ids: selectedFiles,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
     );
 
-    if (syncResponse.status === 200 && syncResponse.data) {
-      setSyncResponse(syncResponse.data);
-      // console.log('Sync Response: ', syncResponse.data);
-      // if (syncResponse.data.status === 200) {
-      //   setActiveStep(2);
-
-      // }
-      // setActiveStep(2);
+    if (syncResponse.status === 200) {
+      const syncResponseData = await syncResponse.json();
+      setSyncResponse(syncResponseData);
     }
   };
 
   return (
-    <div className="flex flex-col h-[540px] items-center">
-      <Dialog.Title className="text-lg mb-4 font-medium w-full">
-        <div className="w-full flex items-center space-x-4">
+    <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center">
+      <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
+        <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
             <HiArrowLeft
               onClick={() => setActiveStep(1)}
-              className="cursor-pointer h-6 w-6 text-gray-400"
+              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
             />
           )}
           <h1>Select Files</h1>
@@ -59,15 +57,17 @@ const GoogleDocsSelector = ({
       </Dialog.Title>
       {!syncResponse && (
         <>
-          <div className="flex flex-col space-y-3 w-full py-2 overflow-y-auto">
+          <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
             {integrationData.token.all_files.map((fileData) => {
               const isSelected = selectedFiles.includes(fileData.id);
 
               return (
                 <div
                   key={fileData.id}
-                  className={`border rounded-md h-fit items-center p-4 w-full cursor-pointer ${
-                    isSelected ? 'bg-green-200' : 'bg-white hover:bg-gray-100'
+                  className={`cc-border cc-rounded-md cc-h-fit cc-items-center cc-p-4 cc-w-full cc-cursor-pointer ${
+                    isSelected
+                      ? 'cc-bg-green-200'
+                      : 'cc-bg-white hover:cc-bg-gray-100'
                   }`}
                   onClick={() => {
                     setSelectedFiles((prev) => {
@@ -79,15 +79,15 @@ const GoogleDocsSelector = ({
                     });
                   }}
                 >
-                  <h1 className="text-md font-normal">{fileData.name}</h1>
+                  <h1 className="cc-text-md cc-font-normal">{fileData.name}</h1>
                 </div>
               );
             })}
           </div>
 
-          <div className="flex flex-col h-full space-y-2 w-full">
+          <div className="cc-flex cc-flex-col cc-h-full cc-space-y-2 cc-w-full">
             <button
-              className="w-full h-12 flex flex-row bg-black text-white items-center justify-center rounded-md cursor-pointer"
+              className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
               onClick={() => syncSelectedFiles()}
             >
               Sync Files
@@ -97,11 +97,11 @@ const GoogleDocsSelector = ({
       )}
 
       {syncResponse && (
-        <div className="flex flex-col space-y-3 w-full py-2 overflow-y-auto h-full items-center text-xl justify-center">
+        <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto cc-h-full cc-items-center cc-text-xl cc-justify-center">
           {syncResponse.code === 200 ? (
-            <HiCheckCircle className="text-green-500 w-8 h-8" />
+            <HiCheckCircle className="cc-text-green-500 cc-w-8 cc-h-8" />
           ) : (
-            <HiXCircle className="text-red-500  w-8 h-8" />
+            <HiXCircle className="cc-text-red-500 cc-w-8 cc-h-8" />
           )}
           <p>{syncResponse.message}</p>
         </div>

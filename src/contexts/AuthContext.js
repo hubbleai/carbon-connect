@@ -1,47 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
-  // const createApiClient = async (access_token, refresh_token) => {
-  //   const client = axios.create();
-
-  //   client.interceptors.response.use(
-  //     (response) => response,
-  //     async (error) => {
-  //       console.log('01', error.response.status, error.config, error);
-  //       const originalRequest = error.config;
-
-  //       if (error.response.status === 401 && !originalRequest._retry) {
-  //         console.log('01');
-  //         originalRequest._retry = true;
-  //         const refreshResponse = await axios.get(
-  //           `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${refresh_token}`,
-  //             },
-  //           }
-  //         );
-  //         if (refreshResponse.status === 200) {
-  //           console.log('01');
-  //           setAccessToken(refreshResponse.data.access_token);
-  //           originalRequest.headers['Authorization'] =
-  //             'Bearer ' + refreshResponse.data.access_token;
-  //           return client(originalRequest);
-  //         } else if (refreshResponse.status === 401) {
-  //           console.log('01');
-  //           fetchTokens();
-  //         }
-  //       }
-  //       return Promise.reject(error);
-  //     }
-  //   );
-
-  //   return client;
-  // };
 
   const fetchTokens = async () => {
     try {

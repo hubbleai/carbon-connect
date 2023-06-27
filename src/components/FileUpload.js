@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { FileUploader } from 'react-drag-drop-files';
-import axios from 'axios';
+
 import * as Dialog from '@radix-ui/react-dialog';
 import {
   HiXCircle,
@@ -25,6 +25,8 @@ function FileUpload({
   environment,
   tags,
   maxFileSize,
+  onSuccess,
+  onError,
 }) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
@@ -38,78 +40,79 @@ function FileUpload({
       const formData = new FormData();
       formData.append('file', file);
 
-      const uploadResponse = await axios.post(
+      const uploadResponse = await fetch(
         `${BASE_URL[environment]}/uploadfile`,
-        formData,
         {
+          method: 'POST',
+          body: formData,
           headers: {
-            'Content-Type': 'multipart/form-data',
+            // 'Content-Type': 'multipart/form-data',
             Authorization: `Token ${accessToken}`,
           },
         }
       );
 
-      if (uploadResponse.status === 200 && uploadResponse.data) {
-        setSyncResponse(uploadResponse.data);
-        toast.success('Successfully uploaded file');
-        setIsLoading(false);
+      if (uploadResponse.status === 200) {
+        const uploadResponseData = await uploadResponse.json();
 
-        const appendTagsResponse = await axios.post(
+        const appendTagsResponse = await fetch(
           `${BASE_URL[environment]}/create_user_file_tags`,
-          { tags: tags, organization_user_file_id: uploadResponse.data['id'] },
           {
+            method: 'POST',
+            body: JSON.stringify({
+              tags: tags,
+              organization_user_file_id: uploadResponseData['id'],
+            }),
             headers: {
+              'Content-Type': 'application/json',
               Authorization: `Token ${accessToken}`,
             },
           }
         );
+        setSyncResponse(uploadResponseData);
+
+        if (appendTagsResponse.status === 200) {
+          const appendTagsResponseData = await appendTagsResponse.json();
+          const dataObject = {
+            id: appendTagsResponseData['id'],
+            name: appendTagsResponseData['name'],
+            source: appendTagsResponseData['source'],
+            external_file_id: appendTagsResponseData['external_file_id'],
+            tags: appendTagsResponseData['tags'],
+            sync_status: appendTagsResponseData['sync_status'],
+          };
+          onSuccess({ status: 200, data: dataObject });
+          toast.success('Successfully uploaded file');
+          setIsLoading(false);
+        }
       } else {
-        toast.success('Error uploading file. Please try again.');
+        toast.error('Error uploading file. Please try again.');
         setIsLoading(false);
+        onError({ status: 400, data: { message: 'Error uploading file' } });
       }
     } catch (error) {
-      // if (error.response && error.response.status === 401) {
-      //   try {
-      //     const refreshResponse = await axios.get(
-      //       `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
-      //       {
-      //         headers: {
-      //           Authorization: `Token ${refreshToken}`,
-      //         },
-      //       }
-      //     );
-
-      //     if (refreshResponse.status === 200) {
-      //       const newAccessToken = refreshResponse.data['access_token'];
-      //       setAccessToken(newAccessToken);
-      //     }
-      //   } catch (refreshError) {
-      //     if (refreshError.response && refreshError.response.status === 401) {
-      //       // console.log('Refresh token expired, fetching new tokens...');
-      //     }
-      //   }
-      // }
-
-      toast.success('Error uploading file. Please try again.');
+      toast.error('Error uploading file. Please try again.');
       setIsLoading(false);
+      console.log('Error: ', error);
+      onError({ status: 400, data: { message: 'Error uploading file' } });
     }
   };
 
   return (
-    <div className="flex flex-col h-[540px] items-center relative">
-      <Dialog.Title className="text-lg mb-4 font-medium w-full">
-        <div className="w-full flex items-center space-x-4">
+    <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
+      <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
+        <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
             <HiArrowLeft
               onClick={() => setActiveStep(1)}
-              className="cursor-pointer h-6 w-6 text-gray-400"
+              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
             />
           )}
           <h1>Upload Files</h1>
         </div>
       </Dialog.Title>
       {!syncResponse && (
-        <div className="w-full h-full flex-col flex space-y-4 justify-between">
+        <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
           <FileUploader
             multiple={false}
             handleChange={setFile}
@@ -117,13 +120,15 @@ function FileUpload({
             types={fileTypes}
             maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
             label="Upload or drag a file here to embed."
-            classes="focus:outline-none"
+            classes="focus:cc-outline-none"
           >
-            <div className="rounded-lg flex py-2 h-60 w-full mt-4 mb-1 cursor-pointer text-center border-2 justify-center items-center gap-x-2 overflow-hidden text-black space-x-2 outline-none">
+            <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none">
               <div>
-                <AiOutlineCloudUpload className="w-10 text-[#484848] h-10 mb-4 mx-auto" />
-                <p className="text-[#484848]">Upload a TXT, PDF or CSV File.</p>
-                <p className="text-[#919191]">
+                <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" />
+                <p className="cc-text-[#484848]">
+                  Upload a TXT, PDF or CSV File.
+                </p>
+                <p className="cc-text-[#919191]">
                   Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
                 </p>
               </div>
@@ -131,54 +136,74 @@ function FileUpload({
           </FileUploader>
 
           {file && (
-            <table class="my-3 w-full rounded-lg bg-blue-400/20 items-center">
-              <tr>
-                <td class="py-4 px-6 text-sm font-medium">Name</td>
-                <td class="py-4 px-6 text-left text-sm">{file.name}</td>
-              </tr>
-              <tr>
-                <td class="py-2 px-6 text-sm font-medium">Size</td>
-                <td class="py-2 px-6 text-left text-sm">{`${parseFloat(
-                  file.size / 1024
-                ).toFixed(2)} KB`}</td>
-              </tr>
-              <tr>
-                <td class="py-4 px-6 text-sm font-medium">Type</td>
-                <td class="py-4 px-6 text-left text-sm ">{file.type}</td>
-              </tr>
-            </table>
+            <div class="relative">
+              <button
+                class="cc-absolute cc-top-1 cc-bg-red-500 hover:cc-bg-red-700 cc-text-white cc-py-1 cc-px-2 cc-rounded-full cc-text-xs -cc-right-2 cc-cursor-pointer"
+                onClick={() => setFile(null)}
+              >
+                X
+              </button>
+              <table class="cc-my-3 cc-w-full cc-rounded-lg cc-bg-blue-400/20 cc-items-center">
+                <tr>
+                  <td class="cc-py-4 cc-px-6 cc-text-sm cc-font-medium">
+                    Name
+                  </td>
+                  <td class="cc-py-4 cc-px-6 cc-text-left cc-text-sm">
+                    {file.name}
+                  </td>
+                </tr>
+                <tr>
+                  <td class="cc-py-2 cc-px-6 cc-text-sm cc-font-medium">
+                    Size
+                  </td>
+                  <td class="cc-py-2 cc-px-6 cc-text-left cc-text-sm">{`${parseFloat(
+                    file.size / 1024
+                  ).toFixed(2)} KB`}</td>
+                </tr>
+                <tr>
+                  <td class="cc-py-4 cc-px-6 cc-text-sm cc-font-medium">
+                    Type
+                  </td>
+                  <td class="cc-py-4 cc-px-6 cc-text-left cc-text-sm ">
+                    {file.type}
+                  </td>
+                </tr>
+              </table>
+            </div>
           )}
 
-          <div className="flex flex-row h-full justify-end space-y-2 w-full">
-            <button
-              className="w-full h-12 flex flex-row bg-black text-white items-center justify-center rounded-md cursor-pointer space-x-2"
-              onClick={() => {
-                if (file) uploadSelectedFile();
-                else toast.error('Please select a file to upload');
-              }}
-            >
-              {isLoading ? (
-                <LuLoader2 className="animate-spin text-white" />
-              ) : (
-                <HiUpload className="text-white" />
-              )}
-              <p>Upload File</p>
-            </button>
-          </div>
+          {file && (
+            <div className="cc-flex cc-flex-row cc-h-full cc-justify-end cc-space-y-2 cc-w-full">
+              <button
+                className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+                onClick={() => {
+                  if (file) uploadSelectedFile();
+                  else toast.error('Please select a file to upload');
+                }}
+              >
+                {isLoading ? (
+                  <LuLoader2 className="cc-animate-spin cc-text-white" />
+                ) : (
+                  <HiUpload className="cc-text-white" />
+                )}
+                <p>Upload File</p>
+              </button>
+            </div>
+          )}
         </div>
       )}
 
       {syncResponse && (
-        <div className="flex flex-col space-y-3 w-full py-2 overflow-y-auto h-full items-center text-xl justify-center">
+        <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto cc-h-full cc-items-center cc-text-xl cc-justify-center">
           {syncResponse ? (
             <>
-              <HiCheckCircle className="text-green-500 w-8 h-8" />
-              <p className="text-center">File Upload Successful</p>
+              <HiCheckCircle className="cc-text-green-500 cc-w-8 cc-h-8" />
+              <p className="cc-text-center">File Upload Successful</p>
             </>
           ) : (
             <>
-              <HiXCircle className="text-red-500  w-8 h-8" />
-              <p className="text-center">
+              <HiXCircle className="cc-text-red-500 cc-w-8 cc-h-8" />
+              <p className="cc-text-center">
                 There is an error uploading your file. Please try again later.
               </p>
             </>
