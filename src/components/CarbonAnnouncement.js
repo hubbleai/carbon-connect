@@ -9,7 +9,7 @@ const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
       <div className="cc-flex cc-pt-8 -cc-space-x-2">
         <img
           src={brandIcon}
-          alt="Rubber Icon"
+          alt={`${orgName} Icon`}
           className="cc-rounded-full cc-border cc-w-16"
         />
 

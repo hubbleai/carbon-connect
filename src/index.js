@@ -115,6 +115,7 @@ const IntegrationModal = ({
               activeIntegrations={activeIntegrations}
               environment={environment}
               enabledIntegrations={enabledIntegrations}
+              tags={tags}
             />
           )}
 

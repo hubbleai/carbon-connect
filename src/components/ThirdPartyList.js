@@ -14,6 +14,7 @@ const ThirdPartyList = ({
   activeIntegrations,
   environment,
   enabledIntegrations,
+  tags,
 }) => {
   const integrationsList = [
     {
@@ -86,14 +87,14 @@ const ThirdPartyList = ({
   const handleServiceOAuthFlow = async (service) => {
     try {
       const oAuthURLResponse = await fetch(
-        `${BASE_URL[environment]}/integrations/${
-          service.subpath
-        }/oauth_url?scope=${encodeURIComponent(service.scope)}`,
+        `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
         {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             authorization: `Token ${accessToken}`,
           },
+          body: JSON.stringify({ tags: tags, scope: service?.scope }),
         }
       );
 
