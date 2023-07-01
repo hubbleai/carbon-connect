@@ -76,11 +76,15 @@ const IntegrationModal = ({
     if (accessToken && refreshToken) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      // return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
     }
   }, [accessToken, refreshToken]);
+
+  useEffect(() => {
+    fetchTokens();
+  }, []);
 
   return (
     <Dialog.Root
@@ -90,11 +94,15 @@ const IntegrationModal = ({
     >
       <Dialog.Trigger asChild>
         {children ? (
-          <div onClick={fetchTokens}>{children}</div>
+          <div
+          // onClick={fetchTokens}
+          >
+            {children}
+          </div>
         ) : (
           <HiPlus
             className="cc-w-6 cc-h-6 hover:cc-bg-gray-300 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer"
-            onClick={fetchTokens}
+            // onClick={fetchTokens}
           />
         )}
       </Dialog.Trigger>
