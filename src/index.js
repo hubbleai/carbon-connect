@@ -82,9 +82,9 @@ const IntegrationModal = ({
     }
   }, [accessToken, refreshToken]);
 
-  useEffect(() => {
-    fetchTokens();
-  }, []);
+  // useEffect(() => {
+  //   fetchTokens();
+  // }, []);
 
   return (
     <Dialog.Root
@@ -94,15 +94,11 @@ const IntegrationModal = ({
     >
       <Dialog.Trigger asChild>
         {children ? (
-          <div
-          // onClick={fetchTokens}
-          >
-            {children}
-          </div>
+          <div onClick={fetchTokens}>{children}</div>
         ) : (
           <HiPlus
             className="cc-w-6 cc-h-6 hover:cc-bg-gray-300 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer"
-            // onClick={fetchTokens}
+            onClick={fetchTokens}
           />
         )}
       </Dialog.Trigger>

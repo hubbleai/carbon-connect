@@ -27,16 +27,17 @@ const ThirdPartyList = ({
       data_source_type: 'NOTION',
       requiresOAuth: true,
     },
-    // {
-    //   active: true,
-    //   name: 'Google Docs',
-    //   subpath: 'google',
-    //   id: 'googleDocs',
-    //   description: 'Lets your users connect their Google Docs to Carbon.',
-    //   scope: 'docs',
-    //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-    //   data_source_type: 'GOOGLE_DOCS',
-    // },
+    {
+      active: true,
+      name: 'Google Docs',
+      subpath: 'google',
+      id: 'googleDocs',
+      description: 'Lets your users connect their Google Docs to Carbon.',
+      scope: 'docs',
+      icon: <BsGoogle className="cc-w-7 cc-h-7" />,
+      data_source_type: 'GOOGLE_DOCS',
+      requiresOAuth: true,
+    },
     // {
     //   active: true,
     //   name: 'Google Drive',
@@ -87,14 +88,18 @@ const ThirdPartyList = ({
   const handleServiceOAuthFlow = async (service) => {
     try {
       const oAuthURLResponse = await fetch(
-        `${BASE_URL[environment]}/integrations/${service.subpath}/oauth_url`,
+        `${BASE_URL[environment]}/integrations/oauth_url`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             authorization: `Token ${accessToken}`,
           },
-          body: JSON.stringify({ tags: tags, scope: service?.scope }),
+          body: JSON.stringify({
+            tags: tags,
+            scope: service?.scope,
+            service: service?.data_source_type,
+          }),
         }
       );
 
