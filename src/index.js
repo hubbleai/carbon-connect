@@ -11,6 +11,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 import { BASE_URL } from './constants';
 import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
+import WebScraper from './components/WebScraper';
 
 const IntegrationModal = ({
   orgName,
@@ -76,9 +77,9 @@ const IntegrationModal = ({
     if (accessToken && refreshToken) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      return () => clearInterval(intervalId);
+      // return () => clearInterval(intervalId);
     }
   }, [accessToken, refreshToken]);
 
@@ -88,9 +89,10 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) setActiveStep(entryPoint || 0);
-      }}
+      // onOpenChange={(open) => {
+      //   if (!open) setActiveStep(entryPoint || 0);
+      // }}
+      open={true}
     >
       <Dialog.Trigger asChild>
         {children ? (
@@ -139,6 +141,18 @@ const IntegrationModal = ({
             <FileUpload
               // token={token}
               // userid={userid}
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
+              maxFileSize={maxFileSize}
+              onSuccess={onSuccess}
+              onError={onError}
+            />
+          )}
+
+          {activeStep === 'WEB_SCRAPER' && (
+            <WebScraper
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}

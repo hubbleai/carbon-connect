@@ -4,17 +4,22 @@ const AuthContext = createContext();
 export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [refreshToken, setRefreshToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   const fetchTokens = async () => {
     try {
+      setLoading(true);
       const response = await tokenFetcher();
 
       if (response.status === 200) {
         setAccessToken(response.data.access_token);
         setRefreshToken(response.data.refresh_token);
+        setLoading(false);
       }
     } catch (err) {
       console.error(err);
+      setError(true);
     }
   };
 

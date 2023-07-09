@@ -31,7 +31,7 @@ const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
           <div className="cc-flex cc-flex-col cc-gap-y-1">
             <h1 className="cc-text-base cc-font-medium">Private</h1>
             <p className="cc-text-sm cc-font-normal cc-text-gray-400">
-              Your credentials will never be made available to Rubber.
+              Your credentials will never be made available to {orgName}.
             </p>
           </div>
         </li>
@@ -40,7 +40,8 @@ const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
           <div className="cc-flex cc-flex-col cc-gap-y-1">
             <h1 className="cc-text-md cc-font-medium">Secure</h1>
             <p className="cc-text-sm cc-font-normal cc-text-gray-400">
-              You can select to give Rubber access to specific information only.
+              You can select to give {orgName} access to specific information
+              only.
             </p>
           </div>
         </li>

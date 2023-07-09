@@ -6,6 +6,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
+import { CgWebsite } from 'react-icons/cg';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
@@ -37,6 +38,16 @@ const ThirdPartyList = ({
       icon: <BsGoogle className="cc-w-7 cc-h-7" />,
       data_source_type: 'GOOGLE_DOCS',
       requiresOAuth: true,
+    },
+    {
+      active: true,
+      name: 'Web Scraper',
+      subpath: 'scraper',
+      id: 'webScraper',
+      description: 'Lets your users Scrape websites to Carbon.',
+      icon: <CgWebsite className="cc-w-7 cc-h-7" />,
+      data_source_type: 'WEB_SCRAPER',
+      requiresOAuth: false,
     },
     // {
     //   active: true,
@@ -80,6 +91,7 @@ const ThirdPartyList = ({
       description: 'Lets your users upload local files to Carbon.',
       icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
       data_source_type: 'LOCAL_FILES',
+      requiresOAuth: false,
     },
   ];
 
@@ -154,7 +166,7 @@ const ThirdPartyList = ({
                 }`}
                 onClick={() => {
                   if (integration.active) {
-                    if (integration.data_source_type === 'LOCAL_FILES') {
+                    if (!integration.requiresOAuth) {
                       setActiveStep(integration.data_source_type);
                       return;
                     }
