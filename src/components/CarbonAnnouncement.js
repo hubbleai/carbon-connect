@@ -3,7 +3,15 @@ import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
 import carbonLogo from '../carbon.svg';
 
-const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
+const CarbonAnnouncement = ({
+  orgName,
+  brandIcon,
+  setActiveStep,
+  primaryBackgroundColor,
+  primaryTextColor,
+  secondaryBackgroundColor,
+  secondaryTextColor,
+}) => {
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
       <div className="cc-flex cc-pt-8 -cc-space-x-2">
@@ -69,7 +77,7 @@ const CarbonAnnouncement = ({ orgName, brandIcon, setActiveStep }) => {
           {`.`}
         </p>
         <button
-          className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
+          className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer`}
           onClick={() => setActiveStep(1)}
         >
           <p>Connect</p>

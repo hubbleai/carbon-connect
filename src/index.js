@@ -21,78 +21,66 @@ const IntegrationModal = ({
   enabledIntegrations,
   onSuccess,
   onError,
+  primaryBackgroundColor,
+  primaryTextColor,
+  secondaryBackgroundColor,
+  secondaryTextColor,
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
 }) => {
-  const [activeStep, setActiveStep] = React.useState(entryPoint || 0);
-  const [activeIntegrations, setActiveIntegrations] = React.useState([]);
+  const [activeStep, setActiveStep] = useState(entryPoint || 0);
+  const [activeIntegrations, setActiveIntegrations] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
-  const { accessToken, refreshToken, setAccessToken, fetchTokens } =
-    useCarbonAuth();
+  const { accessToken, fetchTokens } = useCarbonAuth();
+
+  const fetchUserIntegrationsHelper = async () => {
+    const userIntegrationsResponse = await fetch(
+      `${BASE_URL[environment]}/integrations/`,
+      {
+        headers: {
+          Authorization: `Token ${accessToken}`,
+        },
+      }
+    );
+
+    if (userIntegrationsResponse.status === 200) {
+      const responseBody = await userIntegrationsResponse.json();
+      setActiveIntegrations(responseBody['active_integrations']);
+    }
+  };
 
   const fetchUserIntegrations = async () => {
     try {
-      const userIntegrationsResponse = await fetch(
-        `${BASE_URL[environment]}/integrations/`,
-        {
-          headers: {
-            Authorization: `Token ${accessToken}`,
-          },
-        }
-      );
-
-      if (userIntegrationsResponse.status === 200) {
-        const responseBody = await userIntegrationsResponse.json();
-        setActiveIntegrations(responseBody['active_integrations']);
-      }
+      await fetchUserIntegrationsHelper();
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        console.log('Error Message: ', error.response.data['detail']);
-        try {
-          const refreshResponse = await fetch(
-            `${BASE_URL[environment]}/auth/v1/refresh_access_token`,
-            {
-              headers: {
-                Authorization: `Token ${refreshToken}`,
-              },
-            }
-          );
-
-          if (refreshResponse.status === 200) {
-            const responseBody = await refreshResponse.json();
-            const newAccessToken = responseBody['access_token'];
-            setAccessToken(newAccessToken);
-          }
-        } catch (refreshError) {
-          if (refreshError.response && refreshError.response.status === 401) {
-            console.log('Refresh token expired, fetching new tokens...');
-          }
-        }
+        await fetchTokens();
+        setTimeout(async () => {
+          await fetchUserIntegrationsHelper();
+        }, 1000);
       }
     }
   };
 
   useEffect(() => {
-    if (accessToken && refreshToken) {
+    if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      // return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
     }
-  }, [accessToken, refreshToken]);
-
-  // useEffect(() => {
-  //   fetchTokens();
-  // }, []);
+  }, [accessToken, showModal]);
 
   return (
     <Dialog.Root
-      // onOpenChange={(open) => {
-      //   if (!open) setActiveStep(entryPoint || 0);
-      // }}
-      open={true}
+      onOpenChange={(open) => {
+        if (!open) setActiveStep(entryPoint || 0);
+        setShowModal(open);
+      }}
+      open={showModal}
     >
       <Dialog.Trigger asChild>
         {children ? (
@@ -113,6 +101,10 @@ const IntegrationModal = ({
               setActiveStep={setActiveStep}
               orgName={orgName}
               brandIcon={brandIcon}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
             />
           )}
           {activeStep === 1 && (
@@ -122,6 +114,10 @@ const IntegrationModal = ({
               environment={environment}
               enabledIntegrations={enabledIntegrations}
               tags={tags}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
             />
           )}
 
@@ -130,17 +126,17 @@ const IntegrationModal = ({
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
-              // token={token}
-              // userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
             />
           )} */}
           {activeStep === 'LOCAL_FILES' && (
             <FileUpload
-              // token={token}
-              // userid={userid}
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
@@ -148,6 +144,10 @@ const IntegrationModal = ({
               maxFileSize={maxFileSize}
               onSuccess={onSuccess}
               onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
             />
           )}
 
@@ -160,6 +160,10 @@ const IntegrationModal = ({
               maxFileSize={maxFileSize}
               onSuccess={onSuccess}
               onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
             />
           )}
         </Dialog.Content>
@@ -186,6 +190,10 @@ const CarbonConnect = ({
   environment = 'PRODUCTION',
   entryPoint = null,
   enabledIntegrations = ['LOCAL_FILES'],
+  primaryBackgroundColor = '#FFB600',
+  primaryTextColor = '#FFFFFF',
+  secondaryBackgroundColor = '#FFFFFF',
+  secondaryTextColor = '#FFB600',
 }) => {
   return (
     <AuthProvider tokenFetcher={tokenFetcher}>
@@ -199,6 +207,10 @@ const CarbonConnect = ({
         enabledIntegrations={enabledIntegrations}
         onSuccess={onSuccess}
         onError={onError}
+        primaryBackgroundColor={primaryBackgroundColor}
+        primaryTextColor={primaryTextColor}
+        secondaryBackgroundColor={secondaryBackgroundColor}
+        secondaryTextColor={secondaryTextColor}
       >
         {children}
       </IntegrationModal>

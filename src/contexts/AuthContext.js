@@ -1,9 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
 
-export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
+export const AuthProvider = ({ children, tokenFetcher }) => {
   const [accessToken, setAccessToken] = useState(null);
-  const [refreshToken, setRefreshToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -13,8 +12,7 @@ export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
       const response = await tokenFetcher();
 
       if (response.status === 200) {
-        setAccessToken(response.data.access_token);
-        setRefreshToken(response.data.refresh_token);
+        setAccessToken(response.access_token);
         setLoading(false);
       }
     } catch (err) {
@@ -30,9 +28,7 @@ export const AuthProvider = ({ tokenUrl, userid, children, tokenFetcher }) => {
 
   const contextValues = {
     accessToken,
-    refreshToken,
     setAccessToken,
-    setRefreshToken,
     fetchTokens,
   };
 

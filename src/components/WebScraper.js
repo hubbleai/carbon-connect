@@ -25,13 +25,17 @@ function WebScraper({
   tags,
   onSuccess,
   onError,
+  primaryBackgroundColor,
+  primaryTextColor,
+  secondaryBackgroundColor,
+  secondaryTextColor,
 }) {
   const MAX_URLS = 5;
   const [urls, setUrls] = useState(['']);
   const [scrapingResponse, setScrapingResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, setAccessToken } = useCarbonAuth();
 
   const submitScrapeRequest = async () => {
     try {
@@ -122,7 +126,7 @@ function WebScraper({
             ))}
             {urls.length < MAX_URLS && (
               <button
-                className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-blue-300 cc-text-blue-900 cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${secondaryBackgroundColor} cc-text-${secondaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                 onClick={handleAddUrl}
               >
                 <HiPlus className="inline-block mr-2" />
@@ -131,13 +135,15 @@ function WebScraper({
             )}
           </div>
           <button
-            className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+            className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
             onClick={submitScrapeRequest}
           >
             {isLoading ? (
-              <LuLoader2 className="cc-animate-spin cc-text-white" />
+              <LuLoader2
+                className={`cc-animate-spin cc-text-${primaryTextColor}`}
+              />
             ) : (
-              <HiUpload className="cc-text-white" />
+              <HiUpload className={`cc-text-${primaryTextColor}`} />
             )}
             <p>Submit</p>
           </button>

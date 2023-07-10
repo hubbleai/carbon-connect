@@ -95,7 +95,7 @@ const ThirdPartyList = ({
     },
   ];
 
-  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, setAccessToken } = useCarbonAuth();
 
   const handleServiceOAuthFlow = async (service) => {
     try {

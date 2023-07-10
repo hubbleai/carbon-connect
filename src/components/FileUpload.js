@@ -29,12 +29,16 @@ function FileUpload({
   maxFileSize,
   onSuccess,
   onError,
+  primaryBackgroundColor,
+  primaryTextColor,
+  secondaryBackgroundColor,
+  secondaryTextColor,
 }) {
   const [file, setFile] = useState(null);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, refreshToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, setAccessToken } = useCarbonAuth();
 
   const uploadSelectedFile = async () => {
     try {
@@ -124,6 +128,21 @@ function FileUpload({
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
               label="Upload or drag a file here to embed."
               classes="focus:cc-outline-none"
+              onSizeError={(e) => {
+                toast.error(
+                  `File size is too large. Maximum allowed Size is: ${
+                    maxFileSize ? maxFileSize / 1000000 : 20
+                  } MB`
+                );
+                onError({
+                  status: 400,
+                  data: {
+                    message: `File size is too large. Maximum allowed Size is: ${
+                      maxFileSize ? maxFileSize / 1000000 : 20
+                    } MB`,
+                  },
+                });
+              }}
             >
               <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
                 <div>
@@ -163,16 +182,18 @@ function FileUpload({
                 />
               </div>
               <button
-                className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-black cc-text-white cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                 onClick={() => {
                   if (file) uploadSelectedFile();
                   else toast.error('Please select a file to upload');
                 }}
               >
                 {isLoading ? (
-                  <LuLoader2 className="cc-animate-spin cc-text-white" />
+                  <LuLoader2
+                    className={`cc-animate-spin cc-text-${primaryTextColor}`}
+                  />
                 ) : (
-                  <HiUpload className="cc-text-white" />
+                  <HiUpload className={`cc-text-${primaryTextColor}`} />
                 )}
                 <p>Upload File</p>
               </button>
