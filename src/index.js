@@ -193,7 +193,7 @@ const CarbonConnect = ({
   primaryBackgroundColor = '#000000',
   primaryTextColor = '#FFFFFF',
   secondaryBackgroundColor = '#FFFFFF',
-  secondaryTextColor = '#FFB600',
+  secondaryTextColor = '#000000',
 }) => {
   return (
     <AuthProvider tokenFetcher={tokenFetcher}>

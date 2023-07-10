@@ -10,6 +10,18 @@ To install Carbon Connect, use npm as follows:
 npm install carbon-connect
 ```
 
+## Prerequisites
+
+The package expects the following npm packages to be installed in your project:
+
+1. `@radix-ui/react-dialog`
+2. `react`
+3. `react-dom`
+4. `react-drag-drop-files`
+5. `react-icons`
+6. `react-toastify`
+7. `tailwindcss`
+
 ## Component Properties
 
 The `CarbonConnect` component accepts the following properties:
@@ -26,10 +38,10 @@ The `CarbonConnect` component accepts the following properties:
 | `maxFileSize`              | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
 | `tags`                     | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
 | `enabledIntegrations`      | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
-| `primaryBackgroundColor`   | String           | No        | The primary background color of the component. Defaults to `#FFB600`.                                                   |
+| `primaryBackgroundColor`   | String           | No        | The primary background color of the component. Defaults to `#000000`.                                                   |
 | `primaryTextColor`         | String           | No        | The primary text color of the component. Defaults to `#FFFFFF`.                                                         |
 | `secondaryBackgroundColor` | String           | No        | The secondary background color of the component. Defaults to `#FFFFFF`.                                                 |
-| `secondaryTextColor`       | String           | No        | The secondary text color of the component. Defaults to `#FFB600`.                                                       |
+| `secondaryTextColor`       | String           | No        | The secondary text color of the component. Defaults to `#000000`.                                                       |
 
 ## Usage
 
