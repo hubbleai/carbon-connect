@@ -120,7 +120,7 @@ CarbonConnect expects an object which will be of this structure:
 {
   status: 400,
   data: {
-    message: 'Error uploading file'
+    message: `<String describing the error>`,
   }
 }
 ```
