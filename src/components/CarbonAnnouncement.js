@@ -77,7 +77,11 @@ const CarbonAnnouncement = ({
           {`.`}
         </p>
         <button
-          className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer`}
+          className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
+          style={{
+            backgroundColor: primaryBackgroundColor,
+            color: primaryTextColor,
+          }}
           onClick={() => setActiveStep(1)}
         >
           <p>Connect</p>

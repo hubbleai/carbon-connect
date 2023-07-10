@@ -130,14 +130,14 @@ function FileUpload({
               classes="focus:cc-outline-none"
               onSizeError={(e) => {
                 toast.error(
-                  `File size is too large. Maximum allowed Size is: ${
+                  `The file size is too large. The maximum size allowed is: ${
                     maxFileSize ? maxFileSize / 1000000 : 20
                   } MB`
                 );
                 onError({
                   status: 400,
                   data: {
-                    message: `File size is too large. Maximum allowed Size is: ${
+                    message: `The file size is too large. The maximum size allowed is: ${
                       maxFileSize ? maxFileSize / 1000000 : 20
                     } MB`,
                   },
@@ -182,18 +182,20 @@ function FileUpload({
                 />
               </div>
               <button
-                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+                style={{
+                  backgroundColor: primaryBackgroundColor,
+                  color: primaryTextColor,
+                }}
                 onClick={() => {
                   if (file) uploadSelectedFile();
                   else toast.error('Please select a file to upload');
                 }}
               >
                 {isLoading ? (
-                  <LuLoader2
-                    className={`cc-animate-spin cc-text-${primaryTextColor}`}
-                  />
+                  <LuLoader2 className={`cc-animate-spin`} />
                 ) : (
-                  <HiUpload className={`cc-text-${primaryTextColor}`} />
+                  <HiUpload />
                 )}
                 <p>Upload File</p>
               </button>

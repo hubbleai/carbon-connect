@@ -11,10 +11,8 @@ export const AuthProvider = ({ children, tokenFetcher }) => {
       setLoading(true);
       const response = await tokenFetcher();
 
-      if (response.status === 200) {
-        setAccessToken(response.access_token);
-        setLoading(false);
-      }
+      setAccessToken(response.access_token);
+      setLoading(false);
     } catch (err) {
       console.error(err);
       setError(true);

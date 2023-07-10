@@ -40,6 +40,22 @@ function WebScraper({
   const submitScrapeRequest = async () => {
     try {
       setIsLoading(true);
+      const urlPattern = new RegExp(
+        '^(https?:\\/\\/)?' + // protocol
+          '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+          '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+          '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+          '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+          '(\\#[-a-z\\d_]*)?$',
+        'i'
+      ); // fragment locator
+
+      let validUrls = urls.filter((url) => urlPattern.test(url));
+
+      if (validUrls.length === 0) {
+        toast.error('Please provide at least one valid URL.');
+        return;
+      }
 
       const uploadResponse = await fetch(
         `${BASE_URL[environment]}/integrations/web_scrape`,
@@ -135,15 +151,17 @@ function WebScraper({
             )}
           </div>
           <button
-            className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${primaryBackgroundColor} cc-text-${primaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+            className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+            style={{
+              backgroundColor: primaryBackgroundColor,
+              color: primaryTextColor,
+            }}
             onClick={submitScrapeRequest}
           >
             {isLoading ? (
-              <LuLoader2
-                className={`cc-animate-spin cc-text-${primaryTextColor}`}
-              />
+              <LuLoader2 className={`cc-animate-spin`} />
             ) : (
-              <HiUpload className={`cc-text-${primaryTextColor}`} />
+              <HiUpload />
             )}
             <p>Submit</p>
           </button>
