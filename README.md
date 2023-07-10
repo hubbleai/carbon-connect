@@ -56,9 +56,8 @@ const tokenFetcher = async () => {
     params: { customer_id: 'your_customer_id' },
   });
 
-  // We expect the entire promise without any processing from your side.
-  // Carbon Connect would rely on the Axios response's promise object to check the status and fetch the tokens
-  return response;
+  // Just return the response data which contains the access_token.
+  return response.data;
 };
 
 <CarbonConnect
@@ -91,20 +90,10 @@ if (response.status === 200 && response.data) {
 
 ## Regarding the return value from tokenFetcher
 
-CarbonConnect expects a promise which will eventually resolve to an object of this structure:
+CarbonConnect expects an object which will be of this structure:
 
 ```
-{ status: 200; data: { access_token: string; refresh_token: string; } }
-```
-
-CC will do all the processing and extract the tokens if the tokenFetcher returned promise, which inturn resolves to the above object structure.
-
-If you are using React or Next.js for your project, you can use the above tokenFetcher code without any modification. CC will take the response from axios and rely on the API call's response status.
-
-If you are using any other framework, which does not fit into the above setup, please ensure the return value from tokenFetcher is same to the following Promise:
-
-```
-Promise<{ status: 200; data: { access_token: string; refresh_token: string; } }>
+{ access_token: string }
 ```
 
 ## Callback function props
