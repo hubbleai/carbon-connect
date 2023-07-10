@@ -74,6 +74,10 @@ const IntegrationModal = ({
     }
   }, [accessToken, showModal]);
 
+  useEffect(() => {
+    if (showModal) fetchTokens();
+  }, [showModal]);
+
   return (
     <Dialog.Root
       onOpenChange={(open) => {

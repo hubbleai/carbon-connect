@@ -20,9 +20,9 @@ export const AuthProvider = ({ children, tokenFetcher }) => {
   };
 
   // Fetch tokens when component first loads
-  useEffect(() => {
-    fetchTokens();
-  }, []);
+  // useEffect(() => {
+  //   fetchTokens();
+  // }, []);
 
   const contextValues = {
     accessToken,

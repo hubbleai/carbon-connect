@@ -26,22 +26,20 @@ The package expects the following npm packages to be installed in your project:
 
 The `CarbonConnect` component accepts the following properties:
 
-| Property                   | Type             | Required? | Description                                                                                                             |
-| -------------------------- | ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `brandIcon`                | String           | Yes       | A URL or a local path to your organization's brand icon.                                                                |
-| `orgName`                  | String           | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                                |
-| `tokenFetcher`             | Function         | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                    |
-| `onSuccess`                | Function         | No        | A callback function that will be called after the file upload is successful.                                            |
-| `onError`                  | Function         | No        | A callback function that will be called if there is any error in the file upload.                                       |
-| `children`                 | React Node(JSX)  | No        | You can pass any valid React node that will be used as a trigger to open the component.                                 |
-| `entryPoint`               | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. |
-| `maxFileSize`              | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
-| `tags`                     | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
-| `enabledIntegrations`      | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
-| `primaryBackgroundColor`   | String           | No        | The primary background color of the component. Defaults to `#000000`.                                                   |
-| `primaryTextColor`         | String           | No        | The primary text color of the component. Defaults to `#FFFFFF`.                                                         |
-| `secondaryBackgroundColor` | String           | No        | The secondary background color of the component. Defaults to `#FFFFFF`.                                                 |
-| `secondaryTextColor`       | String           | No        | The secondary text color of the component. Defaults to `#000000`.                                                       |
+| Property                 | Type             | Required? | Description                                                                                                             |
+| ------------------------ | ---------------- | --------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `brandIcon`              | String           | Yes       | A URL or a local path to your organization's brand icon.                                                                |
+| `orgName`                | String           | Yes       | The name of your organization. This is displayed in the initial announcement modal view.                                |
+| `tokenFetcher`           | Function         | Yes       | A function that returns a promise which resolves with the access and refresh tokens.                                    |
+| `onSuccess`              | Function         | No        | A callback function that will be called after the file upload is successful.                                            |
+| `onError`                | Function         | No        | A callback function that will be called if there is any error in the file upload.                                       |
+| `children`               | React Node(JSX)  | No        | You can pass any valid React node that will be used as a trigger to open the component.                                 |
+| `entryPoint`             | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. |
+| `maxFileSize`            | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
+| `tags`                   | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
+| `enabledIntegrations`    | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
+| `primaryBackgroundColor` | String           | No        | The primary background color of the component. Defaults to `#000000`.                                                   |
+| `primaryTextColor`       | String           | No        | The primary text color of the component. Defaults to `#FFFFFF`.                                                         |
 
 ## Usage
 
