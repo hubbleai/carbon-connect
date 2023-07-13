@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 import { FileUploader } from 'react-drag-drop-files';
-
 import * as Dialog from '@radix-ui/react-dialog';
 import {
   HiXCircle,
@@ -13,10 +13,10 @@ import {
 import { AiOutlineCloudUpload, AiOutlineFileUnknown } from 'react-icons/ai';
 import { BsFiletypeCsv, BsFiletypePdf, BsFiletypeTxt } from 'react-icons/bs';
 import { toast } from 'react-toastify';
+import { LuLoader2 } from 'react-icons/lu';
 
 import '../index.css';
 import { BASE_URL } from '../constants';
-import { LuLoader2 } from 'react-icons/lu';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const fileTypes = ['txt', 'csv', 'pdf'];
@@ -158,18 +158,21 @@ function FileUpload({
             </FileUploader>
           ) : (
             <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
-              <div className="cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center">
-                {file.name.split('.').pop() === 'pdf' ? (
-                  <BsFiletypePdf className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mx-auto" />
-                ) : file.name.split('.').pop() === 'csv' ? (
-                  <BsFiletypeCsv className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
-                ) : file.name.split('.').pop() === 'txt' ? (
-                  <BsFiletypeTxt className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
-                ) : (
-                  <AiOutlineFileUnknown className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
-                )}
-                <div className="cc-flex cc-flex-col cc-grow">
-                  <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-truncate">
+              <div className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center">
+                <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
+                  {file.name.split('.').pop() === 'pdf' ? (
+                    <BsFiletypePdf className="cc-w-10 cc-h-10 cc-mx-auto" />
+                  ) : file.name.split('.').pop() === 'csv' ? (
+                    <BsFiletypeCsv className="cc-w-10 cc-h-10  cc-mx-auto" />
+                  ) : file.name.split('.').pop() === 'txt' ? (
+                    <BsFiletypeTxt className="cc-w-10 cc-h-10 cc-mx-auto" />
+                  ) : (
+                    <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />
+                  )}
+                </div>
+
+                <div className="cc-flex cc-flex-col cc-w-9/12">
+                  <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
                     {file.name}
                   </h1>
                   <p className="cc-text-sm cc-text-gray-400">
@@ -177,7 +180,7 @@ function FileUpload({
                   </p>
                 </div>
                 <HiX
-                  className="cc-ml-auto cc-text-gray-400 cc-cursor-pointer"
+                  className="cc-ml-auto cc-text-gray-400 cc-cursor-pointer cc-w-1/12"
                   onClick={() => setFile(null)}
                 />
               </div>
@@ -224,5 +227,29 @@ function FileUpload({
     </div>
   );
 }
+
+FileUpload.propTypes = {
+  setActiveStep: PropTypes.func.isRequired,
+  entryPoint: PropTypes.number,
+  environment: PropTypes.string.isRequired,
+  tags: PropTypes.array,
+  maxFileSize: PropTypes.number,
+  onSuccess: PropTypes.func.isRequired,
+  onError: PropTypes.func.isRequired,
+  primaryBackgroundColor: PropTypes.string,
+  primaryTextColor: PropTypes.string,
+  secondaryBackgroundColor: PropTypes.string,
+  secondaryTextColor: PropTypes.string,
+};
+
+FileUpload.defaultProps = {
+  entryPoint: 0,
+  tags: [],
+  maxFileSize: 20000000, // 20 MB
+  primaryBackgroundColor: '#ffffff',
+  primaryTextColor: '#000000',
+  secondaryBackgroundColor: '#f2f2f2',
+  secondaryTextColor: '#4f4f4f',
+};
 
 export default FileUpload;
