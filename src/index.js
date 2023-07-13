@@ -68,9 +68,9 @@ const IntegrationModal = ({
     if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      return () => clearInterval(intervalId);
+      // return () => clearInterval(intervalId);
     }
   }, [accessToken, showModal]);
 
@@ -125,20 +125,23 @@ const IntegrationModal = ({
             />
           )}
 
-          {/* {activeStep === 'GOOGLE_DOCS' && (
+          {activeStep === 'GOOGLE_DOCS' && (
             <GoogleDocsSelector
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
-              setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
+              tags={tags}
+              maxFileSize={maxFileSize}
+              onSuccess={onSuccess}
+              onError={onError}
               primaryBackgroundColor={primaryBackgroundColor}
               primaryTextColor={primaryTextColor}
               secondaryBackgroundColor={secondaryBackgroundColor}
               secondaryTextColor={secondaryTextColor}
             />
-          )} */}
+          )}
           {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               setActiveStep={setActiveStep}

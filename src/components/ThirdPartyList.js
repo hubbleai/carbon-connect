@@ -165,18 +165,34 @@ const ThirdPartyList = ({
                     : 'cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100'
                 }`}
                 onClick={() => {
-                  if (integration.active) {
-                    if (!integration.requiresOAuth) {
-                      setActiveStep(integration.data_source_type);
-                      return;
+                  try {
+                    if (integration.active) {
+                      // if (!integration.requiresOAuth) {
+                      //   setActiveStep(integration.data_source_type);
+                      //   return;
+                      // }
+                      if (!integration.requiresOAuth) {
+                        // handleServiceOAuthFlow(integration);
+                        // console.log('Integration already active');
+                        setActiveStep(integration.data_source_type);
+                      } else {
+                        if (integration.data_source_type === 'GOOGLE_DOCS') {
+                          console.log(activeIntegrations);
+                          let googleDocsIndex = activeIntegrations.findIndex(
+                            (integration) =>
+                              integration.data_source_type === 'GOOGLE_DOCS'
+                          );
+                          console.log('Index: ', googleDocsIndex);
+                          if (googleDocsIndex !== -1) {
+                            setActiveStep(integration.data_source_type);
+                            return;
+                          }
+                        }
+                        handleServiceOAuthFlow(integration);
+                      }
                     }
-                    if (!integration.requiresOAuth) {
-                      // handleServiceOAuthFlow(integration);
-                      // console.log('Integration already active');
-                      setActiveStep(integration.data_source_type);
-                    } else {
-                      handleServiceOAuthFlow(integration);
-                    }
+                  } catch (err) {
+                    console.log('Error: ', err);
                   }
                 }}
               >

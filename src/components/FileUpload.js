@@ -169,7 +169,7 @@ function FileUpload({
                   <AiOutlineFileUnknown className="cc-w-10 cc-text-[#484848] cc-h-10  cc-mx-auto" />
                 )}
                 <div className="cc-flex cc-flex-col cc-grow">
-                  <h1 className="cc-text-base cc-font-medium cc-mb-1">
+                  <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-truncate">
                     {file.name}
                   </h1>
                   <p className="cc-text-sm cc-text-gray-400">

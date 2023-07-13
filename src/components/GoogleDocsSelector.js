@@ -8,6 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiXCircle, HiArrowLeft } from 'react-icons/hi';
 
 import { BASE_URL } from '../constants';
+import { useCarbonAuth } from '../contexts/AuthContext';
 
 const GoogleDocsSelector = ({
   integrationData,
@@ -16,9 +17,11 @@ const GoogleDocsSelector = ({
   userid,
   entryPoint,
   environment,
+  tags,
 }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
+  const { accessToken, setAccessToken } = useCarbonAuth();
 
   const syncSelectedFiles = async () => {
     const syncResponse = await fetch(
@@ -26,12 +29,14 @@ const GoogleDocsSelector = ({
       {
         method: 'POST',
         body: JSON.stringify({
-          user_id: userid,
-          api_key: token,
-          file_ids: selectedFiles,
+          file_objects: integrationData.objects.filter((fileData) =>
+            selectedFiles.includes(fileData.id)
+          ),
+          tags: tags,
         }),
         headers: {
           'Content-Type': 'application/json',
+          authorization: `Token ${accessToken}`,
         },
       }
     );
@@ -58,7 +63,7 @@ const GoogleDocsSelector = ({
       {!syncResponse && (
         <>
           <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
-            {integrationData.token.all_files.map((fileData) => {
+            {integrationData.objects.map((fileData) => {
               const isSelected = selectedFiles.includes(fileData.id);
 
               return (
