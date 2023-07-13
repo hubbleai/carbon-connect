@@ -126,27 +126,34 @@ function WebScraper({
             {urls.map((url, idx) => (
               <div
                 key={idx}
-                className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-border cc-border-gray-400 cc-px-2 cc-rounded-md"
+                className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10"
               >
                 <input
                   type="text"
-                  className="cc-p-2 cc-flex-grow cc-border-none cc-outline-none cc-rounded-md focus:cc-ring-0 focus:cc-outline-none cc-text-gray-700 cc-text-sm"
+                  className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
+                  style={{ borderRadius: '0.375rem' }}
+                  placeholder="Enter URL"
                   value={url}
                   onChange={(e) => handleUrlChange(idx, e.target.value)}
                 />
-                <HiTrash
-                  className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-red-400 cc-bg-transparent cc-outline-none cc-border-none cc-ring-0 focus:cc-ring-0 focus:cc-outline-none"
+                <HiX
+                  className=" cc-text-red-400 cc-text-sm cc-border cc-border-gray-400 cc-w-10 cc-h-10 cc-p-2 cc-cursor-pointer hover:cc-bg-gray-200 hover:cc-border-0"
+                  style={{ borderRadius: '0.375rem' }}
                   onClick={() => handleRemoveUrl(idx)}
                 />
               </div>
             ))}
             {urls.length < MAX_URLS && (
               <button
-                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-bg-${secondaryBackgroundColor} cc-text-${secondaryTextColor} cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+                className={`cc-w-fit cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2 mx-auto cc-px-4`}
+                style={{
+                  backgroundColor: secondaryBackgroundColor,
+                  color: secondaryTextColor,
+                }}
                 onClick={handleAddUrl}
               >
                 <HiPlus className="inline-block mr-2" />
-                Add more URLs
+                Add
               </button>
             )}
           </div>

@@ -80,11 +80,11 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) setActiveStep(entryPoint || 0);
-        setShowModal(open);
-      }}
-      open={showModal}
+      // onOpenChange={(open) => {
+      //   if (!open) setActiveStep(entryPoint || 0);
+      //   setShowModal(open);
+      // }}
+      open={true || showModal}
     >
       <Dialog.Trigger asChild>
         {children ? (
