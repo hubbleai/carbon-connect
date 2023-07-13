@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { FileUploader } from 'react-drag-drop-files';
@@ -38,7 +38,13 @@ function FileUpload({
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, fetchTokens } = useCarbonAuth();
+
+  useEffect(() => {
+    if (!accessToken) {
+      fetchTokens();
+    }
+  }, [accessToken]);
 
   const uploadSelectedFile = async () => {
     try {
@@ -191,6 +197,14 @@ function FileUpload({
                   color: primaryTextColor,
                 }}
                 onClick={() => {
+                  if (isLoading === true) {
+                    toast.error(
+                      'Please wait for the file to upload: ',
+                      isLoading
+                    );
+                    return;
+                  }
+
                   if (file) uploadSelectedFile();
                   else toast.error('Please select a file to upload');
                 }}

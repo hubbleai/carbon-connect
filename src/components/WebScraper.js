@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import {
@@ -35,7 +35,13 @@ function WebScraper({
   const [scrapingResponse, setScrapingResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, fetchTokens } = useCarbonAuth();
+
+  useEffect(() => {
+    if (!accessToken) {
+      fetchTokens();
+    }
+  }, [accessToken]);
 
   const submitScrapeRequest = async () => {
     try {
