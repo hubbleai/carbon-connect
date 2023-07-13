@@ -37,11 +37,11 @@ function WebScraper({
 
   const { accessToken, fetchTokens } = useCarbonAuth();
 
-  useEffect(() => {
-    if (!accessToken) {
-      fetchTokens();
-    }
-  }, [accessToken]);
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     fetchTokens();
+  //   }
+  // }, [accessToken]);
 
   const submitScrapeRequest = async () => {
     try {
@@ -60,6 +60,7 @@ function WebScraper({
 
       if (validUrls.length === 0) {
         toast.error('Please provide at least one valid URL.');
+        setIsLoading(false);
         return;
       }
 
@@ -72,7 +73,7 @@ function WebScraper({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            urls: urls,
+            urls: validUrls,
             tags: tags,
             repeat: false,
             repeat_interval: 0,
@@ -151,7 +152,7 @@ function WebScraper({
             ))}
             {urls.length < MAX_URLS && (
               <button
-                className={`cc-w-fit cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2 mx-auto cc-px-4`}
+                className={`cc-w-fit cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2 cc-px-4`}
                 style={{
                   backgroundColor: secondaryBackgroundColor,
                   color: secondaryTextColor,

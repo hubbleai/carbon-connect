@@ -25,6 +25,7 @@ const IntegrationModal = ({
   primaryTextColor,
   secondaryBackgroundColor,
   secondaryTextColor,
+  allowMultipleFiles,
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
@@ -80,11 +81,11 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      // onOpenChange={(open) => {
-      //   if (!open) setActiveStep(entryPoint || 0);
-      //   setShowModal(open);
-      // }}
-      open={true || showModal}
+      onOpenChange={(open) => {
+        if (!open) setActiveStep(entryPoint || 0);
+        setShowModal(open);
+      }}
+      open={showModal}
     >
       <Dialog.Trigger asChild>
         {children ? (
@@ -155,6 +156,7 @@ const IntegrationModal = ({
               primaryTextColor={primaryTextColor}
               secondaryBackgroundColor={secondaryBackgroundColor}
               secondaryTextColor={secondaryTextColor}
+              allowMultipleFiles={allowMultipleFiles}
             />
           )}
 
@@ -201,6 +203,7 @@ const CarbonConnect = ({
   primaryTextColor = '#FFFFFF',
   secondaryBackgroundColor = '#FFFFFF',
   secondaryTextColor = '#000000',
+  allowMultipleFiles = false,
 }) => {
   return (
     <AuthProvider tokenFetcher={tokenFetcher}>
@@ -218,6 +221,7 @@ const CarbonConnect = ({
         primaryTextColor={primaryTextColor}
         secondaryBackgroundColor={secondaryBackgroundColor}
         secondaryTextColor={secondaryTextColor}
+        allowMultipleFiles={allowMultipleFiles}
       >
         {children}
       </IntegrationModal>

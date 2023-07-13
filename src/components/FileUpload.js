@@ -33,6 +33,7 @@ function FileUpload({
   primaryTextColor,
   secondaryBackgroundColor,
   secondaryTextColor,
+  allowMultipleFiles,
 }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
@@ -40,14 +41,15 @@ function FileUpload({
 
   const { accessToken, fetchTokens } = useCarbonAuth();
 
-  useEffect(() => {
-    if (!accessToken) {
-      fetchTokens();
-    }
-  }, [accessToken]);
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     fetchTokens();
+  //   }
+  // }, [accessToken]);
 
   const onFilesSelected = (files) => {
-    setFiles((prevList) => [...prevList, ...files]);
+    if (!allowMultipleFiles) setFiles([files]);
+    else setFiles((prevList) => [...prevList, ...files]);
   };
 
   const onFileRemoved = (fileIndex) => {
@@ -131,9 +133,11 @@ function FileUpload({
       );
 
       if (failedUploads.length === 0) {
-        toast.success(
-          `Successfully uploaded ${successfulUploads.length} of ${files.length} file(s)`
-        );
+        if (allowMultipleFiles)
+          toast.success(
+            `Successfully uploaded ${successfulUploads.length} of ${files.length} file(s)`
+          );
+        else toast.success('Successfully uploaded file');
       }
 
       if (successfulUploads.length > 0)
@@ -168,7 +172,7 @@ function FileUpload({
         <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
           {files.length === 0 ? (
             <FileUploader
-              multiple={true}
+              multiple={allowMultipleFiles}
               handleChange={onFilesSelected}
               name="file"
               types={fileTypes}

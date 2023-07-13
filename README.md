@@ -40,6 +40,7 @@ The `CarbonConnect` component accepts the following properties:
 | `enabledIntegrations`    | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
 | `primaryBackgroundColor` | String           | No        | The primary background color of the component. Defaults to `#000000`.                                                   |
 | `primaryTextColor`       | String           | No        | The primary text color of the component. Defaults to `#FFFFFF`.                                                         |
+| `allowMultipleFiles`     | Boolean          | No        | Whether or not to allow multiple files to be uploaded at once. Defaults to `false`.                                     |
 
 ## Usage
 
@@ -101,14 +102,22 @@ CarbonConnect expects an object which will be of this structure:
 ```js
 {
   status: 200,
-  data: {
+  data: [{
     id: <File_ID>,
     name: <Name of the file>,
     source: <File Type in case of a local file>,
     external_file_id: <External File ID>,
     tags: <Tags passed in while uploading the file>,
     sync_status: <Sync status>,
-  }
+  }, {
+    id: <File_ID>,
+    name: <Name of the file>,
+    source: <File Type in case of a local file>,
+    external_file_id: <External File ID>,
+    tags: <Tags passed in while uploading the file>,
+    sync_status: <Sync status>,
+  }, ...
+  ]
 }
 ```
 
@@ -117,9 +126,15 @@ CarbonConnect expects an object which will be of this structure:
 ```js
 {
   status: 400,
-  data: {
+  data: [{
+    file_name: `<Name of the file>` ,
     message: `<String describing the error>`,
-  }
+  },
+  {
+    file_name: `<Name of the file>` ,
+    message: `<String describing the error>`,
+  }, ...
+  ]
 }
 ```
 
