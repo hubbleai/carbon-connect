@@ -7,6 +7,7 @@ import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
+import { FaIntercom } from 'react-icons/fa';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
@@ -37,6 +38,16 @@ const ThirdPartyList = ({
       scope: 'docs',
       icon: <BsGoogle className="cc-w-7 cc-h-7" />,
       data_source_type: 'GOOGLE_DOCS',
+      requiresOAuth: true,
+    },
+    {
+      active: true,
+      name: 'Intercom',
+      subpath: 'intercom',
+      id: 'intercom',
+      description: 'Lets your users connect their Intercom to Carbon.',
+      icon: <FaIntercom className="cc-w-7 cc-h-7" />,
+      data_source_type: 'INTERCOM',
       requiresOAuth: true,
     },
     {
