@@ -41,11 +41,13 @@ function FileUpload({
 
   const { accessToken, fetchTokens } = useCarbonAuth();
 
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     fetchTokens();
-  //   }
-  // }, [accessToken]);
+  useEffect(() => {
+    setTimeout(() => {
+      if (!accessToken) {
+        fetchTokens();
+      }
+    }, 1000);
+  }, [accessToken]);
 
   const onFilesSelected = (files) => {
     if (!allowMultipleFiles) setFiles([files]);
@@ -170,7 +172,8 @@ function FileUpload({
       </Dialog.Title>
       {!syncResponse && (
         <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
-          {files.length === 0 ? (
+          {((!allowMultipleFiles && files.length === 0) ||
+            allowMultipleFiles) && (
             <FileUploader
               multiple={allowMultipleFiles}
               handleChange={onFilesSelected}
@@ -179,6 +182,21 @@ function FileUpload({
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
               label="Upload or drag a file here to embed."
               classes="focus:cc-outline-none"
+              onTypeError={(e) => {
+                toast.error(
+                  `The file format is not supported. The supported formats are: ${fileTypes.join(
+                    ', '
+                  )}`
+                );
+                onError({
+                  status: 400,
+                  data: {
+                    message: `The file format is not supported. The supported formats are: ${fileTypes.join(
+                      ', '
+                    )}`,
+                  },
+                });
+              }}
               onSizeError={(e) => {
                 toast.error(
                   `The file size is too large. The maximum size allowed is: ${
@@ -195,11 +213,13 @@ function FileUpload({
                 });
               }}
             >
-              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
+              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
                 <div>
-                  <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" />
+                  {/* <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" /> */}
                   <p className="cc-text-[#484848]">
-                    Upload a TXT, PDF or CSV File.
+                    {`Click here to upload ${
+                      (files.length !== 0 && allowMultipleFiles && 'more') || ''
+                    } ${allowMultipleFiles ? 'files' : 'file'}.`}
                   </p>
                   <p className="cc-text-[#919191]">
                     Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
@@ -207,7 +227,9 @@ function FileUpload({
                 </div>
               </div>
             </FileUploader>
-          ) : (
+          )}
+
+          {files.length > 0 && (
             <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
               <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto">
                 {files.map((file, fileIndex) => (
@@ -268,6 +290,7 @@ function FileUpload({
               </button>
             </div>
           )}
+          {/* {files.length === 0 ? <></> : <></>} */}
         </div>
       )}
 

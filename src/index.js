@@ -69,9 +69,9 @@ const IntegrationModal = ({
     if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      // const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
       // Make sure to clear the interval when the component unmounts
-      // return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
     }
   }, [accessToken, showModal]);
 
@@ -81,11 +81,11 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) setActiveStep(entryPoint || 0);
-        setShowModal(open);
-      }}
-      open={showModal}
+      // onOpenChange={(open) => {
+      //   if (!open) setActiveStep(entryPoint || 0);
+      //   setShowModal(open);
+      // }}
+      open={true || showModal}
     >
       <Dialog.Trigger asChild>
         {children ? (
@@ -131,6 +131,7 @@ const IntegrationModal = ({
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
+              setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
               tags={tags}
