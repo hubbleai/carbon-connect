@@ -211,7 +211,10 @@ function FileUpload({
             <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
               <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto">
                 {files.map((file, fileIndex) => (
-                  <div className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center">
+                  <div
+                    className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
+                    key={fileIndex}
+                  >
                     <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
                       {file.name.split('.').pop() === 'pdf' ? (
                         <BsFiletypePdf className="cc-w-10 cc-h-10 cc-mx-auto" />
@@ -296,7 +299,7 @@ FileUpload.propTypes = {
   setActiveStep: PropTypes.func.isRequired,
   entryPoint: PropTypes.number,
   environment: PropTypes.string.isRequired,
-  tags: PropTypes.array,
+  tags: PropTypes.object,
   maxFileSize: PropTypes.number,
   onSuccess: PropTypes.func.isRequired,
   onError: PropTypes.func.isRequired,
