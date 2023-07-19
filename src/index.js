@@ -175,7 +175,26 @@ const CarbonConnect = ({
   maxFileSize = 20000000,
   environment = 'PRODUCTION',
   entryPoint = null,
-  enabledIntegrations = ['LOCAL_FILES'],
+  enabledIntegrations = [
+    {
+      id: 'LOCAL_FILES',
+      chunkSize: 100,
+      overlapSize: 10,
+      maxFileSize: 20000000,
+      allowMultipleFiles: true,
+      allowedFileTypes: [
+        {
+          extension: 'csv',
+        },
+        {
+          extension: 'txt',
+        },
+        {
+          extension: 'pdf',
+        },
+      ],
+    },
+  ],
   primaryBackgroundColor = '#000000',
   primaryTextColor = '#FFFFFF',
   secondaryBackgroundColor = '#FFFFFF',

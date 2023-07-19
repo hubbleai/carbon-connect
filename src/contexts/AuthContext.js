@@ -126,7 +126,6 @@ export const AuthProvider = ({
       setAccessToken(response.access_token);
       setLoading(false);
     } catch (err) {
-      console.error(err);
       setError(true);
     }
   };

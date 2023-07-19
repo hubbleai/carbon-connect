@@ -101,15 +101,6 @@ function FileUpload({ setActiveStep }) {
             return;
           }
 
-          console.log(
-            'fileTypeConfig: ',
-            fileTypeConfig,
-            fileTypeConfig?.chunkSize,
-            filesConfig?.chunkSize,
-            topLevelChunkSize,
-            defaultChunkSize
-          );
-
           const chunkSize =
             fileTypeConfig?.chunkSize ||
             filesConfig?.chunkSize ||
@@ -201,7 +192,7 @@ function FileUpload({ setActiveStep }) {
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-items-center cc-relative">
+    <div className="cc-flex cc-flex-col cc-items-center cc-relative cc-h-full">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
@@ -230,19 +221,26 @@ function FileUpload({ setActiveStep }) {
               }
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
               label="Upload or drag a file here to embed."
-              classes="focus:cc-outline-none"
               onTypeError={(e) => {
                 toast.error(
-                  `The file format is not supported. The supported formats are: ${fileTypes.join(
-                    ', '
-                  )}`
+                  `The file format is not supported. The supported formats are: ${
+                    filesConfig.allowedFileTypes
+                      ? filesConfig.allowedFileTypes
+                          .map((config) => config.extension.toUpperCase())
+                          .join(', ')
+                      : defaultSupportedFileTypes.join(', ')
+                  }`
                 );
                 onError({
                   status: 400,
                   data: {
-                    message: `The file format is not supported. The supported formats are: ${fileTypes.join(
-                      ', '
-                    )}`,
+                    message: `The file format is not supported. The supported formats are: ${
+                      filesConfig.allowedFileTypes
+                        ? filesConfig.allowedFileTypes
+                            .map((config) => config.extension.toUpperCase())
+                            .join(', ')
+                        : defaultSupportedFileTypes.join(', ')
+                    }`,
                   },
                 });
               }}
@@ -261,17 +259,23 @@ function FileUpload({ setActiveStep }) {
                   },
                 });
               }}
+              dropMessageStyle={{
+                backgroundColor: '#d1d1d1',
+                border: 1,
+                borderStyle: 'dashed',
+                borderColor: '#919191',
+              }}
+              hoverTitle=" "
             >
-              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
+              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0">
                 <div>
-                  {/* <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" /> */}
                   <p className="cc-text-[#484848]">
-                    {`Click here to upload ${
+                    {`Drag and drop ${
                       (files.length !== 0 && allowMultipleFiles && 'more') || ''
-                    } ${allowMultipleFiles ? 'files' : 'file'}.`}
+                    } ${allowMultipleFiles ? 'files' : 'file'} here.`}
                   </p>
                   <p className="cc-text-[#919191]">
-                    Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
+                    Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per file
                   </p>
                 </div>
               </div>

@@ -47,9 +47,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         const oAuthURLResponseData = await oAuthURLResponse.json();
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
-    } catch (err) {
-      console.log('Error in OAuth URL flow: ', err);
-    }
+    } catch (err) {}
   };
 
   return (
@@ -107,9 +105,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                         handleServiceOAuthFlow(integration);
                       }
                     }
-                  } catch (err) {
-                    console.log('Error: ', err);
-                  }
+                  } catch (err) {}
                 }}
               >
                 <div className="cc-flex cc-flex-row cc-items-center">
