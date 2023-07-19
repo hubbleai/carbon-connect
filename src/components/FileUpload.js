@@ -19,33 +19,49 @@ import '../index.css';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const fileTypes = ['txt', 'csv', 'pdf'];
+const defaultSupportedFileTypes = ['txt', 'csv', 'pdf'];
 
-function FileUpload({
-  setActiveStep,
-  entryPoint,
-  environment,
-  tags,
-  maxFileSize,
-  onSuccess,
-  onError,
-  primaryBackgroundColor,
-  primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
-  allowMultipleFiles,
-}) {
+function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [filesConfig, setFilesConfig] = useState([]);
 
-  const { accessToken, fetchTokens } = useCarbonAuth();
+  const {
+    accessToken,
+    fetchTokens,
+    entryPoint,
+    environment,
+    tags,
+    maxFileSize,
+    onSuccess,
+    onError,
+    primaryBackgroundColor,
+    primaryTextColor,
+    allowMultipleFiles,
+    processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
+  } = useCarbonAuth();
 
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     fetchTokens();
-  //   }
-  // }, [accessToken]);
+  useEffect(() => {
+    setTimeout(() => {
+      if (!accessToken) {
+        fetchTokens();
+      }
+    }, 1000);
+  }, [accessToken]);
+
+  useEffect(() => {
+    const newFilesConfig = processedIntegrations.find(
+      (integration) => integration.id === 'LOCAL_FILES'
+    );
+    if (newFilesConfig) {
+      setFilesConfig(newFilesConfig);
+    }
+  }, [processedIntegrations]);
 
   const onFilesSelected = (files) => {
     if (!allowMultipleFiles) setFiles([files]);
@@ -76,8 +92,37 @@ function FileUpload({
           const formData = new FormData();
           formData.append('file', file);
 
+          const fileType = file.name.split('.').pop();
+          const fileTypeConfig = filesConfig.allowedFileTypes.find(
+            (config) => config.extension === fileType
+          );
+          if (!fileTypeConfig) {
+            failedUploads.push(file.name);
+            return;
+          }
+
+          console.log(
+            'fileTypeConfig: ',
+            fileTypeConfig,
+            fileTypeConfig?.chunkSize,
+            filesConfig?.chunkSize,
+            topLevelChunkSize,
+            defaultChunkSize
+          );
+
+          const chunkSize =
+            fileTypeConfig?.chunkSize ||
+            filesConfig?.chunkSize ||
+            topLevelChunkSize ||
+            defaultChunkSize;
+          const overlapSize =
+            fileTypeConfig?.overlapSize ||
+            filesConfig?.overlapSize ||
+            topLevelOverlapSize ||
+            defaultOverlapSize;
+
           const uploadResponse = await fetch(
-            `${BASE_URL[environment]}/uploadfile`,
+            `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
             {
               method: 'POST',
               body: formData,
@@ -156,7 +201,7 @@ function FileUpload({
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
+    <div className="cc-flex cc-flex-col cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
@@ -170,15 +215,37 @@ function FileUpload({
       </Dialog.Title>
       {!syncResponse && (
         <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
-          {files.length === 0 ? (
+          {((!allowMultipleFiles && files.length === 0) ||
+            allowMultipleFiles) && (
             <FileUploader
-              multiple={allowMultipleFiles}
+              multiple={filesConfig.allowMultipleFiles || allowMultipleFiles}
               handleChange={onFilesSelected}
               name="file"
-              types={fileTypes}
+              types={
+                filesConfig.allowedFileTypes
+                  ? filesConfig.allowedFileTypes.map(
+                      (config) => config.extension
+                    )
+                  : defaultSupportedFileTypes
+              }
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
               label="Upload or drag a file here to embed."
               classes="focus:cc-outline-none"
+              onTypeError={(e) => {
+                toast.error(
+                  `The file format is not supported. The supported formats are: ${fileTypes.join(
+                    ', '
+                  )}`
+                );
+                onError({
+                  status: 400,
+                  data: {
+                    message: `The file format is not supported. The supported formats are: ${fileTypes.join(
+                      ', '
+                    )}`,
+                  },
+                });
+              }}
               onSizeError={(e) => {
                 toast.error(
                   `The file size is too large. The maximum size allowed is: ${
@@ -195,11 +262,13 @@ function FileUpload({
                 });
               }}
             >
-              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-60 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border-2 cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
+              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none">
                 <div>
-                  <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" />
+                  {/* <AiOutlineCloudUpload className="cc-w-10 cc-text-[#484848] cc-h-10 cc-mb-4 cc-mx-auto" /> */}
                   <p className="cc-text-[#484848]">
-                    Upload a TXT, PDF or CSV File.
+                    {`Click here to upload ${
+                      (files.length !== 0 && allowMultipleFiles && 'more') || ''
+                    } ${allowMultipleFiles ? 'files' : 'file'}.`}
                   </p>
                   <p className="cc-text-[#919191]">
                     Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per File
@@ -207,9 +276,11 @@ function FileUpload({
                 </div>
               </div>
             </FileUploader>
-          ) : (
-            <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
-              <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto">
+          )}
+
+          {files.length > 0 && (
+            <>
+              <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto cc-h-[19rem]">
                 {files.map((file, fileIndex) => (
                   <div
                     className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
@@ -242,7 +313,7 @@ function FileUpload({
                   </div>
                 ))}
               </div>
-
+              {!allowMultipleFiles && <div className="cc-h-28"></div>}
               <button
                 className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                 style={{
@@ -252,8 +323,7 @@ function FileUpload({
                 onClick={() => {
                   if (isLoading === true) {
                     toast.error(
-                      'Please wait for the file to upload: ',
-                      isLoading
+                      'Please wait for the file to upload before uploading another file.'
                     );
                     return;
                   }
@@ -269,7 +339,7 @@ function FileUpload({
                 )}
                 <p>{`Upload File(s)`}</p>
               </button>
-            </div>
+            </>
           )}
         </div>
       )}

@@ -11,27 +11,37 @@ import { BiLoaderAlt } from 'react-icons/bi';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const GoogleDocsSelector = ({
-  integrationData,
-  setActiveStep,
-  token,
-  userid,
-  entryPoint,
-  environment,
-  tags,
-  primaryBackgroundColor,
-  primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
-}) => {
+const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoadedSyncedFiles, setIsLoadedSyncedFiles] = useState(false);
   const [alreadySyncedFiles, setAlreadySyncedFiles] = useState([]);
 
-  const { accessToken, setAccessToken, fetchTokens } = useCarbonAuth();
+  const {
+    accessToken,
+    entryPoint,
+    environment,
+    tags,
+    primaryBackgroundColor,
+    primaryTextColor,
+    secondaryBackgroundColor,
+    secondaryTextColor,
+    processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
+  } = useCarbonAuth();
 
   const syncSelectedFiles = async () => {
+    const service = processedIntegrations.find(
+      (integration) => integration.id === 'GOOGLE_DOCS'
+    );
+    const chunkSize =
+      service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+    const overlapSize =
+      service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+
     const syncResponse = await fetch(
       `${BASE_URL[environment]}/integrations/google/sync`,
       {
@@ -41,6 +51,8 @@ const GoogleDocsSelector = ({
             selectedFiles.includes(fileData.id)
           ),
           tags: tags,
+          chunk_size: chunkSize,
+          chunk_overlap: overlapSize,
         }),
         headers: {
           'Content-Type': 'application/json',
@@ -92,9 +104,6 @@ const GoogleDocsSelector = ({
     fetchAlreadySyncedFiles();
   }, []);
 
-  // if (isLoadedSyncedFiles) {
-  //   return <div></div>
-  // }
   return (
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">

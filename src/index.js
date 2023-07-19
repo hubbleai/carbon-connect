@@ -29,10 +29,11 @@ const IntegrationModal = ({
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
+  open,
 }) => {
   const [activeStep, setActiveStep] = useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(open);
 
   const { accessToken, fetchTokens } = useCarbonAuth();
 
@@ -102,27 +103,12 @@ const IntegrationModal = ({
         <Dialog.Overlay className="cc-bg-blackA9 data-[state=open]:cc-animate-overlayShow cc-fixed cc-inset-0 cc-bg-black/30" />
         <Dialog.Content className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none">
           {activeStep === 0 && (
-            <CarbonAnnouncement
-              setActiveStep={setActiveStep}
-              orgName={orgName}
-              brandIcon={brandIcon}
-              primaryBackgroundColor={primaryBackgroundColor}
-              primaryTextColor={primaryTextColor}
-              secondaryBackgroundColor={secondaryBackgroundColor}
-              secondaryTextColor={secondaryTextColor}
-            />
+            <CarbonAnnouncement setActiveStep={setActiveStep} />
           )}
           {activeStep === 1 && (
             <ThirdPartyList
               setActiveStep={setActiveStep}
               activeIntegrations={activeIntegrations}
-              environment={environment}
-              enabledIntegrations={enabledIntegrations}
-              tags={tags}
-              primaryBackgroundColor={primaryBackgroundColor}
-              primaryTextColor={primaryTextColor}
-              secondaryBackgroundColor={secondaryBackgroundColor}
-              secondaryTextColor={secondaryTextColor}
             />
           )}
 
@@ -131,16 +117,7 @@ const IntegrationModal = ({
               integrationData={activeIntegrations.find(
                 (i) => i.data_source_type === 'GOOGLE_DOCS'
               )}
-              entryPoint={entryPoint}
-              environment={environment}
-              tags={tags}
-              maxFileSize={maxFileSize}
-              onSuccess={onSuccess}
-              onError={onError}
-              primaryBackgroundColor={primaryBackgroundColor}
-              primaryTextColor={primaryTextColor}
-              secondaryBackgroundColor={secondaryBackgroundColor}
-              secondaryTextColor={secondaryTextColor}
+              setActiveStep={setActiveStep}
             />
           )}
           {activeStep === 'LOCAL_FILES' && (
@@ -204,9 +181,30 @@ const CarbonConnect = ({
   secondaryBackgroundColor = '#FFFFFF',
   secondaryTextColor = '#000000',
   allowMultipleFiles = false,
+  open = false,
+  chunkSize = 1500,
+  overlapSize = 20,
 }) => {
   return (
-    <AuthProvider tokenFetcher={tokenFetcher}>
+    <AuthProvider
+      tokenFetcher={tokenFetcher}
+      enabledIntegrations={enabledIntegrations}
+      orgName={orgName}
+      brandIcon={brandIcon}
+      environment={environment}
+      entryPoint={entryPoint}
+      tags={tags}
+      maxFileSize={maxFileSize}
+      onSuccess={onSuccess}
+      onError={onError}
+      primaryBackgroundColor={primaryBackgroundColor}
+      primaryTextColor={primaryTextColor}
+      secondaryBackgroundColor={secondaryBackgroundColor}
+      secondaryTextColor={secondaryTextColor}
+      allowMultipleFiles={allowMultipleFiles}
+      chunkSize={chunkSize}
+      overlapSize={overlapSize}
+    >
       <IntegrationModal
         orgName={orgName}
         brandIcon={brandIcon}
@@ -222,6 +220,7 @@ const CarbonConnect = ({
         secondaryBackgroundColor={secondaryBackgroundColor}
         secondaryTextColor={secondaryTextColor}
         allowMultipleFiles={allowMultipleFiles}
+        open={open}
       >
         {children}
       </IntegrationModal>
