@@ -11,13 +11,7 @@ import { FaIntercom } from 'react-icons/fa';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const ThirdPartyList = ({
-  setActiveStep,
-  activeIntegrations,
-  environment,
-  enabledIntegrations,
-  tags,
-}) => {
+const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const integrationsList = [
     {
       id: 'notion',
@@ -106,7 +100,8 @@ const ThirdPartyList = ({
     },
   ];
 
-  const { accessToken, setAccessToken } = useCarbonAuth();
+  const { accessToken, tags, environment, enabledIntegrations } =
+    useCarbonAuth();
 
   const handleServiceOAuthFlow = async (service) => {
     try {

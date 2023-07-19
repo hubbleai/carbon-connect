@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
 import carbonLogo from '../carbon.svg';
+import { useCarbonAuth } from '../contexts/AuthContext';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4">
@@ -20,15 +21,9 @@ Feature.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const CarbonAnnouncement = ({
-  orgName,
-  brandIcon,
-  setActiveStep,
-  primaryBackgroundColor,
-  primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
-}) => {
+const CarbonAnnouncement = ({ setActiveStep }) => {
+  const { orgName, brandIcon, primaryBackgroundColor, primaryTextColor } =
+    useCarbonAuth();
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
       <div className="cc-flex cc-pt-8 -cc-space-x-2">

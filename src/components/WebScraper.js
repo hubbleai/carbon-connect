@@ -45,6 +45,10 @@ function WebScraper({
 
   const submitScrapeRequest = async () => {
     try {
+      if (isLoading === true) {
+        toast.error('Please wait for the scraping request is processing');
+        return;
+      }
       setIsLoading(true);
       const urlPattern = new RegExp(
         '^(https?:\\/\\/)?' + // protocol
@@ -88,8 +92,7 @@ function WebScraper({
     } catch (error) {
       toast.error('Error initiating scraping. Please try again.');
       setIsLoading(false);
-      console.log('Error: ', error);
-      onError({ status: 400, data: { message: 'Error uploading file' } });
+      onError({ status: 400, data: [{ message: 'Error uploading file' }] });
       setScrapingResponse(null);
     }
   };

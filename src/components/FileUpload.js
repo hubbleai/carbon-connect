@@ -21,26 +21,24 @@ import { useCarbonAuth } from '../contexts/AuthContext';
 
 const fileTypes = ['txt', 'csv', 'pdf'];
 
-function FileUpload({
-  setActiveStep,
-  entryPoint,
-  environment,
-  tags,
-  maxFileSize,
-  onSuccess,
-  onError,
-  primaryBackgroundColor,
-  primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
-  allowMultipleFiles,
-  test,
-}) {
+function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, fetchTokens } = useCarbonAuth();
+  const {
+    accessToken,
+    fetchTokens,
+    entryPoint,
+    environment,
+    tags,
+    maxFileSize,
+    onSuccess,
+    onError,
+    primaryBackgroundColor,
+    primaryTextColor,
+    allowMultipleFiles,
+  } = useCarbonAuth();
 
   useEffect(() => {
     setTimeout(() => {
@@ -282,8 +280,7 @@ function FileUpload({
                 onClick={() => {
                   if (isLoading === true) {
                     toast.error(
-                      'Please wait for the file to upload: ',
-                      isLoading
+                      'Please wait for the file to upload before uploading another file.'
                     );
                     return;
                   }
