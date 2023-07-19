@@ -295,28 +295,28 @@ function FileUpload({
   );
 }
 
-FileUpload.propTypes = {
-  setActiveStep: PropTypes.func.isRequired,
-  entryPoint: PropTypes.number,
-  environment: PropTypes.string.isRequired,
-  tags: PropTypes.object,
-  maxFileSize: PropTypes.number,
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  primaryBackgroundColor: PropTypes.string,
-  primaryTextColor: PropTypes.string,
-  secondaryBackgroundColor: PropTypes.string,
-  secondaryTextColor: PropTypes.string,
-};
+// FileUpload.propTypes = {
+//   setActiveStep: PropTypes.func.isRequired,
+//   entryPoint: PropTypes.number,
+//   environment: PropTypes.string.isRequired,
+//   tags: PropTypes.object,
+//   maxFileSize: PropTypes.number,
+//   onSuccess: PropTypes.func.isRequired,
+//   onError: PropTypes.func.isRequired,
+//   primaryBackgroundColor: PropTypes.string,
+//   primaryTextColor: PropTypes.string,
+//   secondaryBackgroundColor: PropTypes.string,
+//   secondaryTextColor: PropTypes.string,
+// };
 
-FileUpload.defaultProps = {
-  entryPoint: 0,
-  tags: [],
-  maxFileSize: 20000000, // 20 MB
-  primaryBackgroundColor: '#ffffff',
-  primaryTextColor: '#000000',
-  secondaryBackgroundColor: '#f2f2f2',
-  secondaryTextColor: '#4f4f4f',
-};
+// FileUpload.defaultProps = {
+//   entryPoint: 0,
+//   tags: [],
+//   maxFileSize: 20000000, // 20 MB
+//   primaryBackgroundColor: '#ffffff',
+//   primaryTextColor: '#000000',
+//   secondaryBackgroundColor: '#f2f2f2',
+//   secondaryTextColor: '#4f4f4f',
+// };
 
 export default FileUpload;
