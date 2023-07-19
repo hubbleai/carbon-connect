@@ -34,6 +34,7 @@ function FileUpload({
   secondaryBackgroundColor,
   secondaryTextColor,
   allowMultipleFiles,
+  test
 }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
@@ -233,7 +234,10 @@ function FileUpload({
             <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
               <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto">
                 {files.map((file, fileIndex) => (
-                  <div className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center">
+                  <div
+                    className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
+                    key={fileIndex}
+                  >
                     <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
                       {file.name.split('.').pop() === 'pdf' ? (
                         <BsFiletypePdf className="cc-w-10 cc-h-10 cc-mx-auto" />
@@ -315,28 +319,28 @@ function FileUpload({
   );
 }
 
-FileUpload.propTypes = {
-  setActiveStep: PropTypes.func.isRequired,
-  entryPoint: PropTypes.number,
-  environment: PropTypes.string.isRequired,
-  tags: PropTypes.array,
-  maxFileSize: PropTypes.number,
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  primaryBackgroundColor: PropTypes.string,
-  primaryTextColor: PropTypes.string,
-  secondaryBackgroundColor: PropTypes.string,
-  secondaryTextColor: PropTypes.string,
-};
+// FileUpload.propTypes = {
+//   setActiveStep: PropTypes.func.isRequired,
+//   entryPoint: PropTypes.number,
+//   environment: PropTypes.string.isRequired,
+//   tags: PropTypes.object,
+//   maxFileSize: PropTypes.number,
+//   onSuccess: PropTypes.func.isRequired,
+//   onError: PropTypes.func.isRequired,
+//   primaryBackgroundColor: PropTypes.string,
+//   primaryTextColor: PropTypes.string,
+//   secondaryBackgroundColor: PropTypes.string,
+//   secondaryTextColor: PropTypes.string,
+// };
 
-FileUpload.defaultProps = {
-  entryPoint: 0,
-  tags: [],
-  maxFileSize: 20000000, // 20 MB
-  primaryBackgroundColor: '#ffffff',
-  primaryTextColor: '#000000',
-  secondaryBackgroundColor: '#f2f2f2',
-  secondaryTextColor: '#4f4f4f',
-};
+// FileUpload.defaultProps = {
+//   entryPoint: 0,
+//   tags: [],
+//   maxFileSize: 20000000, // 20 MB
+//   primaryBackgroundColor: '#ffffff',
+//   primaryTextColor: '#000000',
+//   secondaryBackgroundColor: '#f2f2f2',
+//   secondaryTextColor: '#4f4f4f',
+// };
 
 export default FileUpload;

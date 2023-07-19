@@ -170,11 +170,7 @@ const ThirdPartyList = ({
               }`}
             >
               <div
-                className={`cc-flex cc-flex-row cc-items-center cc-w-full cc-space-x-3 cc-py-4 cc-justify-between ${
-                  !integration.active
-                    ? 'cc-bg-gray-200 cc-cursor-not-allowed'
-                    : 'cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100'
-                }`}
+                className="cc-flex cc-flex-row cc-items-center cc-w-full cc-space-x-3 cc-py-4 cc-justify-between"
                 onClick={() => {
                   try {
                     if (integration.active) {

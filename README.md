@@ -37,12 +37,16 @@ The `CarbonConnect` component accepts the following properties:
 | `entryPoint`               | String           | No        | The initial active step when the component loads. Default entry point is 'LOCAL_FILES'. More integrations are upcoming. |
 | `maxFileSize`              | Number           | No        | Maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB                                            |
 | `tags`                     | Object           | No        | Any additional data you want to associate with the component's state, such as an app ID.                                |
-| `enabledIntegrations`      | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`.                     |
+| `enabledIntegrations`      | Array of Strings | No        | Let's you choose which 3rd party integrations to show. Accepted values are `LOCAL_FILES`, `NOTION`, `GOOGLE_DOCS`.      |
 | `primaryBackgroundColor`   | String           | No        | The primary background color of the component. Defaults to `#000000`.                                                   |
 | `primaryTextColor`         | String           | No        | The primary text color of the component. Defaults to `#FFFFFF`.                                                         |
 | `secondaryBackgroundColor` | String           | No        | The secondary background color of the component. Defaults to `#FFFFFF`.                                                 |
 | `secondaryTextColor`       | String           | No        | The secondary text color of the component. Defaults to `#000000`.                                                       |
 | `allowMultipleFiles`       | Boolean          | No        | Whether or not to allow multiple files to be uploaded at once. Defaults to `false`.                                     |
+
+### Note about Google Docs
+
+Our oAuth app is in approval phase. your users will see a warning message when they try to connect their Google account. Please ignore the warning and proceed to connect your account. We will update this section once our app is approved.
 
 ## Usage
 
