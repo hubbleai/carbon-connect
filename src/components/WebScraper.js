@@ -35,13 +35,14 @@ function WebScraper({
   const [scrapingResponse, setScrapingResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { accessToken, fetchTokens } = useCarbonAuth();
-
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     fetchTokens();
-  //   }
-  // }, [accessToken]);
+  const {
+    accessToken,
+    processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
+  } = useCarbonAuth();
 
   const submitScrapeRequest = async () => {
     try {
@@ -49,6 +50,15 @@ function WebScraper({
         toast.error('Please wait for the scraping request is processing');
         return;
       }
+
+      const service = processedIntegrations.find(
+        (integration) => integration.id === 'WEB_SCRAPER'
+      );
+      const chunkSize =
+        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+      const overlapSize =
+        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+
       setIsLoading(true);
       const urlPattern = new RegExp(
         '^(https?:\\/\\/)?' + // protocol
@@ -81,6 +91,8 @@ function WebScraper({
             tags: tags,
             repeat: false,
             repeat_interval: 0,
+            chunk_size: chunkSize,
+            overlap_size: overlapSize,
           }),
         }
       );

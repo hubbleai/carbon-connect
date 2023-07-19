@@ -110,6 +110,8 @@ export const AuthProvider = ({
   secondaryBackgroundColor,
   secondaryTextColor,
   allowMultipleFiles,
+  chunkSize,
+  overlapSize,
 }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -160,7 +162,11 @@ export const AuthProvider = ({
     secondaryBackgroundColor,
     secondaryTextColor,
     allowMultipleFiles,
+    topLevelChunkSize: chunkSize,
+    topLevelOverlapSize: overlapSize,
     processedIntegrations,
+    defaultChunkSize: 1500,
+    defaultOverlapSize: 20,
   };
 
   return (

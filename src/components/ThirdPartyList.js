@@ -8,12 +8,23 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
-  const { accessToken, tags, environment, processedIntegrations } =
-    useCarbonAuth();
+  const {
+    accessToken,
+    tags,
+    environment,
+    processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
+  } = useCarbonAuth();
 
-  console.log('Processed Integrations: ', processedIntegrations);
   const handleServiceOAuthFlow = async (service) => {
     try {
+      const chunkSize =
+        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+      const overlapSize =
+        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const oAuthURLResponse = await fetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -26,6 +37,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             tags: tags,
             scope: service?.scope,
             service: service?.data_source_type,
+            chunk_size: chunkSize,
+            chunk_overlap: overlapSize,
           }),
         }
       );

@@ -26,9 +26,22 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     primaryTextColor,
     secondaryBackgroundColor,
     secondaryTextColor,
+    processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
   } = useCarbonAuth();
 
   const syncSelectedFiles = async () => {
+    const service = processedIntegrations.find(
+      (integration) => integration.id === 'GOOGLE_DOCS'
+    );
+    const chunkSize =
+      service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+    const overlapSize =
+      service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+
     const syncResponse = await fetch(
       `${BASE_URL[environment]}/integrations/google/sync`,
       {
@@ -38,6 +51,8 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
             selectedFiles.includes(fileData.id)
           ),
           tags: tags,
+          chunk_size: chunkSize,
+          chunk_overlap: overlapSize,
         }),
         headers: {
           'Content-Type': 'application/json',

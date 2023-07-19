@@ -20,8 +20,6 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf'];
-const defaultChunkSize = 100;
-const defaultOverlapSize = 10;
 
 function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
@@ -42,6 +40,10 @@ function FileUpload({ setActiveStep }) {
     primaryTextColor,
     allowMultipleFiles,
     processedIntegrations,
+    topLevelChunkSize,
+    topLevelOverlapSize,
+    defaultChunkSize,
+    defaultOverlapSize,
   } = useCarbonAuth();
 
   useEffect(() => {
@@ -57,7 +59,7 @@ function FileUpload({ setActiveStep }) {
       (integration) => integration.id === 'LOCAL_FILES'
     );
     if (newFilesConfig) {
-      setFilesConfig(newFilesConfig.allowedFileTypes);
+      setFilesConfig(newFilesConfig);
     }
   }, [processedIntegrations]);
 
@@ -91,7 +93,7 @@ function FileUpload({ setActiveStep }) {
           formData.append('file', file);
 
           const fileType = file.name.split('.').pop();
-          const fileTypeConfig = filesConfig.find(
+          const fileTypeConfig = filesConfig.allowedFileTypes.find(
             (config) => config.extension === fileType
           );
           if (!fileTypeConfig) {
@@ -99,15 +101,24 @@ function FileUpload({ setActiveStep }) {
             return;
           }
 
+          console.log(
+            'fileTypeConfig: ',
+            fileTypeConfig,
+            fileTypeConfig?.chunkSize,
+            filesConfig?.chunkSize,
+            topLevelChunkSize,
+            defaultChunkSize
+          );
+
           const chunkSize =
-            fileTypeConfig.chunkSize ||
-            filesConfig.chunkSize ||
-            chunkSize ||
+            fileTypeConfig?.chunkSize ||
+            filesConfig?.chunkSize ||
+            topLevelChunkSize ||
             defaultChunkSize;
           const overlapSize =
-            fileTypeConfig.overlapSize ||
-            filesConfig.overlapSize ||
-            overlapSize ||
+            fileTypeConfig?.overlapSize ||
+            filesConfig?.overlapSize ||
+            topLevelOverlapSize ||
             defaultOverlapSize;
 
           const uploadResponse = await fetch(
@@ -211,8 +222,10 @@ function FileUpload({ setActiveStep }) {
               handleChange={onFilesSelected}
               name="file"
               types={
-                filesConfig
-                  ? filesConfig.map((config) => config.extension)
+                filesConfig.allowedFileTypes
+                  ? filesConfig.allowedFileTypes.map(
+                      (config) => config.extension
+                    )
                   : defaultSupportedFileTypes
               }
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}

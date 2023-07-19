@@ -182,6 +182,8 @@ const CarbonConnect = ({
   secondaryTextColor = '#000000',
   allowMultipleFiles = false,
   open = false,
+  chunkSize = 1500,
+  overlapSize = 20,
 }) => {
   return (
     <AuthProvider
@@ -200,6 +202,8 @@ const CarbonConnect = ({
       secondaryBackgroundColor={secondaryBackgroundColor}
       secondaryTextColor={secondaryTextColor}
       allowMultipleFiles={allowMultipleFiles}
+      chunkSize={chunkSize}
+      overlapSize={overlapSize}
     >
       <IntegrationModal
         orgName={orgName}
