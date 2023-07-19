@@ -34,7 +34,7 @@ function FileUpload({
   secondaryBackgroundColor,
   secondaryTextColor,
   allowMultipleFiles,
-  test
+  test,
 }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
@@ -159,7 +159,7 @@ function FileUpload({
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
+    <div className="cc-flex cc-flex-col cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
@@ -231,8 +231,15 @@ function FileUpload({
           )}
 
           {files.length > 0 && (
-            <div className="cc-flex cc-flex-col cc-justify-between cc-h-full cc-items-start">
-              <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto">
+            <>
+              {/* <div
+                className={`cc-flex cc-flex-col cc-justify-between cc-items-start cc-grow cc-bg-red-500 ${
+                  allowMultipleFiles ? 'cc-h-80' : 'cc-h-96'
+                }`}
+              >
+                
+              </div> */}
+              <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto cc-h-[19rem]">
                 {files.map((file, fileIndex) => (
                   <div
                     className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
@@ -265,7 +272,7 @@ function FileUpload({
                   </div>
                 ))}
               </div>
-
+              {!allowMultipleFiles && <div className="cc-h-28"></div>}
               <button
                 className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                 style={{
@@ -292,9 +299,8 @@ function FileUpload({
                 )}
                 <p>{`Upload File(s)`}</p>
               </button>
-            </div>
+            </>
           )}
-          {/* {files.length === 0 ? <></> : <></>} */}
         </div>
       )}
 
