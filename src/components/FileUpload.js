@@ -19,12 +19,15 @@ import '../index.css';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const fileTypes = ['txt', 'csv', 'pdf'];
+const defaultSupportedFileTypes = ['txt', 'csv', 'pdf'];
+const defaultChunkSize = 100;
+const defaultOverlapSize = 10;
 
 function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [filesConfig, setFilesConfig] = useState([]);
 
   const {
     accessToken,
@@ -38,6 +41,7 @@ function FileUpload({ setActiveStep }) {
     primaryBackgroundColor,
     primaryTextColor,
     allowMultipleFiles,
+    processedIntegrations,
   } = useCarbonAuth();
 
   useEffect(() => {
@@ -47,6 +51,15 @@ function FileUpload({ setActiveStep }) {
       }
     }, 1000);
   }, [accessToken]);
+
+  useEffect(() => {
+    const newFilesConfig = processedIntegrations.find(
+      (integration) => integration.id === 'LOCAL_FILES'
+    );
+    if (newFilesConfig) {
+      setFilesConfig(newFilesConfig.allowedFileTypes);
+    }
+  }, [processedIntegrations]);
 
   const onFilesSelected = (files) => {
     if (!allowMultipleFiles) setFiles([files]);
@@ -77,8 +90,28 @@ function FileUpload({ setActiveStep }) {
           const formData = new FormData();
           formData.append('file', file);
 
+          const fileType = file.name.split('.').pop();
+          const fileTypeConfig = filesConfig.find(
+            (config) => config.extension === fileType
+          );
+          if (!fileTypeConfig) {
+            failedUploads.push(file.name);
+            return;
+          }
+
+          const chunkSize =
+            fileTypeConfig.chunkSize ||
+            filesConfig.chunkSize ||
+            chunkSize ||
+            defaultChunkSize;
+          const overlapSize =
+            fileTypeConfig.overlapSize ||
+            filesConfig.overlapSize ||
+            overlapSize ||
+            defaultOverlapSize;
+
           const uploadResponse = await fetch(
-            `${BASE_URL[environment]}/uploadfile`,
+            `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
             {
               method: 'POST',
               body: formData,
@@ -174,10 +207,14 @@ function FileUpload({ setActiveStep }) {
           {((!allowMultipleFiles && files.length === 0) ||
             allowMultipleFiles) && (
             <FileUploader
-              multiple={allowMultipleFiles}
+              multiple={filesConfig.allowMultipleFiles || allowMultipleFiles}
               handleChange={onFilesSelected}
               name="file"
-              types={fileTypes}
+              types={
+                filesConfig
+                  ? filesConfig.map((config) => config.extension)
+                  : defaultSupportedFileTypes
+              }
               maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
               label="Upload or drag a file here to embed."
               classes="focus:cc-outline-none"
@@ -230,13 +267,6 @@ function FileUpload({ setActiveStep }) {
 
           {files.length > 0 && (
             <>
-              {/* <div
-                className={`cc-flex cc-flex-col cc-justify-between cc-items-start cc-grow cc-bg-red-500 ${
-                  allowMultipleFiles ? 'cc-h-80' : 'cc-h-96'
-                }`}
-              >
-                
-              </div> */}
               <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto cc-h-[19rem]">
                 {files.map((file, fileIndex) => (
                   <div

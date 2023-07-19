@@ -7,7 +7,7 @@ import { FaIntercom } from 'react-icons/fa';
 
 const integrationsList = [
   {
-    id: 'notion',
+    id: 'NOTION',
     subpath: 'notion',
     name: 'Notion',
     icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
@@ -20,7 +20,7 @@ const integrationsList = [
     active: true,
     name: 'Google Docs',
     subpath: 'google',
-    id: 'googleDocs',
+    id: 'GOOGLE_DOCS',
     description: 'Lets your users connect their Google Docs to Carbon.',
     scope: 'docs',
     icon: <BsGoogle className="cc-w-7 cc-h-7" />,
@@ -31,7 +31,7 @@ const integrationsList = [
     active: true,
     name: 'Intercom',
     subpath: 'intercom',
-    id: 'intercom',
+    id: 'INTERCOM',
     description: 'Lets your users connect their Intercom to Carbon.',
     icon: <FaIntercom className="cc-w-7 cc-h-7" />,
     data_source_type: 'INTERCOM',
@@ -41,7 +41,7 @@ const integrationsList = [
     active: true,
     name: 'Web Scraper',
     subpath: 'scraper',
-    id: 'webScraper',
+    id: 'WEB_SCRAPER',
     description: 'Lets your users Scrape websites to Carbon.',
     icon: <CgWebsite className="cc-w-7 cc-h-7" />,
     data_source_type: 'WEB_SCRAPER',
@@ -85,7 +85,7 @@ const integrationsList = [
     active: true,
     name: 'File Upload',
     subpath: 'local',
-    id: 'local_files',
+    id: 'LOCAL_FILES',
     description: 'Lets your users upload local files to Carbon.',
     icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
     data_source_type: 'LOCAL_FILES',
@@ -114,6 +114,7 @@ export const AuthProvider = ({
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [processedIntegrations, setProcessedIntegrations] = useState([]);
 
   const fetchTokens = async () => {
     try {
@@ -127,6 +128,19 @@ export const AuthProvider = ({
       setError(true);
     }
   };
+
+  useEffect(() => {
+    let temp = [];
+    for (let i = 0; i < integrationsList.length; i++) {
+      const integration = integrationsList[i];
+      const integrationOptions = enabledIntegrations.find(
+        (enabledIntegration) =>
+          enabledIntegration.id === integration.id && integration.active
+      );
+      temp.push({ ...integrationOptions, ...integration });
+    }
+    setProcessedIntegrations(temp);
+  }, []);
 
   const contextValues = {
     accessToken,
@@ -146,6 +160,7 @@ export const AuthProvider = ({
     secondaryBackgroundColor,
     secondaryTextColor,
     allowMultipleFiles,
+    processedIntegrations,
   };
 
   return (

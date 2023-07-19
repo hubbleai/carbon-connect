@@ -4,105 +4,14 @@ import '../index.css';
 import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
-import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
-import { RxNotionLogo } from 'react-icons/rx';
-import { CgWebsite } from 'react-icons/cg';
-import { FaIntercom } from 'react-icons/fa';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
-  const integrationsList = [
-    {
-      id: 'notion',
-      subpath: 'notion',
-      name: 'Notion',
-      icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
-      description: 'Lets your users connect their Notion accounts to Carbon.',
-      active: true,
-      data_source_type: 'NOTION',
-      requiresOAuth: true,
-    },
-    {
-      active: true,
-      name: 'Google Docs',
-      subpath: 'google',
-      id: 'googleDocs',
-      description: 'Lets your users connect their Google Docs to Carbon.',
-      scope: 'docs',
-      icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-      data_source_type: 'GOOGLE_DOCS',
-      requiresOAuth: true,
-    },
-    {
-      active: true,
-      name: 'Intercom',
-      subpath: 'intercom',
-      id: 'intercom',
-      description: 'Lets your users connect their Intercom to Carbon.',
-      icon: <FaIntercom className="cc-w-7 cc-h-7" />,
-      data_source_type: 'INTERCOM',
-      requiresOAuth: true,
-    },
-    {
-      active: true,
-      name: 'Web Scraper',
-      subpath: 'scraper',
-      id: 'webScraper',
-      description: 'Lets your users Scrape websites to Carbon.',
-      icon: <CgWebsite className="cc-w-7 cc-h-7" />,
-      data_source_type: 'WEB_SCRAPER',
-      requiresOAuth: false,
-    },
-    // {
-    //   active: true,
-    //   name: 'Google Drive',
-    //   subpath: 'google',
-    //   id: 'googleDrive',
-    //   description: 'Lets your users connect their Google Docs to Carbon.',
-    //   scope: 'drive',
-    //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-    // },
-    // {
-    //   active: true,
-    //   name: 'Gmail',
-    //   subpath: 'google',
-    //   id: 'gmail',
-    //   description: 'Lets your users connect their Google Docs to Carbon.',
-    //   scope: 'gmail',
-    //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-    // },
-    // {
-    //   active: false,
-    //   name: 'Slack',
-    //   subpath: 'slack',
-    //   id: 'slack',
-    //   description: 'Lets your users connect their Slack accounts to Carbon.',
-    //   icon: <SiSlack className="cc-w-7 cc-h-7" />,
-    // },
-    // {
-    //   active: false,
-    //   name: 'Discord',
-    //   subpath: 'discord',
-    //   id: 'discord',
-    //   description: 'Lets your users connect their Discord accounts to Carbon.',
-    //   icon: <BsDiscord className="cc-w-7 cc-h-7" />,
-    // },
-    {
-      active: true,
-      name: 'File Upload',
-      subpath: 'local',
-      id: 'local_files',
-      description: 'Lets your users upload local files to Carbon.',
-      icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
-      data_source_type: 'LOCAL_FILES',
-      requiresOAuth: false,
-    },
-  ];
-
-  const { accessToken, tags, environment, enabledIntegrations } =
+  const { accessToken, tags, environment, processedIntegrations } =
     useCarbonAuth();
 
+  console.log('Processed Integrations: ', processedIntegrations);
   const handleServiceOAuthFlow = async (service) => {
     try {
       const oAuthURLResponse = await fetch(
@@ -142,7 +51,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         </div>
       </Dialog.Title>
       <ul className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
-        {integrationsList.map((integration) => {
+        {processedIntegrations.map((integration) => {
           const activeIntegrationsList = activeIntegrations.map(
             (i) => i.data_source_type
           );
@@ -151,9 +60,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             integration.data_source_type
           );
 
-          if (!enabledIntegrations.includes(integration.data_source_type)) {
-            return null;
-          }
+          // if (!enabledIntegrations.includes(integration.data_source_type)) {
+          //   return null;
+          // }
 
           return (
             <li
@@ -169,22 +78,14 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                 onClick={() => {
                   try {
                     if (integration.active) {
-                      // if (!integration.requiresOAuth) {
-                      //   setActiveStep(integration.data_source_type);
-                      //   return;
-                      // }
                       if (!integration.requiresOAuth) {
-                        // handleServiceOAuthFlow(integration);
-                        // console.log('Integration already active');
                         setActiveStep(integration.data_source_type);
                       } else {
                         if (integration.data_source_type === 'GOOGLE_DOCS') {
-                          console.log(activeIntegrations);
                           let googleDocsIndex = activeIntegrations.findIndex(
                             (integration) =>
                               integration.data_source_type === 'GOOGLE_DOCS'
                           );
-                          console.log('Index: ', googleDocsIndex);
                           if (googleDocsIndex !== -1) {
                             setActiveStep(integration.data_source_type);
                             return;
