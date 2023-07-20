@@ -46,6 +46,9 @@ The `CarbonConnect` component accepts the following properties:
 | `chunkSize`                | Number          | No        | The no.of tokens per chunk. Defaults to 1500.                                                                           |
 | `overlapSize`              | Number          | No        | The no.of tokens to overlap between chunks. Defaults to 20.                                                             |
 | `open`                     | Boolean         | No        | Whether or not to open the component. Defaults to `false`.                                                              |
+| `setOpen`                  | Function        | No        | A function that will be called to set the open state of the component. Defaults to `None`.                              |
+
+When u do not pass `open` or `setOpen`, CC will manage the open state internally. If you pass `open` and `setOpen`, you will have to manage the open state yourself.
 
 ### Note about Google Docs
 

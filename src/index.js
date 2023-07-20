@@ -30,6 +30,7 @@ const IntegrationModal = ({
   environment = 'PRODUCTION',
   entryPoint = null,
   open,
+  setOpen,
 }) => {
   const [activeStep, setActiveStep] = useState(entryPoint || 0);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
@@ -82,9 +83,10 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      onOpenChange={(open) => {
-        if (!open) setActiveStep(entryPoint || 0);
-        setShowModal(open);
+      onOpenChange={(modalOpenState) => {
+        if (!modalOpenState) setActiveStep(entryPoint || 0);
+        if (setOpen) setOpen(modalOpenState);
+        setShowModal(modalOpenState);
       }}
       open={showModal}
     >
@@ -201,6 +203,7 @@ const CarbonConnect = ({
   secondaryTextColor = '#000000',
   allowMultipleFiles = false,
   open = false,
+  setOpen = None,
   chunkSize = 1500,
   overlapSize = 20,
 }) => {
@@ -240,6 +243,7 @@ const CarbonConnect = ({
         secondaryTextColor={secondaryTextColor}
         allowMultipleFiles={allowMultipleFiles}
         open={open}
+        setOpen={setOpen}
       >
         {children}
       </IntegrationModal>
