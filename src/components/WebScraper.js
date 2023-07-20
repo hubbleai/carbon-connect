@@ -42,6 +42,7 @@ function WebScraper({
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
+    authenticatedFetch,
   } = useCarbonAuth();
 
   const submitScrapeRequest = async () => {
@@ -78,7 +79,7 @@ function WebScraper({
         return;
       }
 
-      const uploadResponse = await fetch(
+      const uploadResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/web_scrape`,
         {
           method: 'POST',

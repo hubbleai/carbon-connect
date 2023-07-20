@@ -17,6 +17,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
+    authenticatedFetch,
   } = useCarbonAuth();
 
   const handleServiceOAuthFlow = async (service) => {
@@ -25,7 +26,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
-      const oAuthURLResponse = await fetch(
+      const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
           method: 'POST',

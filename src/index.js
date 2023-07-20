@@ -36,22 +36,25 @@ const IntegrationModal = ({
   const [activeIntegrations, setActiveIntegrations] = useState([]);
   const [showModal, setShowModal] = useState(open);
 
-  const { accessToken, fetchTokens } = useCarbonAuth();
+  const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
 
   const fetchUserIntegrationsHelper = async () => {
-    const userIntegrationsResponse = await fetch(
-      `${BASE_URL[environment]}/integrations/`,
-      {
-        headers: {
-          Authorization: `Token ${accessToken}`,
-        },
-      }
-    );
+    try {
+      const userIntegrationsResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/integrations/`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Token ${accessToken}`,
+          },
+        }
+      );
 
-    if (userIntegrationsResponse.status === 200) {
-      const responseBody = await userIntegrationsResponse.json();
-      setActiveIntegrations(responseBody['active_integrations']);
-    }
+      if (userIntegrationsResponse.status === 200) {
+        const responseBody = await userIntegrationsResponse.json();
+        setActiveIntegrations(responseBody['active_integrations']);
+      }
+    } catch (error) {}
   };
 
   const fetchUserIntegrations = async () => {

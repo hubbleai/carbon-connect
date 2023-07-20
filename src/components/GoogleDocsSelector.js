@@ -31,6 +31,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
+    authenticatedFetch,
   } = useCarbonAuth();
 
   const syncSelectedFiles = async () => {
@@ -42,7 +43,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     const overlapSize =
       service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
 
-    const syncResponse = await fetch(
+    const syncResponse = await authenticatedFetch(
       `${BASE_URL[environment]}/integrations/google/sync`,
       {
         method: 'POST',
@@ -70,7 +71,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
   useEffect(() => {
     const fetchAlreadySyncedFiles = async () => {
       setIsLoadedSyncedFiles(true);
-      const syncedFileIdsResponse = await fetch(
+      const syncedFileIdsResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/user_files_v2`,
         {
           method: 'POST',

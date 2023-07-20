@@ -118,11 +118,40 @@ export const AuthProvider = ({
   const [error, setError] = useState(false);
   const [processedIntegrations, setProcessedIntegrations] = useState([]);
 
+  const authenticatedFetch = async (url, options = {}, retry = true) => {
+    try {
+      const response = await fetch(url, {
+        body: options.body,
+        method: options.method,
+        headers: options.headers,
+      });
+      console.log('Inside authenticatedFetch: ', response.status);
+
+      if (response.status === 401 && retry) {
+        const response = await tokenFetcher();
+        setAccessToken(response.access_token);
+
+        const newOptions = {
+          ...options,
+          headers: {
+            ...options.headers,
+            Authorization: `Token ${response.access_token}`,
+          },
+        };
+
+        return await authenticatedFetch(url, newOptions, false); // Passing 'false' to avoid endless loop in case refreshing the token doesn't help
+      }
+
+      return response;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   const fetchTokens = async () => {
     try {
       setLoading(true);
       const response = await tokenFetcher();
-
       setAccessToken(response.access_token);
       setLoading(false);
     } catch (err) {
@@ -138,6 +167,7 @@ export const AuthProvider = ({
         (enabledIntegration) =>
           enabledIntegration.id === integration.id && integration.active
       );
+      if (!integrationOptions) continue;
       temp.push({ ...integrationOptions, ...integration });
     }
     setProcessedIntegrations(temp);
@@ -147,6 +177,7 @@ export const AuthProvider = ({
     accessToken,
     setAccessToken,
     fetchTokens,
+    authenticatedFetch,
     enabledIntegrations,
     orgName,
     brandIcon,

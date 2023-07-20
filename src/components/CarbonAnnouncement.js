@@ -91,20 +91,7 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
 };
 
 CarbonAnnouncement.propTypes = {
-  orgName: PropTypes.string.isRequired,
-  brandIcon: PropTypes.string.isRequired,
   setActiveStep: PropTypes.func.isRequired,
-  primaryBackgroundColor: PropTypes.string,
-  primaryTextColor: PropTypes.string,
-  secondaryBackgroundColor: PropTypes.string,
-  secondaryTextColor: PropTypes.string,
-};
-
-CarbonAnnouncement.defaultProps = {
-  primaryBackgroundColor: '#ffffff',
-  primaryTextColor: '#000000',
-  secondaryBackgroundColor: '#f2f2f2',
-  secondaryTextColor: '#4f4f4f',
 };
 
 export default CarbonAnnouncement;

@@ -19,7 +19,7 @@ import '../index.css';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
-const defaultSupportedFileTypes = ['txt', 'csv', 'pdf'];
+const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx'];
 
 function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
@@ -44,6 +44,7 @@ function FileUpload({ setActiveStep }) {
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
+    authenticatedFetch,
   } = useCarbonAuth();
 
   useEffect(() => {
@@ -112,7 +113,7 @@ function FileUpload({ setActiveStep }) {
             topLevelOverlapSize ||
             defaultOverlapSize;
 
-          const uploadResponse = await fetch(
+          const uploadResponse = await authenticatedFetch(
             `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
             {
               method: 'POST',
@@ -127,7 +128,7 @@ function FileUpload({ setActiveStep }) {
           if (uploadResponse.status === 200) {
             const uploadResponseData = await uploadResponse.json();
 
-            const appendTagsResponse = await fetch(
+            const appendTagsResponse = await authenticatedFetch(
               `${BASE_URL[environment]}/create_user_file_tags`,
               {
                 method: 'POST',
