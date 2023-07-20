@@ -267,7 +267,7 @@ function FileUpload({ setActiveStep }) {
               }}
               hoverTitle=" "
             >
-              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0">
+              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0">
                 <div>
                   <p className="cc-text-[#484848]">
                     {`Drag and drop ${
