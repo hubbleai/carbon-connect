@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
+import { isEqual, differenceWith } from 'lodash';
 import './index.css';
 
 import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
@@ -33,8 +34,13 @@ const IntegrationModal = ({
   setOpen,
 }) => {
   const [activeStep, setActiveStep] = useState(entryPoint || 0);
+  const firstFetchCompletedRef = useRef(false);
+
   const [activeIntegrations, setActiveIntegrations] = useState([]);
+  const activeIntegrationsRef = useRef(activeIntegrations);
+
   const [showModal, setShowModal] = useState(open);
+  const [delta, setDelta] = useState([]);
 
   const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
 
@@ -52,21 +58,63 @@ const IntegrationModal = ({
 
       if (userIntegrationsResponse.status === 200) {
         const responseBody = await userIntegrationsResponse.json();
+        const delta = differenceWith(
+          responseBody['active_integrations'],
+          activeIntegrationsRef.current,
+          isEqual
+        );
+        const newAdditions = delta.filter(
+          (item) =>
+            !activeIntegrationsRef.current.some(
+              (existingItem) => existingItem.id === item.id
+            )
+        );
+
+        const modifications = delta.filter((item) =>
+          activeIntegrationsRef.current.some(
+            (existingItem) => existingItem.id === item.id
+          )
+        );
+
+        if (firstFetchCompletedRef.current) {
+          if (newAdditions.length > 0) {
+            onSuccess({
+              status: 200,
+              data: newAdditions,
+              action: 'ADD',
+              integration: newAdditions[0].data_source_type,
+            });
+          }
+
+          if (modifications.length > 0) {
+            onSuccess({
+              status: 200,
+              data: modifications,
+              action: 'UPDATE',
+              integration: modifications[0].data_source_type,
+            });
+          }
+        } else {
+          firstFetchCompletedRef.current = true;
+        }
+
+        // setData(responseBody['active_integrations']);
         setActiveIntegrations(responseBody['active_integrations']);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    activeIntegrationsRef.current = activeIntegrations;
+  }, [activeIntegrations]);
 
   const fetchUserIntegrations = async () => {
     try {
       await fetchUserIntegrationsHelper();
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        await fetchTokens();
-        setTimeout(async () => {
-          await fetchUserIntegrationsHelper();
-        }, 1000);
-      }
+      console.log(error);
     }
   };
 

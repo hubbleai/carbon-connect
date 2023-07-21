@@ -178,17 +178,32 @@ function FileUpload({ setActiveStep }) {
       }
 
       if (successfulUploads.length > 0)
-        onSuccess({ status: 200, data: successfulUploads });
+        onSuccess({
+          status: 200,
+          data: successfulUploads,
+          action: 'ADD',
+          integration: 'LOCAL_FILES',
+        });
 
       if (failedUploads.length > 0) {
-        onError({ status: 400, data: failedUploads });
+        onError({
+          status: 400,
+          data: failedUploads,
+          action: 'ADD',
+          integration: 'LOCAL_FILES',
+        });
       }
       setSyncResponse(true);
       setIsLoading(false);
     } catch (error) {
       toast.error('Error uploading files. Please try again.');
       setIsLoading(false);
-      onError({ status: 400, data: [{ message: 'Error uploading files' }] });
+      onError({
+        status: 400,
+        data: [{ message: 'Error uploading files' }],
+        action: 'ADD',
+        integration: 'LOCAL_FILES',
+      });
     }
   };
 
@@ -234,15 +249,19 @@ function FileUpload({ setActiveStep }) {
                 );
                 onError({
                   status: 400,
-                  data: {
-                    message: `The file format is not supported. The supported formats are: ${
-                      filesConfig.allowedFileTypes
-                        ? filesConfig.allowedFileTypes
-                            .map((config) => config.extension.toUpperCase())
-                            .join(', ')
-                        : defaultSupportedFileTypes.join(', ')
-                    }`,
-                  },
+                  data: [
+                    {
+                      message: `The file format is not supported. The supported formats are: ${
+                        filesConfig.allowedFileTypes
+                          ? filesConfig.allowedFileTypes
+                              .map((config) => config.extension.toUpperCase())
+                              .join(', ')
+                          : defaultSupportedFileTypes.join(', ')
+                      }`,
+                    },
+                  ],
+                  action: 'ADD',
+                  integration: 'LOCAL_FILES',
                 });
               }}
               onSizeError={(e) => {
@@ -253,11 +272,15 @@ function FileUpload({ setActiveStep }) {
                 );
                 onError({
                   status: 400,
-                  data: {
-                    message: `The file size is too large. The maximum size allowed is: ${
-                      maxFileSize ? maxFileSize / 1000000 : 20
-                    } MB`,
-                  },
+                  data: [
+                    {
+                      message: `The file size is too large. The maximum size allowed is: ${
+                        maxFileSize ? maxFileSize / 1000000 : 20
+                      } MB`,
+                    },
+                  ],
+                  action: 'ADD',
+                  integration: 'LOCAL_FILES',
                 });
               }}
               dropMessageStyle={{

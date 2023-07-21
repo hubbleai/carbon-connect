@@ -125,7 +125,6 @@ export const AuthProvider = ({
         method: options.method,
         headers: options.headers,
       });
-      console.log('Inside authenticatedFetch: ', response.status);
 
       if (response.status === 401 && retry) {
         const response = await tokenFetcher();

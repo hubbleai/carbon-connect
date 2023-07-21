@@ -210,7 +210,9 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
     tags: <Tags passed in while uploading the file>,
     sync_status: <Sync status>,
   }, ...
-  ]
+  ],
+  action: <ACTION_TYPE>,  `ACTION_TYPE` can be one of the following: `ADD`, `UPDATE`
+  integration: <INTEGRATION_NAME>, `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DOCS`
 }
 ```
 

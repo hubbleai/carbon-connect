@@ -8,6 +8,7 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
+  console.log('activeIntegrations', activeIntegrations);
   const {
     accessToken,
     tags,
@@ -46,6 +47,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
 
       if (oAuthURLResponse.status === 200) {
         const oAuthURLResponseData = await oAuthURLResponse.json();
+
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (err) {}

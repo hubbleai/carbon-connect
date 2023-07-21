@@ -101,11 +101,22 @@ function WebScraper({
       if (uploadResponse.status === 200) {
         const uploadResponseData = await uploadResponse.json();
         setScrapingResponse(uploadResponseData);
+        onSuccess({
+          status: 200,
+          data: uploadResponseData,
+          action: 'ADD',
+          integration: 'WEB_SCRAPER',
+        });
       }
     } catch (error) {
       toast.error('Error initiating scraping. Please try again.');
       setIsLoading(false);
-      onError({ status: 400, data: [{ message: 'Error uploading file' }] });
+      onError({
+        status: 400,
+        data: [{ message: 'Error initiating scraping. Please try again.' }],
+        action: 'ADD',
+        integration: 'WEB_SCRAPER',
+      });
       setScrapingResponse(null);
     }
   };

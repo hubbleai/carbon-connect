@@ -65,6 +65,12 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     if (syncResponse.status === 200) {
       const syncResponseData = await syncResponse.json();
       setSyncResponse(syncResponseData);
+      onSuccess({
+        status: 200,
+        data: uploadResponseData,
+        action: 'UPDATE',
+        integration: 'GOOGLE_DOCS',
+      });
     }
   };
 
