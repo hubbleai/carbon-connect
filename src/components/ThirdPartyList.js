@@ -8,7 +8,6 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
-  console.log('activeIntegrations', activeIntegrations);
   const {
     accessToken,
     tags,

@@ -34,13 +34,11 @@ const IntegrationModal = ({
   setOpen,
 }) => {
   const [activeStep, setActiveStep] = useState(entryPoint || 0);
-  const firstFetchCompletedRef = useRef(false);
-
-  const [activeIntegrations, setActiveIntegrations] = useState([]);
-  const activeIntegrationsRef = useRef(activeIntegrations);
-
   const [showModal, setShowModal] = useState(open);
-  const [delta, setDelta] = useState([]);
+  const [activeIntegrations, setActiveIntegrations] = useState([]);
+
+  const activeIntegrationsRef = useRef(activeIntegrations);
+  const firstFetchCompletedRef = useRef(false);
 
   const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
 
@@ -78,18 +76,43 @@ const IntegrationModal = ({
 
         if (firstFetchCompletedRef.current) {
           if (newAdditions.length > 0) {
+            const {
+              data_source_type,
+              data_source_external_id,
+              objects,
+              sync_status,
+            } = newAdditions[0];
             onSuccess({
               status: 200,
-              data: newAdditions,
+              data: [
+                {
+                  data_source_external_id,
+                  objects: data_source_type === 'GOOGLE_DOCS' ? [] : objects,
+                  sync_status,
+                  tags: tags,
+                },
+              ],
               action: 'ADD',
               integration: newAdditions[0].data_source_type,
             });
           }
 
           if (modifications.length > 0) {
+            const {
+              data_source_type,
+              data_source_external_id,
+              objects,
+              sync_status,
+            } = modifications[0];
             onSuccess({
               status: 200,
-              data: modifications,
+              data: [
+                {
+                  data_source_external_id,
+                  objects: data_source_type === 'GOOGLE_DOCS' ? [] : objects,
+                  sync_status,
+                },
+              ],
               action: 'UPDATE',
               integration: modifications[0].data_source_type,
             });
@@ -98,12 +121,9 @@ const IntegrationModal = ({
           firstFetchCompletedRef.current = true;
         }
 
-        // setData(responseBody['active_integrations']);
         setActiveIntegrations(responseBody['active_integrations']);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -113,9 +133,7 @@ const IntegrationModal = ({
   const fetchUserIntegrations = async () => {
     try {
       await fetchUserIntegrationsHelper();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

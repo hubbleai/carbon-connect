@@ -11,13 +11,19 @@ import {
   HiX,
 } from 'react-icons/hi';
 import { AiOutlineCloudUpload, AiOutlineFileUnknown } from 'react-icons/ai';
-import { BsFiletypeCsv, BsFiletypePdf, BsFiletypeTxt } from 'react-icons/bs';
+import {
+  BsFiletypeCsv,
+  BsFiletypePdf,
+  BsFiletypeTxt,
+  BsFiletypeDocx,
+} from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { LuLoader2 } from 'react-icons/lu';
 
 import '../index.css';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
+import { set } from 'lodash';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx'];
 
@@ -26,6 +32,8 @@ function FileUpload({ setActiveStep }) {
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [filesConfig, setFilesConfig] = useState([]);
+  const [allowedMaxFileSize, setAllowedMaxFileSize] = useState(20);
+  const [allowedMaxFilesCount, setAllowedMaxFilesCount] = useState(10);
 
   const {
     accessToken,
@@ -60,13 +68,61 @@ function FileUpload({ setActiveStep }) {
       (integration) => integration.id === 'LOCAL_FILES'
     );
     if (newFilesConfig) {
+      setAllowedMaxFileSize(
+        newFilesConfig.maxFileSize
+          ? newFilesConfig.maxFileSize / 1000000
+          : maxFileSize
+          ? maxFileSize / 1000000
+          : 20
+      );
+      setAllowedMaxFilesCount(
+        newFilesConfig.maxFilesCount ? newFilesConfig.maxFilesCount : 10
+      );
       setFilesConfig(newFilesConfig);
     }
   }, [processedIntegrations]);
 
   const onFilesSelected = (files) => {
     if (!allowMultipleFiles) setFiles([files]);
-    else setFiles((prevList) => [...prevList, ...files]);
+    else {
+      if (files.length > allowedMaxFilesCount) {
+        toast.error(
+          `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+        );
+        onError({
+          status: 400,
+          data: [
+            {
+              message: `Tried selecting ${files.length} files at a time.`,
+            },
+          ],
+          action: 'ADD',
+          integration: 'LOCAL_FILES',
+        });
+        return;
+      }
+      setFiles((prevList) => {
+        if (prevList.length + files.length > allowedMaxFilesCount) {
+          toast.error(
+            `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+          );
+          onError({
+            status: 400,
+            data: [
+              {
+                message: `Tried selecting ${
+                  prevList.length + files.length
+                } files at a time.`,
+              },
+            ],
+            action: 'ADD',
+            integration: 'LOCAL_FILES',
+          });
+          return prevList;
+        }
+        return [...prevList, ...files];
+      });
+    }
   };
 
   const onFileRemoved = (fileIndex) => {
@@ -235,7 +291,7 @@ function FileUpload({ setActiveStep }) {
                     )
                   : defaultSupportedFileTypes
               }
-              maxSize={maxFileSize ? maxFileSize / 1000000 : 20}
+              maxSize={allowedMaxFileSize}
               label="Upload or drag a file here to embed."
               onTypeError={(e) => {
                 toast.error(
@@ -266,17 +322,13 @@ function FileUpload({ setActiveStep }) {
               }}
               onSizeError={(e) => {
                 toast.error(
-                  `The file size is too large. The maximum size allowed is: ${
-                    maxFileSize ? maxFileSize / 1000000 : 20
-                  } MB`
+                  `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`
                 );
                 onError({
                   status: 400,
                   data: [
                     {
-                      message: `The file size is too large. The maximum size allowed is: ${
-                        maxFileSize ? maxFileSize / 1000000 : 20
-                      } MB`,
+                      message: `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
                     },
                   ],
                   action: 'ADD',
@@ -289,17 +341,44 @@ function FileUpload({ setActiveStep }) {
                 borderStyle: 'dashed',
                 borderColor: '#919191',
               }}
-              hoverTitle=" "
+              hoverTitle={
+                allowedMaxFilesCount - files.length > 0
+                  ? ' '
+                  : 'Cannot select more files'
+              }
+              disabled={
+                allowedMaxFilesCount - files.length > 0 || isLoading
+                  ? false
+                  : true
+              }
             >
-              <div className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0">
+              <div
+                className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0"
+                onClick={() => {
+                  if (isLoading === true) {
+                    toast.error(
+                      'Please wait for the file to upload before uploading another file.'
+                    );
+                    return;
+                  }
+                  if (allowedMaxFilesCount - files.length <= 0) {
+                    toast.error(
+                      `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+                    );
+                    return;
+                  }
+                }}
+              >
                 <div>
                   <p className="cc-text-[#484848]">
                     {`Drag and drop ${
-                      (files.length !== 0 && allowMultipleFiles && 'more') || ''
-                    } ${allowMultipleFiles ? 'files' : 'file'} here.`}
+                      allowMultipleFiles
+                        ? `up to ${allowedMaxFilesCount - files.length} files`
+                        : 'file'
+                    } here.`}
                   </p>
                   <p className="cc-text-[#919191]">
-                    Max {maxFileSize ? maxFileSize / 1000000 : 20} MB per file
+                    Max {allowedMaxFileSize} MB per file
                   </p>
                 </div>
               </div>
@@ -321,12 +400,14 @@ function FileUpload({ setActiveStep }) {
                         <BsFiletypeCsv className="cc-w-10 cc-h-10  cc-mx-auto" />
                       ) : file.name.split('.').pop() === 'txt' ? (
                         <BsFiletypeTxt className="cc-w-10 cc-h-10 cc-mx-auto" />
+                      ) : file.name.split('.').pop() === 'docx' ? (
+                        <BsFiletypeDocx className="cc-w-10 cc-h-10 cc-mx-auto" />
                       ) : (
                         <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />
                       )}
                     </div>
 
-                    <div className="cc-flex cc-flex-col cc-w-9/12">
+                    <div className="cc-flex cc-flex-col cc-w-8/12">
                       <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
                         {file.name}
                       </h1>

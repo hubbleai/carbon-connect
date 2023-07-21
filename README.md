@@ -15,12 +15,15 @@ npm install carbon-connect
 The package expects the following npm packages to be installed in your project:
 
 1. `@radix-ui/react-dialog`
-2. `react`
-3. `react-dom`
-4. `react-drag-drop-files`
-5. `react-icons`
-6. `react-toastify`
-7. `tailwindcss`
+2. `"lodash": "^4.17.21`
+3. `react`
+4. `react-dom`
+5. `react-drag-drop-files`
+6. `react-icons`
+7. `react-toastify`
+8. `tailwindcss`
+
+Please check for the versions from `package.json` if you encounter a version mismatch error.
 
 ## Component Properties
 
@@ -88,6 +91,7 @@ const tokenFetcher = async () => {
       overlapSize: 10,
       maxFileSize: 20000000,
       allowMultipleFiles: true,
+      maxFilesCount: 5,
       allowedFileTypes: [
         {
           extension: 'csv',
@@ -169,6 +173,7 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
    - `maxFileSize`: This is the maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB.
    - `allowMultipleFiles`: Whether or not to allow multiple files to be uploaded at once. Defaults to `false`.
+   - `maxFilesCount`: This is the maximum no.of files that can be uploaded at once. Defaults to 10.
    - `allowedFileTypes`: This is an array of objects. Each object represents a file type that is allowed to be uploaded. Each object can have the following properties:
      - `extension`: The file extension of the file type. This is a required property.
      - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
@@ -190,27 +195,12 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
 
 ## Callback function props
 
-1. `onSuccess`: You can let CC trigger a callback function upon successful file upload. This function will pass data in the following format:
+1. `onSuccess`: You can let CC trigger a callback function upon successful file upload, 3rd party account connection, Google Docs files selection, Webscraping request initiation. This function will pass data in the following format:
 
 ```js
 {
   status: 200,
-  data: [{
-    id: <File_ID>,
-    name: <Name of the file>,
-    source: <File Type in case of a local file>,
-    external_file_id: <External File ID>,
-    tags: <Tags passed in while uploading the file>,
-    sync_status: <Sync status>,
-  }, {
-    id: <File_ID>,
-    name: <Name of the file>,
-    source: <File Type in case of a local file>,
-    external_file_id: <External File ID>,
-    tags: <Tags passed in while uploading the file>,
-    sync_status: <Sync status>,
-  }, ...
-  ],
+  data: [Object 1, Object 2, ...],
   action: <ACTION_TYPE>,  `ACTION_TYPE` can be one of the following: `ADD`, `UPDATE`
   integration: <INTEGRATION_NAME>, `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DOCS`
 }
@@ -230,6 +220,44 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
     message: `<String describing the error>`,
   }, ...
   ]
+}
+```
+
+### Data format for `onSuccess` callback
+
+The `data` field will contain the following information:
+
+1. For `LOCAL_FILES`: An array of objects in the following format
+
+```js
+{
+    id: <File_ID>,
+    name: <Name of the file>,
+    source: <File Type in case of a local file>,
+    external_file_id: <External File ID>,
+    tags: <Tags passed in while uploading the file>,
+    sync_status: <Sync status>,
+  }
+```
+
+2. For `NOTION` and `GOOGLE_DOCS`: An array of one object in the following format
+
+```js
+{
+  data_source_external_id: `<Email address of the Notion account>`,
+  sync_status: `<Sync status>`,
+  objects: `<Array of objects in the following format>`,
+  tags: `<Tags passed in to the CC>`,
+}
+```
+
+3. For `WEB_SCRAPER`: An array of one object in the following format
+
+```js
+{
+  urls: `<Array of user inputed URLs>`,
+  validUrls: `<Array of valid URLs>`,
+  tags: `<Tags passed in to the CC>`,
 }
 ```
 

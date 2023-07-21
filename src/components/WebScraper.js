@@ -103,7 +103,7 @@ function WebScraper({
         setScrapingResponse(uploadResponseData);
         onSuccess({
           status: 200,
-          data: uploadResponseData,
+          data: [{ urls: urls, validUrls: validUrls, tags: tags }],
           action: 'ADD',
           integration: 'WEB_SCRAPER',
         });

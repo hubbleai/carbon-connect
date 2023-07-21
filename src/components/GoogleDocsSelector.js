@@ -32,42 +32,66 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
+    onSuccess,
   } = useCarbonAuth();
 
   const syncSelectedFiles = async () => {
-    const service = processedIntegrations.find(
-      (integration) => integration.id === 'GOOGLE_DOCS'
-    );
-    const chunkSize =
-      service?.chunkSize || topLevelChunkSize || defaultChunkSize;
-    const overlapSize =
-      service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+    try {
+      const service = processedIntegrations.find(
+        (integration) => integration.id === 'GOOGLE_DOCS'
+      );
+      const chunkSize =
+        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+      const overlapSize =
+        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
 
-    const syncResponse = await authenticatedFetch(
-      `${BASE_URL[environment]}/integrations/google/sync`,
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          file_objects: integrationData.objects.filter((fileData) =>
-            selectedFiles.includes(fileData.id)
-          ),
-          tags: tags,
-          chunk_size: chunkSize,
-          chunk_overlap: overlapSize,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          authorization: `Token ${accessToken}`,
-        },
+      const syncResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/integrations/google/sync`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            file_objects: integrationData.objects.filter((fileData) =>
+              selectedFiles.includes(fileData.id)
+            ),
+            tags: tags,
+            chunk_size: chunkSize,
+            chunk_overlap: overlapSize,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Token ${accessToken}`,
+          },
+        }
+      );
+
+      if (syncResponse.status === 200) {
+        const syncResponseData = await syncResponse.json();
+        setSyncResponse(syncResponseData);
+
+        onSuccess({
+          status: 200,
+          data: [
+            {
+              objects: integrationData.objects.filter((fileData) =>
+                selectedFiles.includes(fileData.id)
+              ),
+              data_source_external_id: integrationData.data_source_external_id,
+              sync_status: integrationData.sync_status,
+              tags: tags,
+            },
+          ],
+          action: 'UPDATE',
+          integration: 'GOOGLE_DOCS',
+        });
       }
-    );
-
-    if (syncResponse.status === 200) {
-      const syncResponseData = await syncResponse.json();
-      setSyncResponse(syncResponseData);
-      onSuccess({
-        status: 200,
-        data: uploadResponseData,
+    } catch (err) {
+      onError({
+        status: 400,
+        data: [
+          {
+            message: `Error syncing files. Please try again. Error Message: ${err.message}`,
+          },
+        ],
         action: 'UPDATE',
         integration: 'GOOGLE_DOCS',
       });
@@ -156,11 +180,11 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
                         });
                       }}
                     >
-                      <h1 className="cc-text-md cc-font-normal cc-grow">
+                      <h1 className="cc-text-md cc-font-normal cc-w-5/6">
                         {fileData.name}
                       </h1>
                       {isSelected && (
-                        <HiCheckCircle className="cc-text-green-500 cc-w-6 cc-h-6" />
+                        <HiCheckCircle className="cc-text-green-500 cc-w-1/6 cc-h-6" />
                       )}
                     </div>
                   );

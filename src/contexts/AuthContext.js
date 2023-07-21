@@ -112,6 +112,7 @@ export const AuthProvider = ({
   allowMultipleFiles,
   chunkSize,
   overlapSize,
+  maxFileCount,
 }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -142,9 +143,7 @@ export const AuthProvider = ({
       }
 
       return response;
-    } catch (err) {
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   const fetchTokens = async () => {
@@ -196,6 +195,7 @@ export const AuthProvider = ({
     processedIntegrations,
     defaultChunkSize: 1500,
     defaultOverlapSize: 20,
+    maxFileCount,
   };
 
   return (
