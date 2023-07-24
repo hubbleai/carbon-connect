@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { isEqual, differenceWith } from 'lodash';
+import { isEqual, differenceWith, set } from 'lodash';
 import './index.css';
 
 import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
@@ -127,6 +127,10 @@ const IntegrationModal = ({
   };
 
   useEffect(() => {
+    setShowModal(open);
+  }, [open]);
+
+  useEffect(() => {
     activeIntegrationsRef.current = activeIntegrations;
   }, [activeIntegrations]);
 
@@ -140,7 +144,7 @@ const IntegrationModal = ({
     if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      const intervalId = setInterval(fetchUserIntegrations, 10000); // 10000 ms = 10 s
+      const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
       // Make sure to clear the interval when the component unmounts
       return () => clearInterval(intervalId);
     }
@@ -160,7 +164,7 @@ const IntegrationModal = ({
       open={showModal}
     >
       <Dialog.Trigger asChild>
-        {children ? (
+        {setOpen ? null : children ? (
           <div>{children}</div>
         ) : (
           <HiPlus

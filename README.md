@@ -212,11 +212,11 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
 {
   status: 400,
   data: [{
-    file_name: `<Name of the file>` ,
+    file_name: `<Name of the file>` , // This field will be present only if the error is related to a file
     message: `<String describing the error>`,
   },
   {
-    file_name: `<Name of the file>` ,
+    file_name: `<Name of the file>` , // This field will be present only if the error is related to a file
     message: `<String describing the error>`,
   }, ...
   ]
@@ -240,18 +240,18 @@ The `data` field will contain the following information:
   }
 ```
 
-2. For `NOTION` and `GOOGLE_DOCS`: An array of one object in the following format
+2. For `NOTION` and `GOOGLE_DOCS`: An array containing only one object in the following format
 
 ```js
 {
   data_source_external_id: `<Email address of the Notion account>`,
   sync_status: `<Sync status>`,
-  objects: `<Array of objects in the following format>`,
+  objects: `<Array of objects corresponding to the files / pages selected>`,
   tags: `<Tags passed in to the CC>`,
 }
 ```
 
-3. For `WEB_SCRAPER`: An array of one object in the following format
+3. For `WEB_SCRAPER`: An array containing only one object in the following format
 
 ```js
 {
