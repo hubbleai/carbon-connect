@@ -102,6 +102,7 @@ const IntegrationModal = ({
               data_source_type,
               data_source_external_id,
               objects,
+              files,
               sync_status,
             } = modifications[0];
             onSuccess({
@@ -109,7 +110,8 @@ const IntegrationModal = ({
               data: [
                 {
                   data_source_external_id,
-                  objects: data_source_type === 'GOOGLE_DOCS' ? [] : objects,
+                  objects:
+                    data_source_type === 'GOOGLE_DOCS' ? [] : files || objects,
                   sync_status,
                 },
               ],

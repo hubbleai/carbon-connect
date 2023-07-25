@@ -16,6 +16,7 @@ import {
   BsFiletypePdf,
   BsFiletypeTxt,
   BsFiletypeDocx,
+  BsFiletypePptx,
 } from 'react-icons/bs';
 import { toast } from 'react-toastify';
 import { LuLoader2 } from 'react-icons/lu';
@@ -83,26 +84,10 @@ function FileUpload({ setActiveStep }) {
   }, [processedIntegrations]);
 
   const onFilesSelected = (files) => {
-    if (!allowMultipleFiles) setFiles([files]);
-    else {
-      if (files.length > allowedMaxFilesCount) {
-        toast.error(
-          `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
-        );
-        onError({
-          status: 400,
-          data: [
-            {
-              message: `Tried selecting ${files.length} files at a time.`,
-            },
-          ],
-          action: 'ADD',
-          integration: 'LOCAL_FILES',
-        });
-        return;
-      }
-      setFiles((prevList) => {
-        if (prevList.length + files.length > allowedMaxFilesCount) {
+    try {
+      if (!allowMultipleFiles) setFiles([files]);
+      else {
+        if (files.length > allowedMaxFilesCount) {
           toast.error(
             `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
           );
@@ -110,19 +95,38 @@ function FileUpload({ setActiveStep }) {
             status: 400,
             data: [
               {
-                message: `Tried selecting ${
-                  prevList.length + files.length
-                } files at a time.`,
+                message: `Tried selecting ${files.length} files at a time.`,
               },
             ],
             action: 'ADD',
             integration: 'LOCAL_FILES',
           });
-          return prevList;
+          return;
         }
-        return [...prevList, ...files];
-      });
-    }
+        setFiles((prevList) => {
+          if (prevList.length + files.length > allowedMaxFilesCount) {
+            toast.error(
+              `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+            );
+            onError({
+              status: 400,
+              data: [
+                {
+                  message: `Tried selecting ${
+                    prevList.length + files.length
+                  } files at a time.`,
+                },
+              ],
+              action: 'ADD',
+              integration: 'LOCAL_FILES',
+            });
+            return prevList;
+          }
+
+          return [...prevList, ...files];
+        });
+      }
+    } catch (e) {}
   };
 
   const onFileRemoved = (fileIndex) => {
@@ -145,82 +149,93 @@ function FileUpload({ setActiveStep }) {
       const failedUploads = [];
 
       await Promise.all(
-        files.map(async (file) => {
-          const formData = new FormData();
-          formData.append('file', file);
+        files.map(async (file, index) => {
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
 
-          const fileType = file.name.split('.').pop();
-          const fileTypeConfig = filesConfig.allowedFileTypes.find(
-            (config) => config.extension === fileType
-          );
-          if (!fileTypeConfig) {
-            failedUploads.push(file.name);
-            return;
-          }
+            const fileType = file.name.split('.').pop();
+            const allowedFileTypes = filesConfig.allowedFileTypes
+              ? filesConfig.allowedFileTypes.map((config) => config.extension)
+              : defaultSupportedFileTypes;
 
-          const chunkSize =
-            fileTypeConfig?.chunkSize ||
-            filesConfig?.chunkSize ||
-            topLevelChunkSize ||
-            defaultChunkSize;
-          const overlapSize =
-            fileTypeConfig?.overlapSize ||
-            filesConfig?.overlapSize ||
-            topLevelOverlapSize ||
-            defaultOverlapSize;
+            const fileTypeConfig = allowedFileTypes.find(
+              (configuredType) => configuredType === fileType
+            );
 
-          const uploadResponse = await authenticatedFetch(
-            `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
-            {
-              method: 'POST',
-              body: formData,
-              headers: {
-                // 'Content-Type': 'multipart/form-data',
-                Authorization: `Token ${accessToken}`,
-              },
+            if (!fileTypeConfig) {
+              failedUploads.push(file.name);
+              return;
             }
-          );
 
-          if (uploadResponse.status === 200) {
-            const uploadResponseData = await uploadResponse.json();
+            const chunkSize =
+              fileTypeConfig?.chunkSize ||
+              filesConfig?.chunkSize ||
+              topLevelChunkSize ||
+              defaultChunkSize;
+            const overlapSize =
+              fileTypeConfig?.overlapSize ||
+              filesConfig?.overlapSize ||
+              topLevelOverlapSize ||
+              defaultOverlapSize;
 
-            const appendTagsResponse = await authenticatedFetch(
-              `${BASE_URL[environment]}/create_user_file_tags`,
+            const uploadResponse = await authenticatedFetch(
+              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
               {
                 method: 'POST',
-                body: JSON.stringify({
-                  tags: tags,
-                  organization_user_file_id: uploadResponseData['id'],
-                }),
+                body: formData,
                 headers: {
-                  'Content-Type': 'application/json',
+                  // 'Content-Type': 'multipart/form-data',
                   Authorization: `Token ${accessToken}`,
                 },
               }
             );
 
-            if (appendTagsResponse.status === 200) {
-              const appendTagsResponseData = await appendTagsResponse.json();
-              const dataObject = {
-                id: appendTagsResponseData['id'],
-                name: appendTagsResponseData['name'],
-                source: appendTagsResponseData['source'],
-                external_file_id: appendTagsResponseData['external_file_id'],
-                tags: appendTagsResponseData['tags'],
-                sync_status: appendTagsResponseData['sync_status'],
-              };
-              successfulUploads.push(dataObject);
+            if (uploadResponse.status === 200) {
+              const uploadResponseData = await uploadResponse.json();
+
+              const appendTagsResponse = await authenticatedFetch(
+                `${BASE_URL[environment]}/create_user_file_tags`,
+                {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    tags: tags,
+                    organization_user_file_id: uploadResponseData['id'],
+                  }),
+                  headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Token ${accessToken}`,
+                  },
+                }
+              );
+
+              if (appendTagsResponse.status === 200) {
+                const appendTagsResponseData = await appendTagsResponse.json();
+                const dataObject = {
+                  id: appendTagsResponseData['id'],
+                  name: appendTagsResponseData['name'],
+                  source: appendTagsResponseData['source'],
+                  external_file_id: appendTagsResponseData['external_file_id'],
+                  tags: appendTagsResponseData['tags'],
+                  sync_status: appendTagsResponseData['sync_status'],
+                };
+                successfulUploads.push(dataObject);
+              } else {
+                failedUploads.push({
+                  fileName: file.name,
+                  message: 'Failed to add tags to the file.',
+                });
+              }
             } else {
+              const errorData = await uploadResponse.json(); // Get the error response body
+
               failedUploads.push({
                 fileName: file.name,
-                message: 'Failed to add tags to the file.',
+                message: errorData.message || 'Failed to upload file.',
               });
             }
-          } else {
-            failedUploads.push({
-              fileName: file.name,
-              message: 'Failed to upload file.',
-            });
+          } catch (error) {
+            console.log(error);
           }
         })
       );
@@ -402,6 +417,8 @@ function FileUpload({ setActiveStep }) {
                         <BsFiletypeTxt className="cc-w-10 cc-h-10 cc-mx-auto" />
                       ) : file.name.split('.').pop() === 'docx' ? (
                         <BsFiletypeDocx className="cc-w-10 cc-h-10 cc-mx-auto" />
+                      ) : file.name.split('.').pop() === 'pptx' ? (
+                        <BsFiletypePptx className="cc-w-10 cc-h-10 cc-mx-auto" />
                       ) : (
                         <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />
                       )}
@@ -412,7 +429,7 @@ function FileUpload({ setActiveStep }) {
                         {file.name}
                       </h1>
                       <p className="cc-text-sm cc-text-gray-400">
-                        {`${parseFloat(file.size / 1024).toFixed(2)} KB`}
+                        {`${parseFloat(file.size / 1000000).toFixed(2)} MB`}
                       </p>
                     </div>
                     <HiX
