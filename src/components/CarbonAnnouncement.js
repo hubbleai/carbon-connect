@@ -21,9 +21,19 @@ Feature.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const CarbonAnnouncement = ({ setActiveStep }) => {
-  const { orgName, brandIcon, primaryBackgroundColor, primaryTextColor } =
-    useCarbonAuth();
+const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
+  const {
+    orgName,
+    brandIcon,
+    primaryBackgroundColor,
+    primaryTextColor,
+    entryPoint,
+    processedIntegrations,
+    entryPointIntegrationObject,
+    handleServiceOAuthFlow,
+  } = useCarbonAuth();
+
+  // console.log('entryPointIntegrationObject', entryPointIntegrationObject);
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
       <div className="cc-flex cc-pt-8 -cc-space-x-2">
@@ -39,11 +49,17 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
           className="cc-rounded-full cc-border cc-w-16"
         ></img>
       </div>
-      <h1 className="cc-text-xl cc-font-light">
-        <span className="cc-font-normal">{orgName}</span> uses{' '}
-        <span className="cc-font-normal">Carbon</span> <br />
-        to connect your data.
-      </h1>
+      <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-flex-col cc-items-center">
+        <div className="cc-flex cc-space-x-1">
+          <span className="cc-font-normal">{orgName}</span>
+          <span> uses </span>
+          <span className="cc-font-normal">Carbon</span>
+        </div>
+        <p>{`${
+          entryPointIntegrationObject?.announcementName ||
+          'to connect your data'
+        }.`}</p>
+      </div>
 
       <ul className="">
         <Feature Icon={HiLockClosed} title="Private">
@@ -81,7 +97,32 @@ const CarbonAnnouncement = ({ setActiveStep }) => {
             backgroundColor: primaryBackgroundColor,
             color: primaryTextColor,
           }}
-          onClick={() => setActiveStep(1)}
+          onClick={() => {
+            if (entryPointIntegrationObject?.active) {
+              if (!entryPointIntegrationObject?.requiresOAuth) {
+                setActiveStep(entryPointIntegrationObject.data_source_type);
+              } else {
+                if (
+                  entryPointIntegrationObject?.data_source_type ===
+                  'GOOGLE_DOCS'
+                ) {
+                  let googleDocsIndex = activeIntegrations.findIndex(
+                    (integration) =>
+                      integration.data_source_type === 'GOOGLE_DOCS'
+                  );
+                  if (googleDocsIndex !== -1) {
+                    setActiveStep(
+                      entryPointIntegrationObject?.data_source_type
+                    );
+                    return;
+                  }
+                }
+                handleServiceOAuthFlow(entryPointIntegrationObject);
+              }
+            } else {
+              setActiveStep(1);
+            }
+          }}
         >
           <p>Connect</p>
         </button>
