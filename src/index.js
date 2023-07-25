@@ -33,7 +33,7 @@ const IntegrationModal = ({
   open,
   setOpen,
 }) => {
-  const [activeStep, setActiveStep] = useState(entryPoint || 0);
+  const [activeStep, setActiveStep] = useState(0);
   const [showModal, setShowModal] = useState(open);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
@@ -159,7 +159,7 @@ const IntegrationModal = ({
   return (
     <Dialog.Root
       onOpenChange={(modalOpenState) => {
-        if (!modalOpenState) setActiveStep(entryPoint || 0);
+        if (!modalOpenState) setActiveStep(0);
         if (setOpen) setOpen(modalOpenState);
         setShowModal(modalOpenState);
       }}
@@ -180,7 +180,10 @@ const IntegrationModal = ({
         <Dialog.Overlay className="cc-bg-blackA9 data-[state=open]:cc-animate-overlayShow cc-fixed cc-inset-0 cc-bg-black/30" />
         <Dialog.Content className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none">
           {activeStep === 0 && (
-            <CarbonAnnouncement setActiveStep={setActiveStep} />
+            <CarbonAnnouncement
+              setActiveStep={setActiveStep}
+              activeIntegrations={activeIntegrations}
+            />
           )}
           {activeStep === 1 && (
             <ThirdPartyList

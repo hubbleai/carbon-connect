@@ -4,47 +4,63 @@ import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
+import { BASE_URL } from '../constants';
 
 const integrationsList = [
   {
     id: 'NOTION',
     subpath: 'notion',
     name: 'Notion',
-    icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
     description: 'Lets your users connect their Notion accounts to Carbon.',
+    announcementName: 'to connect Notion',
+    icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
     active: true,
     data_source_type: 'NOTION',
     requiresOAuth: true,
   },
   {
-    active: true,
-    name: 'Google Docs',
-    subpath: 'google',
     id: 'GOOGLE_DOCS',
+    subpath: 'google',
+    name: 'Google Docs',
     description: 'Lets your users connect their Google Docs to Carbon.',
-    scope: 'docs',
+    announcementName: 'to connect Google Docs',
     icon: <BsGoogle className="cc-w-7 cc-h-7" />,
+    active: true,
     data_source_type: 'GOOGLE_DOCS',
     requiresOAuth: true,
+    scope: 'docs',
   },
   {
-    active: true,
-    name: 'Intercom',
-    subpath: 'intercom',
     id: 'INTERCOM',
+    subpath: 'intercom',
+    name: 'Intercom',
     description: 'Lets your users connect their Intercom to Carbon.',
+    announcementName: 'to connect Intercom',
     icon: <FaIntercom className="cc-w-7 cc-h-7" />,
+    active: true,
     data_source_type: 'INTERCOM',
     requiresOAuth: true,
   },
   {
-    active: true,
-    name: 'Web Scraper',
-    subpath: 'scraper',
     id: 'WEB_SCRAPER',
+    subpath: 'scraper',
+    name: 'Web Scraper',
     description: 'Lets your users Scrape websites to Carbon.',
+    announcementName: 'for Web Scraping',
     icon: <CgWebsite className="cc-w-7 cc-h-7" />,
+    active: true,
     data_source_type: 'WEB_SCRAPER',
+    requiresOAuth: false,
+  },
+  {
+    id: 'LOCAL_FILES',
+    subpath: 'local',
+    name: 'File Upload',
+    description: 'Lets your users upload local files to Carbon.',
+    announcementName: 'to upload local files',
+    icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'LOCAL_FILES',
     requiresOAuth: false,
   },
   // {
@@ -81,16 +97,6 @@ const integrationsList = [
   //   description: 'Lets your users connect their Discord accounts to Carbon.',
   //   icon: <BsDiscord className="cc-w-7 cc-h-7" />,
   // },
-  {
-    active: true,
-    name: 'File Upload',
-    subpath: 'local',
-    id: 'LOCAL_FILES',
-    description: 'Lets your users upload local files to Carbon.',
-    icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
-    data_source_type: 'LOCAL_FILES',
-    requiresOAuth: false,
-  },
 ];
 
 export const AuthProvider = ({
@@ -118,6 +124,8 @@ export const AuthProvider = ({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [processedIntegrations, setProcessedIntegrations] = useState([]);
+  const [entryPointIntegrationObject, setEntryPointIntegrationObject] =
+    useState(null);
 
   const authenticatedFetch = async (url, options = {}, retry = true) => {
     try {
@@ -157,6 +165,38 @@ export const AuthProvider = ({
     }
   };
 
+  const handleServiceOAuthFlow = async (service) => {
+    try {
+      const chunkSize =
+        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
+      const overlapSize =
+        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+      const oAuthURLResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/integrations/oauth_url`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Token ${accessToken}`,
+          },
+          body: JSON.stringify({
+            tags: tags,
+            scope: service?.scope,
+            service: service?.data_source_type,
+            chunk_size: chunkSize,
+            chunk_overlap: overlapSize,
+          }),
+        }
+      );
+
+      if (oAuthURLResponse.status === 200) {
+        const oAuthURLResponseData = await oAuthURLResponse.json();
+
+        window.open(oAuthURLResponseData.oauth_url, '_blank');
+      }
+    } catch (err) {}
+  };
+
   useEffect(() => {
     let temp = [];
     for (let i = 0; i < integrationsList.length; i++) {
@@ -169,6 +209,25 @@ export const AuthProvider = ({
       temp.push({ ...integrationOptions, ...integration });
     }
     setProcessedIntegrations(temp);
+
+    if (entryPoint) {
+      const obj = temp.find((integration) => integration.id === entryPoint);
+      if (!obj) {
+        const isIntegrationAvailable = integrationsList.find(
+          (integration) => integration.id === entryPoint
+        );
+        if (isIntegrationAvailable)
+          console.error(
+            'Invalid entry point. Make sure that the integrations is enabled through enabledIntegrations prop.'
+          );
+        else
+          console.error(
+            'Invalid entry point. Make sure that right integration id is passed.'
+          );
+      }
+
+      setEntryPointIntegrationObject(obj);
+    }
   }, []);
 
   const contextValues = {
@@ -193,9 +252,11 @@ export const AuthProvider = ({
     topLevelChunkSize: chunkSize,
     topLevelOverlapSize: overlapSize,
     processedIntegrations,
+    entryPointIntegrationObject,
     defaultChunkSize: 1500,
     defaultOverlapSize: 20,
     maxFileCount,
+    handleServiceOAuthFlow,
   };
 
   return (
