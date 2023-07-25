@@ -26,7 +26,7 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 import { set } from 'lodash';
 
-const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx'];
+const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
 function FileUpload({ setActiveStep }) {
   const [files, setFiles] = useState([]);
