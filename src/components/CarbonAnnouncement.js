@@ -55,10 +55,16 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           <span> uses </span>
           <span className="cc-font-normal">Carbon</span>
         </div>
-        <p>{`${
-          entryPointIntegrationObject?.announcementName ||
-          'to connect your data'
-        }.`}</p>
+        <p>
+          to connect{' '}
+          {entryPointIntegrationObject?.announcementName ? (
+            <span className="cc-font-normal">
+              {entryPointIntegrationObject?.name}
+            </span>
+          ) : (
+            <span>your data</span>
+          )}
+        </p>
       </div>
 
       <ul className="">

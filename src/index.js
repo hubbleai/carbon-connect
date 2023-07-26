@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { isEqual, differenceWith, set } from 'lodash';
+import { isEqual, differenceWith, sortBy } from 'lodash';
 import './index.css';
 
 import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
@@ -33,7 +33,11 @@ const IntegrationModal = ({
   open,
   setOpen,
 }) => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(
+    entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
+      ? entryPoint
+      : 0
+  );
   const [showModal, setShowModal] = useState(open);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
@@ -41,6 +45,50 @@ const IntegrationModal = ({
   const firstFetchCompletedRef = useRef(false);
 
   const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
+
+  // const compareNestedArrayObjects = (a, b) => {
+  //   console.log(
+  //     'A:',
+  //     a.data_source_external_id,
+  //     a.files,
+  //     'B:',
+  //     b.data_source_external_id,
+  //     b.files
+  //   );
+  //   if (a.files && b.files) {
+  //     return isEqual(
+  //       sortBy(a.files, JSON.stringify),
+  //       sortBy(b.files, JSON.stringify)
+  //     );
+  //   }
+  //   return isEqual(a, b);
+  // };
+
+  // const findModifications = (newArray, oldArray) => {
+  //   const modified = [];
+
+  //   newArray.forEach((newItem) => {
+  //     const oldItem = oldArray.find(
+  //       (oldItem) => oldItem.id === newItem.id && oldItem.files
+  //     );
+  //     if (oldItem) {
+  //       // console.log("New Item's Files", newItem.files.map((f) => f.id).sort());
+  //       // console.log("Old Item's Files", oldItem.files.map((f) => f.id).sort());
+  //       // console.log(
+  //       //   isEqual(
+  //       //     newItem.files.map((f) => f.id).sort(),
+  //       //     oldItem.files.map((f) => f.id).sort()
+  //       //   ),
+  //       //   isEqual(newItem.files, oldItem.files)
+  //       // );
+  //       if (!isEqual(newItem.files, oldItem.files)) {
+  //         modified.push(newItem);
+  //       }
+  //     }
+  //   });
+
+  //   return modified;
+  // };
 
   const fetchUserIntegrationsHelper = async () => {
     try {
@@ -74,12 +122,21 @@ const IntegrationModal = ({
           )
         );
 
+        // findModifications(
+        //   delta, // responseBody['active_integrations'],
+        //   activeIntegrationsRef.current
+        // );
+
+        // console.log('NEW ADDITIONS', newAdditions);
+        // console.log('MODIFICATIONS', modifications);
+
         if (firstFetchCompletedRef.current) {
           if (newAdditions.length > 0) {
             const {
               data_source_type,
               data_source_external_id,
               objects,
+              files,
               sync_status,
             } = newAdditions[0];
             onSuccess({
@@ -87,7 +144,8 @@ const IntegrationModal = ({
               data: [
                 {
                   data_source_external_id,
-                  objects: data_source_type === 'GOOGLE_DOCS' ? [] : objects,
+                  objects:
+                    data_source_type === 'GOOGLE_DOCS' ? [] : files || objects,
                   sync_status,
                   tags: tags,
                 },
@@ -125,7 +183,9 @@ const IntegrationModal = ({
 
         setActiveIntegrations(responseBody['active_integrations']);
       }
-    } catch (error) {}
+    } catch (error) {
+      // console.log(error);
+    }
   };
 
   useEffect(() => {
