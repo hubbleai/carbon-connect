@@ -12,6 +12,7 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
+  console.log('integrationData', integrationData);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoadedSyncedFiles, setIsLoadedSyncedFiles] = useState(false);
@@ -50,7 +51,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
         {
           method: 'POST',
           body: JSON.stringify({
-            file_objects: integrationData.objects.filter((fileData) =>
+            file_objects: integrationData.files.filter((fileData) =>
               selectedFiles.includes(fileData.id)
             ),
             tags: tags,
@@ -72,7 +73,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
           status: 200,
           data: [
             {
-              objects: integrationData.objects.filter((fileData) =>
+              objects: integrationData.files.filter((fileData) =>
                 selectedFiles.includes(fileData.id)
               ),
               data_source_external_id: integrationData.data_source_external_id,
@@ -157,7 +158,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
           {!syncResponse && (
             <>
               <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
-                {integrationData.objects.map((fileData) => {
+                {integrationData.files.map((fileData) => {
                   const isSelected = selectedFiles.includes(fileData.id);
 
                   return (
