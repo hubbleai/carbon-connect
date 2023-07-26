@@ -219,7 +219,11 @@ const IntegrationModal = ({
   return (
     <Dialog.Root
       onOpenChange={(modalOpenState) => {
-        if (!modalOpenState) setActiveStep(0);
+        if (!modalOpenState) {
+          if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
+            setActiveStep(entryPoint);
+          else setActiveStep(0);
+        }
         if (setOpen) setOpen(modalOpenState);
         setShowModal(modalOpenState);
       }}
