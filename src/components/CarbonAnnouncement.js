@@ -31,9 +31,9 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     processedIntegrations,
     entryPointIntegrationObject,
     handleServiceOAuthFlow,
+    whiteLabelingData,
   } = useCarbonAuth();
 
-  // console.log('entryPointIntegrationObject', entryPointIntegrationObject);
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
       <div className="cc-flex cc-pt-8 -cc-space-x-2">
@@ -42,30 +42,43 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           alt={`${orgName} Icon`}
           className="cc-rounded-full cc-border cc-w-16"
         />
-
-        <img
-          src={carbonLogo}
-          alt="Carbon Icon"
-          className="cc-rounded-full cc-border cc-w-16"
-        ></img>
+        {whiteLabelingData[entryPoint] ? null : (
+          <img
+            src={carbonLogo}
+            alt="Carbon Icon"
+            className="cc-rounded-full cc-border cc-w-16"
+          ></img>
+        )}
       </div>
-      <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-flex-col cc-items-center">
-        <div className="cc-flex cc-space-x-1">
-          <span className="cc-font-normal">{orgName}</span>
-          <span> uses </span>
-          <span className="cc-font-normal">Carbon</span>
-        </div>
-        <p>
-          to connect{' '}
-          {entryPointIntegrationObject?.announcementName ? (
+      {whiteLabelingData[entryPoint] ? (
+        <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-justify-center cc-items-center cc-text-center">
+          <div>
+            <span className="cc-font-normal">{orgName}</span>
+            <span> wants to access your data on </span>
             <span className="cc-font-normal">
               {entryPointIntegrationObject?.name}
             </span>
-          ) : (
-            <span>your data</span>
-          )}
-        </p>
-      </div>
+          </div>
+        </div>
+      ) : (
+        <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-justify-center cc-items-center cc-text-center">
+          <div>
+            <span className="cc-font-normal">{orgName}</span>
+            <span> uses </span>
+            <span className="cc-font-normal">Carbon</span>
+            <p>
+              to connect{' '}
+              {entryPointIntegrationObject?.announcementName ? (
+                <span className="cc-font-normal">
+                  {entryPointIntegrationObject?.name}
+                </span>
+              ) : (
+                <span>your data</span>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
 
       <ul className="">
         <Feature Icon={HiLockClosed} title="Private">

@@ -126,6 +126,7 @@ export const AuthProvider = ({
   const [processedIntegrations, setProcessedIntegrations] = useState([]);
   const [entryPointIntegrationObject, setEntryPointIntegrationObject] =
     useState(null);
+  const [whiteLabelingData, setWhiteLabelingData] = useState([]);
 
   const authenticatedFetch = async (url, options = {}, retry = true) => {
     try {
@@ -159,9 +160,24 @@ export const AuthProvider = ({
       setLoading(true);
       const response = await tokenFetcher();
       setAccessToken(response.access_token);
+
+      const whiteLabelingResponse = await authenticatedFetch(
+        `${BASE_URL[environment]}/auth/v1/white_labeling`,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: `Token ${response.access_token}`,
+          },
+        }
+      );
+      const whiteLabelingResponseData = await whiteLabelingResponse.json();
+      setWhiteLabelingData(whiteLabelingResponseData);
+
       setLoading(false);
     } catch (err) {
       setError(true);
+      console.log('Error: ', err);
     }
   };
 
@@ -230,6 +246,8 @@ export const AuthProvider = ({
     }
   }, []);
 
+  useEffect(() => {}, [processedIntegrations]);
+
   const contextValues = {
     accessToken,
     setAccessToken,
@@ -257,6 +275,7 @@ export const AuthProvider = ({
     defaultOverlapSize: 20,
     maxFileCount,
     handleServiceOAuthFlow,
+    whiteLabelingData,
   };
 
   return (

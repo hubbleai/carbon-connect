@@ -213,8 +213,10 @@ const IntegrationModal = ({
   }, [accessToken, showModal]);
 
   useEffect(() => {
-    if (showModal) fetchTokens();
-  }, [showModal]);
+    if (!accessToken) {
+      fetchTokens();
+    }
+  }, [accessToken]);
 
   return (
     <Dialog.Root
