@@ -36,7 +36,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
   } = useCarbonAuth();
 
   const isEntryPoint = Boolean(entryPoint);
-  const isWhiteLabeledOrg = Boolean(whiteLabelingData?.white_labeled);
+  const isWhiteLabeledOrg = Boolean(whiteLabelingData?.remove_branding);
   const isWhiteLabeledEntryPoint = Boolean(
     isEntryPoint &&
       whiteLabelingData?.integrations &&
@@ -80,7 +80,6 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           />
         )}
       </div>
-
       {isWhiteLabeledOrg ? (
         <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-justify-center cc-items-center cc-text-center">
           <div>
@@ -112,7 +111,6 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           </div>
         </div>
       )}
-
       <ul className="">
         <Feature Icon={HiLockClosed} title="Private">
           Your credentials will never be made available to {orgName}.
@@ -121,7 +119,6 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           You can select to give {orgName} access to specific information only.
         </Feature>
       </ul>
-
       <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-items-center">
         {isWhiteLabeledOrg ? (
           <p className="cc-text-xs cc-text-center cc-text-gray-400">
