@@ -28,11 +28,41 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     primaryBackgroundColor,
     primaryTextColor,
     entryPoint,
-    processedIntegrations,
     entryPointIntegrationObject,
     handleServiceOAuthFlow,
     whiteLabelingData,
+    tosURL,
+    privacyPolicyURL,
   } = useCarbonAuth();
+
+  const isEntryPoint = Boolean(entryPoint);
+  const isWhiteLabeledOrg = Boolean(whiteLabelingData?.white_labeled);
+  const isWhiteLabeledEntryPoint = Boolean(
+    isEntryPoint &&
+      whiteLabelingData?.integrations &&
+      whiteLabelingData?.integrations?.[entryPoint]
+  );
+
+  const handleButtonClick = () => {
+    if (entryPointIntegrationObject?.active) {
+      if (!entryPointIntegrationObject?.requiresOAuth) {
+        setActiveStep(entryPointIntegrationObject.data_source_type);
+      } else {
+        if (entryPointIntegrationObject?.data_source_type === 'GOOGLE_DOCS') {
+          let googleDocsIndex = activeIntegrations.findIndex(
+            (integration) => integration.data_source_type === 'GOOGLE_DOCS'
+          );
+          if (googleDocsIndex !== -1) {
+            setActiveStep(entryPointIntegrationObject?.data_source_type);
+            return;
+          }
+        }
+        handleServiceOAuthFlow(entryPointIntegrationObject);
+      }
+    } else {
+      setActiveStep(1);
+    }
+  };
 
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
@@ -42,22 +72,25 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           alt={`${orgName} Icon`}
           className="cc-rounded-full cc-border cc-w-16"
         />
-        {whiteLabelingData[entryPoint] ? null : (
+        {!isWhiteLabeledOrg && (
           <img
             src={carbonLogo}
             alt="Carbon Icon"
             className="cc-rounded-full cc-border cc-w-16"
-          ></img>
+          />
         )}
       </div>
-      {whiteLabelingData[entryPoint] ? (
+
+      {isWhiteLabeledOrg ? (
         <div className="cc-text-xl cc-font-light cc-w-full cc-flex cc-justify-center cc-items-center cc-text-center">
           <div>
             <span className="cc-font-normal">{orgName}</span>
-            <span> wants to access your data on </span>
-            <span className="cc-font-normal">
-              {entryPointIntegrationObject?.name}
-            </span>
+            <span> wants to access your data </span>
+            {entryPointIntegrationObject?.announcementName && (
+              <span className="cc-font-normal">
+                {` on ${entryPointIntegrationObject?.name}`}
+              </span>
+            )}
           </div>
         </div>
       ) : (
@@ -90,58 +123,60 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
       </ul>
 
       <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-items-center">
-        <p className="cc-text-xs cc-text-center cc-text-gray-400">
-          {`By continuing, you agree to Carbon's`}
-          <br></br>
-          <a
-            href="https://carbon.ai/terms"
-            target="_blank"
-            className="cc-cursor-pointer"
-          >
-            <u>Terms of Service</u>
-          </a>
-          {` and `}
-          <a
-            href="https://carbon.ai/privacy"
-            target="_blank"
-            className="cc-cursor-pointer"
-          >
-            <u>Privacy Policy</u>
-          </a>
-          {`.`}
-        </p>
+        {isWhiteLabeledOrg ? (
+          <p className="cc-text-xs cc-text-center cc-text-gray-400">
+            {`By continuing, you agree to ${
+              isWhiteLabeledEntryPoint ? orgName + "'s" : 'the following'
+            }`}
+
+            <br></br>
+            <a
+              href={tosURL || 'https://carbon.ai/terms'}
+              target="_blank"
+              className="cc-cursor-pointer"
+            >
+              <u>Terms of Service</u>
+            </a>
+            {` and `}
+            <a
+              href={privacyPolicyURL || 'https://carbon.ai/privacy'}
+              target="_blank"
+              className="cc-cursor-pointer"
+            >
+              <u>Privacy Policy</u>
+            </a>
+            {`.`}
+          </p>
+        ) : (
+          <p className="cc-text-xs cc-text-center cc-text-gray-400">
+            {`By continuing, you agree to Carbon's`}
+            <br></br>
+            <a
+              href="https://carbon.ai/terms"
+              target="_blank"
+              className="cc-cursor-pointer"
+            >
+              <u>Terms of Service</u>
+            </a>
+            {` and `}
+            <a
+              href="https://carbon.ai/privacy"
+              target="_blank"
+              className="cc-cursor-pointer"
+            >
+              <u>Privacy Policy</u>
+            </a>
+            {`.`}
+          </p>
+        )}
+
         <button
           className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
           style={{
             backgroundColor: primaryBackgroundColor,
             color: primaryTextColor,
           }}
-          onClick={() => {
-            if (entryPointIntegrationObject?.active) {
-              if (!entryPointIntegrationObject?.requiresOAuth) {
-                setActiveStep(entryPointIntegrationObject.data_source_type);
-              } else {
-                if (
-                  entryPointIntegrationObject?.data_source_type ===
-                  'GOOGLE_DOCS'
-                ) {
-                  let googleDocsIndex = activeIntegrations.findIndex(
-                    (integration) =>
-                      integration.data_source_type === 'GOOGLE_DOCS'
-                  );
-                  if (googleDocsIndex !== -1) {
-                    setActiveStep(
-                      entryPointIntegrationObject?.data_source_type
-                    );
-                    return;
-                  }
-                }
-                handleServiceOAuthFlow(entryPointIntegrationObject);
-              }
-            } else {
-              setActiveStep(1);
-            }
-          }}
+          onClick={handleButtonClick}
         >
           <p>Connect</p>
         </button>

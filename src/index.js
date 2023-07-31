@@ -46,50 +46,6 @@ const IntegrationModal = ({
 
   const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
 
-  // const compareNestedArrayObjects = (a, b) => {
-  //   console.log(
-  //     'A:',
-  //     a.data_source_external_id,
-  //     a.files,
-  //     'B:',
-  //     b.data_source_external_id,
-  //     b.files
-  //   );
-  //   if (a.files && b.files) {
-  //     return isEqual(
-  //       sortBy(a.files, JSON.stringify),
-  //       sortBy(b.files, JSON.stringify)
-  //     );
-  //   }
-  //   return isEqual(a, b);
-  // };
-
-  // const findModifications = (newArray, oldArray) => {
-  //   const modified = [];
-
-  //   newArray.forEach((newItem) => {
-  //     const oldItem = oldArray.find(
-  //       (oldItem) => oldItem.id === newItem.id && oldItem.files
-  //     );
-  //     if (oldItem) {
-  //       // console.log("New Item's Files", newItem.files.map((f) => f.id).sort());
-  //       // console.log("Old Item's Files", oldItem.files.map((f) => f.id).sort());
-  //       // console.log(
-  //       //   isEqual(
-  //       //     newItem.files.map((f) => f.id).sort(),
-  //       //     oldItem.files.map((f) => f.id).sort()
-  //       //   ),
-  //       //   isEqual(newItem.files, oldItem.files)
-  //       // );
-  //       if (!isEqual(newItem.files, oldItem.files)) {
-  //         modified.push(newItem);
-  //       }
-  //     }
-  //   });
-
-  //   return modified;
-  // };
-
   const fetchUserIntegrationsHelper = async () => {
     try {
       const userIntegrationsResponse = await authenticatedFetch(
@@ -350,6 +306,8 @@ const CarbonConnect = ({
   setOpen = null,
   chunkSize = 1500,
   overlapSize = 20,
+  tosURL = 'https://carbon.ai/terms',
+  privacyPolicyURL = 'https://carbon.ai/privacy',
 }) => {
   return (
     <AuthProvider
@@ -370,6 +328,8 @@ const CarbonConnect = ({
       allowMultipleFiles={allowMultipleFiles}
       chunkSize={chunkSize}
       overlapSize={overlapSize}
+      tosURL={tosURL}
+      privacyPolicyURL={privacyPolicyURL}
     >
       <IntegrationModal
         orgName={orgName}

@@ -63,40 +63,6 @@ const integrationsList = [
     data_source_type: 'LOCAL_FILES',
     requiresOAuth: false,
   },
-  // {
-  //   active: true,
-  //   name: 'Google Drive',
-  //   subpath: 'google',
-  //   id: 'googleDrive',
-  //   description: 'Lets your users connect their Google Docs to Carbon.',
-  //   scope: 'drive',
-  //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-  // },
-  // {
-  //   active: true,
-  //   name: 'Gmail',
-  //   subpath: 'google',
-  //   id: 'gmail',
-  //   description: 'Lets your users connect their Google Docs to Carbon.',
-  //   scope: 'gmail',
-  //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-  // },
-  // {
-  //   active: false,
-  //   name: 'Slack',
-  //   subpath: 'slack',
-  //   id: 'slack',
-  //   description: 'Lets your users connect their Slack accounts to Carbon.',
-  //   icon: <SiSlack className="cc-w-7 cc-h-7" />,
-  // },
-  // {
-  //   active: false,
-  //   name: 'Discord',
-  //   subpath: 'discord',
-  //   id: 'discord',
-  //   description: 'Lets your users connect their Discord accounts to Carbon.',
-  //   icon: <BsDiscord className="cc-w-7 cc-h-7" />,
-  // },
 ];
 
 export const AuthProvider = ({
@@ -119,6 +85,8 @@ export const AuthProvider = ({
   chunkSize,
   overlapSize,
   maxFileCount,
+  tosURL,
+  privacyPolicyURL,
 }) => {
   const [accessToken, setAccessToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -126,7 +94,7 @@ export const AuthProvider = ({
   const [processedIntegrations, setProcessedIntegrations] = useState([]);
   const [entryPointIntegrationObject, setEntryPointIntegrationObject] =
     useState(null);
-  const [whiteLabelingData, setWhiteLabelingData] = useState([]);
+  const [whiteLabelingData, setWhiteLabelingData] = useState(null);
 
   const authenticatedFetch = async (url, options = {}, retry = true) => {
     try {
@@ -276,6 +244,8 @@ export const AuthProvider = ({
     maxFileCount,
     handleServiceOAuthFlow,
     whiteLabelingData,
+    tosURL,
+    privacyPolicyURL,
   };
 
   return (
