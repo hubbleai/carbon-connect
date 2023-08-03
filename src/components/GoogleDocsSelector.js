@@ -12,7 +12,6 @@ import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
 
 const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
-  console.log('integrationData', integrationData);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoadedSyncedFiles, setIsLoadedSyncedFiles] = useState(false);
@@ -54,6 +53,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
             file_objects: integrationData.files.filter((fileData) =>
               selectedFiles.includes(fileData.id)
             ),
+            organization_user_data_source_id: integrationData.id,
             tags: tags,
             chunk_size: chunkSize,
             chunk_overlap: overlapSize,
@@ -124,6 +124,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
 
       if (syncedFileIdsResponse.status === 200) {
         const syncedFileIdsData = await syncedFileIdsResponse.json();
+        console.log('Synced Files Data: ', syncedFileIdsData);
         const alreadySyncedFiles = syncedFileIdsData.results.map(
           (fileData) => fileData.external_file_id
         );

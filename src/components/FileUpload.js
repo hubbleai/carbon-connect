@@ -10,7 +10,7 @@ import {
   HiUpload,
   HiX,
 } from 'react-icons/hi';
-import { AiOutlineCloudUpload, AiOutlineFileUnknown } from 'react-icons/ai';
+import { AiOutlineFileMarkdown, AiOutlineFileUnknown } from 'react-icons/ai';
 import {
   BsFiletypeCsv,
   BsFiletypePdf,
@@ -419,6 +419,8 @@ function FileUpload({ setActiveStep }) {
                         <BsFiletypeDocx className="cc-w-10 cc-h-10 cc-mx-auto" />
                       ) : file.name.split('.').pop() === 'pptx' ? (
                         <BsFiletypePptx className="cc-w-10 cc-h-10 cc-mx-auto" />
+                      ) : file.name.split('.').pop() === 'md' ? (
+                        <AiOutlineFileMarkdown className="cc-w-10 cc-h-10 cc-mx-auto" />
                       ) : (
                         <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />
                       )}

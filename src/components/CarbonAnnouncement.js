@@ -86,9 +86,12 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
             <span className="cc-font-normal">{orgName}</span>
             <span> wants to access your data </span>
             {entryPointIntegrationObject?.announcementName && (
-              <span className="cc-font-normal">
-                {` on ${entryPointIntegrationObject?.name}`}
-              </span>
+              <>
+                <span>on</span>
+                <span className="cc-font-normal">
+                  {` ${entryPointIntegrationObject?.name}`}
+                </span>
+              </>
             )}
           </div>
         </div>

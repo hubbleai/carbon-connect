@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 const AuthContext = createContext();
-import { BsGoogle, BsCloudUpload } from 'react-icons/bs';
+import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
@@ -8,14 +8,14 @@ import { BASE_URL } from '../constants';
 
 const integrationsList = [
   {
-    id: 'NOTION',
-    subpath: 'notion',
-    name: 'Notion',
-    description: 'Lets your users connect their Notion accounts to Carbon.',
-    announcementName: 'to connect Notion',
-    icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
+    id: 'DROPBOX',
+    subpath: 'dropbox',
+    name: 'Dropbox',
+    description: 'Lets your users connect their Dropbox accounts to Carbon.',
+    announcementName: 'to connect Dropbox',
+    icon: <BsDropbox className="cc-w-8 cc-h-8" />,
     active: true,
-    data_source_type: 'NOTION',
+    data_source_type: 'DROPBOX',
     requiresOAuth: true,
   },
   {
@@ -39,6 +39,17 @@ const integrationsList = [
     icon: <FaIntercom className="cc-w-7 cc-h-7" />,
     active: true,
     data_source_type: 'INTERCOM',
+    requiresOAuth: true,
+  },
+  {
+    id: 'NOTION',
+    subpath: 'notion',
+    name: 'Notion',
+    description: 'Lets your users connect their Notion accounts to Carbon.',
+    announcementName: 'to connect Notion',
+    icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
+    active: true,
+    data_source_type: 'NOTION',
     requiresOAuth: true,
   },
   {

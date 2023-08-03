@@ -1,6 +1,6 @@
 {
   "name": "carbon-connect",
-  "version": "1.4.12",
+  "version": "1.4.13",
   "description": "",
   "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
