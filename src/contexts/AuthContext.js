@@ -156,7 +156,7 @@ export const AuthProvider = ({
       setLoading(false);
     } catch (err) {
       setError(true);
-      console.log('Error: ', err);
+      // console.log('Error: ', err);
     }
   };
 

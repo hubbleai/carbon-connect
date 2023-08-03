@@ -124,7 +124,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
 
       if (syncedFileIdsResponse.status === 200) {
         const syncedFileIdsData = await syncedFileIdsResponse.json();
-        console.log('Synced Files Data: ', syncedFileIdsData);
+        // console.log('Synced Files Data: ', syncedFileIdsData);
         const alreadySyncedFiles = syncedFileIdsData.results.map(
           (fileData) => fileData.external_file_id
         );
