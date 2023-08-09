@@ -79,7 +79,17 @@ function WebScraper({
         return;
       }
 
+      const requestObject = validUrls.map((url) => ({
+        url: url,
+        tags: tags,
+        repeat: false,
+        repeat_interval: 0,
+        chunk_size: chunkSize,
+        chunk_overlap: overlapSize,
+      }));
+
       const uploadResponse = await authenticatedFetch(
+        // `${BASE_URL[environment]}/web_scrape`,
         `${BASE_URL[environment]}/integrations/web_scrape`,
         {
           method: 'POST',
@@ -87,6 +97,7 @@ function WebScraper({
             Authorization: `Token ${accessToken}`,
             'Content-Type': 'application/json',
           },
+          // body: JSON.stringify(requestObject),
           body: JSON.stringify({
             urls: validUrls,
             tags: tags,

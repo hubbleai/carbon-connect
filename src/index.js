@@ -162,9 +162,9 @@ const IntegrationModal = ({
     if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
+      // const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
       // Make sure to clear the interval when the component unmounts
-      return () => clearInterval(intervalId);
+      // return () => clearInterval(intervalId);
     }
   }, [accessToken, showModal]);
 
