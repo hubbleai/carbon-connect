@@ -93,7 +93,7 @@ function WebScraper({
             repeat: false,
             repeat_interval: 0,
             chunk_size: chunkSize,
-            overlap_size: overlapSize,
+            chunk_overlap: overlapSize,
           }),
         }
       );

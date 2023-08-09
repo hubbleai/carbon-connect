@@ -216,9 +216,9 @@ const IntegrationModal = ({
 
           {activeStep === 'GOOGLE_DOCS' && (
             <GoogleDocsSelector
-              integrationData={activeIntegrations.find(
-                (i) => i.data_source_type === 'GOOGLE_DOCS'
-              )}
+              integrationData={activeIntegrations
+                .filter((i) => i.data_source_type === 'GOOGLE_DOCS')
+                .pop()}
               setActiveStep={setActiveStep}
             />
           )}

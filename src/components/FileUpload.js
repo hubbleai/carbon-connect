@@ -24,7 +24,6 @@ import { LuLoader2 } from 'react-icons/lu';
 import '../index.css';
 import { BASE_URL } from '../constants';
 import { useCarbonAuth } from '../contexts/AuthContext';
-import { set } from 'lodash';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
@@ -296,7 +295,7 @@ function FileUpload({ setActiveStep }) {
           {((!allowMultipleFiles && files.length === 0) ||
             allowMultipleFiles) && (
             <FileUploader
-              multiple={filesConfig.allowMultipleFiles || allowMultipleFiles}
+              multiple={allowMultipleFiles}
               handleChange={onFilesSelected}
               name="file"
               types={
