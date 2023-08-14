@@ -91,6 +91,7 @@ function WebScraper({
       const uploadResponse = await authenticatedFetch(
         // `${BASE_URL[environment]}/web_scrape`,
         `${BASE_URL[environment]}/integrations/web_scrape`,
+        // `${BASE_URL[environment]}/web_scrape`,
         {
           method: 'POST',
           headers: {

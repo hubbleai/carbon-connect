@@ -6,6 +6,9 @@ import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
 import { BASE_URL } from '../constants';
 
+const DEFAAULT_CHUNK_SIZE = 1500;
+const DEFAAULT_OVERLAP_SIZE = 20;
+
 const integrationsList = [
   {
     id: 'DROPBOX',
@@ -162,10 +165,10 @@ export const AuthProvider = ({
 
   const handleServiceOAuthFlow = async (service) => {
     try {
-      const chunkSize =
-        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
-      const overlapSize =
-        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+      const chunkSizeValue =
+        service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
+      const overlapSizeValue =
+        service?.overlapSize || overlapSize || DEFAAULT_OVERLAP_SIZE;
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -178,8 +181,8 @@ export const AuthProvider = ({
             tags: tags,
             scope: service?.scope,
             service: service?.data_source_type,
-            chunk_size: chunkSize,
-            chunk_overlap: overlapSize,
+            chunk_size: chunkSizeValue,
+            chunk_overlap: overlapSizeValue,
           }),
         }
       );

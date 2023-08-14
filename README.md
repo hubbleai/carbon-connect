@@ -112,18 +112,18 @@ const tokenFetcher = async () => {
     },
     {
       id: 'NOTION',
-      chunkSize: 150,
-      overlapSize: 15,
+      chunkSize: 1500,
+      overlapSize: 20,
     },
     {
       id: 'WEB_SCRAPER',
-      chunkSize: 10,
-      overlapSize: 2,
+      chunkSize: 1500,
+      overlapSize: 20,
     },
     {
       id: 'GOOGLE_DOCS',
       chunkSize: 1000,
-      overlapSize: 35,
+      overlapSize: 20,
     },
   ]}
   onSuccess={(data) => console.log('Data on Success: ', data)}
