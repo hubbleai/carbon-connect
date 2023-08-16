@@ -30,7 +30,7 @@ function WebScraper({
   secondaryBackgroundColor,
   secondaryTextColor,
 }) {
-  const MAX_URLS = 5;
+  const MAX_URLS = 1;
   const [urls, setUrls] = useState(['']);
   const [scrapingResponse, setScrapingResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
