@@ -100,8 +100,11 @@ const IntegrationModal = ({
               data: [
                 {
                   data_source_external_id,
-                  objects:
-                    data_source_type === 'GOOGLE_DOCS' ? [] : files || objects,
+                  objects: ['GOOGLE_DOCS', 'GOOGLE_DRIVE'].includes(
+                    data_source_type
+                  )
+                    ? []
+                    : files || objects,
                   sync_status,
                   tags: tags,
                 },
@@ -124,8 +127,11 @@ const IntegrationModal = ({
               data: [
                 {
                   data_source_external_id,
-                  objects:
-                    data_source_type === 'GOOGLE_DOCS' ? [] : files || objects,
+                  objects: ['GOOGLE_DOCS', 'GOOGLE_DRIVE'].includes(
+                    data_source_type
+                  )
+                    ? []
+                    : files || objects,
                   sync_status,
                 },
               ],
@@ -217,7 +223,7 @@ const IntegrationModal = ({
           {activeStep === 'GOOGLE_DOCS' && (
             <GoogleDocsSelector
               integrationData={activeIntegrations
-                .filter((i) => i.data_source_type === 'GOOGLE_DOCS')
+                .filter((i) => i.data_source_type === 'GOOGLE_DRIVE')
                 .pop()}
               setActiveStep={setActiveStep}
             />

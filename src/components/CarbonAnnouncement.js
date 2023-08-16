@@ -48,6 +48,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
       if (!entryPointIntegrationObject?.requiresOAuth) {
         setActiveStep(entryPointIntegrationObject.data_source_type);
       } else {
+        // TODO: Remove this block once all the users migrate to the new entry point i.e. GOOGLE_DRIVE
         if (entryPointIntegrationObject?.data_source_type === 'GOOGLE_DOCS') {
           let googleDocsIndex = activeIntegrations.findIndex(
             (integration) => integration.data_source_type === 'GOOGLE_DOCS'

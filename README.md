@@ -121,7 +121,7 @@ const tokenFetcher = async () => {
       overlapSize: 20,
     },
     {
-      id: 'GOOGLE_DOCS',
+      id: 'GOOGLE_DRIVE',
       chunkSize: 1000,
       overlapSize: 20,
     },
@@ -191,7 +191,7 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
 
-4. `GOOGLE_DOCS`: This integration lets you upload files from your Google Docs. You can pass the following configuration for this integration:
+4. `GOOGLE_DRIVE`: This integration lets you upload files from your Google Docs. You can pass the following configuration for this integration:
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
 
@@ -204,7 +204,7 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
   status: 200,
   data: [Object 1, Object 2, ...],
   action: <ACTION_TYPE>,  `ACTION_TYPE` can be one of the following: `ADD`, `UPDATE`
-  integration: <INTEGRATION_NAME>, `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DOCS`
+  integration: <INTEGRATION_NAME>, `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DRIVE`
 }
 ```
 
@@ -242,7 +242,7 @@ The `data` field will contain the following information:
   }
 ```
 
-2. For `NOTION` and `GOOGLE_DOCS`: An array containing only one object in the following format
+2. For `NOTION` and `GOOGLE_DRIVE`: An array containing only one object in the following format
 
 ```js
 {

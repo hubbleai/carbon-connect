@@ -90,29 +90,29 @@ function WebScraper({
 
       const uploadResponse = await authenticatedFetch(
         // `${BASE_URL[environment]}/web_scrape`,
-        `${BASE_URL[environment]}/integrations/web_scrape`,
-        // `${BASE_URL[environment]}/web_scrape`,
+        // `${BASE_URL[environment]}/integrations/web_scrape`,
+        `${BASE_URL[environment]}/web_scrape`,
         {
           method: 'POST',
           headers: {
             Authorization: `Token ${accessToken}`,
             'Content-Type': 'application/json',
           },
-          // body: JSON.stringify(requestObject),
-          body: JSON.stringify({
-            urls: validUrls,
-            tags: tags,
-            repeat: false,
-            repeat_interval: 0,
-            chunk_size: chunkSize,
-            chunk_overlap: overlapSize,
-          }),
+          body: JSON.stringify(requestObject),
+          // body: JSON.stringify({
+          //   urls: validUrls,
+          //   tags: tags,
+          //   repeat: false,
+          //   repeat_interval: 0,
+          //   chunk_size: chunkSize,
+          //   chunk_overlap: overlapSize,
+          // }),
         }
       );
 
       if (uploadResponse.status === 200) {
-        const uploadResponseData = await uploadResponse.json();
-        setScrapingResponse(uploadResponseData);
+        // const uploadResponseData = await uploadResponse.json();
+        setScrapingResponse('Scraping request initiated successfully.');
         onSuccess({
           status: 200,
           data: [{ urls: urls, validUrls: validUrls, tags: tags }],
@@ -226,7 +226,9 @@ function WebScraper({
           {scrapingResponse ? (
             <>
               <HiCheckCircle className="cc-text-green-500 cc-w-8 cc-h-8" />
-              <p className="cc-text-center">{scrapingResponse.message}</p>
+              <p className="cc-text-center">
+                {scrapingResponse?.message || scrapingResponse}
+              </p>
             </>
           ) : (
             <>
