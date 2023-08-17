@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
 import carbonLogo from '../carbon.svg';
-import { useCarbonAuth } from '../contexts/AuthContext';
+import { useCarbon } from '../contexts/CarbonContext';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4">
@@ -33,7 +33,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     whiteLabelingData,
     tosURL,
     privacyPolicyURL,
-  } = useCarbonAuth();
+  } = useCarbon();
 
   const isEntryPoint = Boolean(entryPoint);
   const isWhiteLabeledOrg = Boolean(whiteLabelingData?.remove_branding);

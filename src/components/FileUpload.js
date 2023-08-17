@@ -23,7 +23,7 @@ import { LuLoader2 } from 'react-icons/lu';
 
 import '../index.css';
 import { BASE_URL } from '../constants';
-import { useCarbonAuth } from '../contexts/AuthContext';
+import { useCarbon } from '../contexts/CarbonContext';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
@@ -53,7 +53,7 @@ function FileUpload({ setActiveStep }) {
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
-  } = useCarbonAuth();
+  } = useCarbon();
 
   useEffect(() => {
     setTimeout(() => {

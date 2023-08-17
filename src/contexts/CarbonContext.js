@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-const AuthContext = createContext();
+
 import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
@@ -90,7 +90,9 @@ const integrationsList = [
   },
 ];
 
-export const AuthProvider = ({
+const CarbonContext = createContext();
+
+export const CarbonProvider = ({
   children,
   tokenFetcher,
   enabledIntegrations,
@@ -273,18 +275,18 @@ export const AuthProvider = ({
   };
 
   return (
-    <AuthContext.Provider value={contextValues}>
+    <CarbonContext.Provider value={contextValues}>
       {children}
-    </AuthContext.Provider>
+    </CarbonContext.Provider>
   );
 };
 
-export const useCarbonAuth = () => {
-  const context = useContext(AuthContext);
+export const useCarbon = () => {
+  const context = useContext(CarbonContext);
   if (context === undefined) {
-    throw new Error('useCarbonAuth must be used within an AuthProvider');
+    throw new Error('useCarbon must be used within an CarbonProvider');
   }
   return context;
 };
 
-export default AuthContext;
+export default CarbonContext;

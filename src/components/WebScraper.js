@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import '../index.css';
 import { BASE_URL } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
-import { useCarbonAuth } from '../contexts/AuthContext';
+import { useCarbon } from '../contexts/CarbonContext';
 
 const DEFAULT_RECURSION_DEPTH = 3;
 const DEFAULT_MAX_PAGES_TO_SCRAPE = 100;
@@ -46,7 +46,7 @@ function WebScraper({
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
-  } = useCarbonAuth();
+  } = useCarbon();
 
   const submitScrapeRequest = async () => {
     try {

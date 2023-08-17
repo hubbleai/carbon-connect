@@ -9,7 +9,7 @@ import { HiCheckCircle, HiXCircle, HiArrowLeft } from 'react-icons/hi';
 import { BiLoaderAlt } from 'react-icons/bi';
 
 import { BASE_URL } from '../constants';
-import { useCarbonAuth } from '../contexts/AuthContext';
+import { useCarbon } from '../contexts/CarbonContext';
 
 const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -33,7 +33,7 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
     defaultOverlapSize,
     authenticatedFetch,
     onSuccess,
-  } = useCarbonAuth();
+  } = useCarbon();
 
   const syncSelectedFiles = async () => {
     try {

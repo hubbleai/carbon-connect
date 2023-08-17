@@ -5,7 +5,7 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BASE_URL } from '../constants';
-import { useCarbonAuth } from '../contexts/AuthContext';
+import { useCarbon } from '../contexts/CarbonContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const {
@@ -18,7 +18,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
-  } = useCarbonAuth();
+  } = useCarbon();
 
   const handleServiceOAuthFlow = async (service) => {
     try {

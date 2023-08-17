@@ -11,7 +11,7 @@ import FileUpload from './components/FileUpload';
 import { ToastContainer, toast } from 'react-toastify';
 
 import { BASE_URL } from './constants';
-import { AuthProvider, useCarbonAuth } from './contexts/AuthContext';
+import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
 import WebScraper from './components/WebScraper';
 
 const IntegrationModal = ({
@@ -44,7 +44,7 @@ const IntegrationModal = ({
   const activeIntegrationsRef = useRef(activeIntegrations);
   const firstFetchCompletedRef = useRef(false);
 
-  const { accessToken, fetchTokens, authenticatedFetch } = useCarbonAuth();
+  const { accessToken, fetchTokens, authenticatedFetch } = useCarbon();
 
   const fetchUserIntegrationsHelper = async () => {
     try {
@@ -316,7 +316,7 @@ const CarbonConnect = ({
   privacyPolicyURL = 'https://carbon.ai/privacy',
 }) => {
   return (
-    <AuthProvider
+    <CarbonProvider
       tokenFetcher={tokenFetcher}
       enabledIntegrations={enabledIntegrations}
       orgName={orgName}
@@ -357,7 +357,7 @@ const CarbonConnect = ({
       >
         {children}
       </IntegrationModal>
-    </AuthProvider>
+    </CarbonProvider>
   );
 };
 
