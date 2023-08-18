@@ -435,7 +435,7 @@ function WebScraper({
             )}
           </div>
 
-          <p className="cc-flex cc-text-gray-500 cc-pb-2">
+          <p className="cc-flex cc-text-gray-500 cc-pb-2 cc-space-x-2">
             <HiInformationCircle className="cc-w-4 cc-h-4" />
             {activeTab === 'sitemap' ? (
               <span className="text-xs">{`You can select upto ${
