@@ -213,6 +213,7 @@ function WebScraper({
         throw new Error('Error fetching sitemap. Please try again.');
       }
     } catch (error) {
+      setSitemapUrlsLoading(false);
       toast.error('Error fetching sitemap. Please try again.');
       setSitemapUrlsError('Error fetching sitemap. Please try again.');
     }
@@ -314,9 +315,13 @@ function WebScraper({
                     onChange={(e) => handleSitemapUrlChange(e.target.value)}
                   />
                   <div
-                    className="cc-text-white cc-bg-blue-500 cc-text-sm cc-border cc-border-gray-400 cc-w-14 cc-h-10 cc-p-2 cc-cursor-pointer hover:cc-bg-blue-600 cc-items-center"
-                    style={{ borderRadius: '0.375rem' }}
+                    className="cc-text-sm cc-border cc-border-gray-400 cc-w-14 cc-h-10 cc-p-2 cc-cursor-pointer cc-items-center"
                     onClick={handleFetchSitemapUrls}
+                    style={{
+                      backgroundColor: primaryBackgroundColor,
+                      color: primaryTextColor,
+                      borderRadius: '0.375rem',
+                    }}
                   >
                     Fetch
                   </div>
@@ -329,38 +334,15 @@ function WebScraper({
                     </div>
                   )}
                   {sitemapUrlsError && (
-                    <div className="cc-h-full cc-w-full cc-items-center cc-justify-center cc-flex">
-                      <HiXCircle className="cc-text-red-500 cc-w-8 cc-h-8" />
-                      <p className="cc-text-center">{sitemapUrlsError}</p>
-
-                      <button
-                        className={`cc-w-fit cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2 cc-px-4`}
-                        style={{
-                          backgroundColor: secondaryBackgroundColor,
-                          color: secondaryTextColor,
-                        }}
-                        onClick={handleFetchSitemapUrls}
-                      >
-                        <HiPlus className="inline-block mr-2" />
-                        Retry
-                      </button>
-
-                      <button
-                        className={`cc-w-fit cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2 cc-px-4`}
-                        style={{
-                          backgroundColor: secondaryBackgroundColor,
-                          color: secondaryTextColor,
-                        }}
-                        onClick={() => setSitemapUrlsError(null)}
-                      >
-                        <HiPlus className="inline-block mr-2" />
-                        Cancel
-                      </button>
+                    <div className="cc-h-full cc-w-full cc-items-center cc-justify-center cc-flex cc-flex-col cc-pt-8">
+                      <div className="cc-flex cc-w-full">
+                        <HiXCircle className="cc-text-red-500 cc-w-6 cc-h-6" />
+                        <p className="cc-text-center">{sitemapUrlsError}</p>
+                      </div>
                     </div>
                   )}
                   {sitemapUrls.length > 0 && (
                     <>
-                      {/* // Header for the list of URLs scraped from the sitemap. */}
                       <div className="cc-flex cc-flex-row cc-items-center cc-w-full cc-h-10 cc-p-2 cc-bg-gray-200 cc-space-x-2">
                         <input
                           type="checkbox"
@@ -393,9 +375,6 @@ function WebScraper({
                           URLs
                         </p>
                       </div>
-                      {/* // List of URLs displays here along with a checkbox for
-                      each URL. Selecting a URL will add it to the list of URLs 
-                      to be scraped. */}
                       <div className="cc-flex cc-flex-col cc-justify-start cc-h-64 cc-items-start cc-w-full cc-space-y-4">
                         {sitemapUrls.map((url, idx) => (
                           <div

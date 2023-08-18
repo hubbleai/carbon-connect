@@ -32,6 +32,7 @@ const IntegrationModal = ({
   entryPoint = null,
   open,
   setOpen,
+  alwaysOpen,
 }) => {
   const [activeStep, setActiveStep] = useState(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -183,6 +184,7 @@ const IntegrationModal = ({
   return (
     <Dialog.Root
       onOpenChange={(modalOpenState) => {
+        if (alwaysOpen) return;
         if (!modalOpenState) {
           if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
             setActiveStep(entryPoint);
@@ -191,7 +193,7 @@ const IntegrationModal = ({
         if (setOpen) setOpen(modalOpenState);
         setShowModal(modalOpenState);
       }}
-      open={showModal}
+      open={alwaysOpen ? true : showModal}
     >
       <Dialog.Trigger asChild>
         {setOpen ? null : children ? (
@@ -314,6 +316,7 @@ const CarbonConnect = ({
   overlapSize = 20,
   tosURL = 'https://carbon.ai/terms',
   privacyPolicyURL = 'https://carbon.ai/privacy',
+  alwaysOpen = false,
 }) => {
   return (
     <CarbonProvider
@@ -336,6 +339,7 @@ const CarbonConnect = ({
       overlapSize={overlapSize}
       tosURL={tosURL}
       privacyPolicyURL={privacyPolicyURL}
+      alwaysOpen={alwaysOpen}
     >
       <IntegrationModal
         orgName={orgName}
@@ -354,6 +358,7 @@ const CarbonConnect = ({
         allowMultipleFiles={allowMultipleFiles}
         open={open}
         setOpen={setOpen}
+        alwaysOpen={alwaysOpen}
       >
         {children}
       </IntegrationModal>
