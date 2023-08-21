@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { isEqual, differenceWith, sortBy } from 'lodash';
 import './index.css';
 
 import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
@@ -47,6 +46,56 @@ const IntegrationModal = ({
 
   const { accessToken, fetchTokens, authenticatedFetch } = useCarbon();
 
+  const findModifications = (newIntegrations, oldIntegrations) => {
+    const response = [];
+    try {
+      for (let i = 0; i < newIntegrations.length; i++) {
+        const newIntegration = newIntegrations[i];
+        const oldIntegration = oldIntegrations.find(
+          (oldIntegration) => oldIntegration.id === newIntegration.id
+        );
+
+        if (!oldIntegration) {
+          const onSuccessObject = {
+            status: 200,
+            integration: newIntegration.data_source_type,
+            action: 'ADD',
+            data: newIntegration?.synced_files || [],
+          };
+
+          response.push(onSuccessObject);
+          continue;
+        }
+
+        const newFiles = newIntegration?.synced_files || [];
+        const oldFiles = oldIntegration?.synced_files || [];
+
+        const newIds = newFiles?.map((item) => item.id);
+        const oldIds = oldFiles?.map((item) => item.id);
+
+        const newAdditions =
+          newIds?.filter((item) => !oldIds.includes(item)) || [];
+        const newDeletions =
+          oldIds?.filter((item) => !newIds.includes(item)) || [];
+
+        if (newAdditions.length > 0) {
+          const onSuccessObject = {
+            status: 200,
+            integration: newIntegration.data_source_type,
+            action: 'UPDATE',
+            data: newFiles.filter((item) => newAdditions.includes(item.id)),
+          };
+
+          response.push(onSuccessObject);
+        }
+      }
+
+      return response;
+    } catch (error) {
+      // console.log(error);
+    }
+  };
+
   const fetchUserIntegrationsHelper = async () => {
     try {
       const userIntegrationsResponse = await authenticatedFetch(
@@ -61,93 +110,26 @@ const IntegrationModal = ({
 
       if (userIntegrationsResponse.status === 200) {
         const responseBody = await userIntegrationsResponse.json();
-        const delta = differenceWith(
-          responseBody['active_integrations'],
-          activeIntegrationsRef.current,
-          isEqual
-        );
-        const newAdditions = delta.filter(
-          (item) =>
-            !activeIntegrationsRef.current.some(
-              (existingItem) => existingItem.id === item.id
-            )
-        );
-
-        const modifications = delta.filter((item) =>
-          activeIntegrationsRef.current.some(
-            (existingItem) => existingItem.id === item.id
-          )
-        );
-
-        // findModifications(
-        //   delta, // responseBody['active_integrations'],
-        //   activeIntegrationsRef.current
-        // );
-
-        // console.log('NEW ADDITIONS', newAdditions);
-        // console.log('MODIFICATIONS', modifications);
-
         if (firstFetchCompletedRef.current) {
-          if (newAdditions.length > 0) {
-            const {
-              data_source_type,
-              data_source_external_id,
-              objects,
-              files,
-              sync_status,
-            } = newAdditions[0];
-            onSuccess({
-              status: 200,
-              data: [
-                {
-                  data_source_external_id,
-                  objects: ['GOOGLE_DOCS', 'GOOGLE_DRIVE'].includes(
-                    data_source_type
-                  )
-                    ? []
-                    : files || objects,
-                  sync_status,
-                  tags: tags,
-                },
-              ],
-              action: 'ADD',
-              integration: newAdditions[0].data_source_type,
-            });
-          }
+          const integrationModifications = findModifications(
+            responseBody['active_integrations'],
+            activeIntegrationsRef.current
+          );
 
-          if (modifications.length > 0) {
-            const {
-              data_source_type,
-              data_source_external_id,
-              objects,
-              files,
-              sync_status,
-            } = modifications[0];
-            onSuccess({
-              status: 200,
-              data: [
-                {
-                  data_source_external_id,
-                  objects: ['GOOGLE_DOCS', 'GOOGLE_DRIVE'].includes(
-                    data_source_type
-                  )
-                    ? []
-                    : files || objects,
-                  sync_status,
-                },
-              ],
-              action: 'UPDATE',
-              integration: modifications[0].data_source_type,
-            });
+          if (integrationModifications.length > 0) {
+            for (let i = 0; i < integrationModifications.length; i++) {
+              onSuccess(integrationModifications[i]);
+            }
           }
         } else {
           firstFetchCompletedRef.current = true;
         }
-
+        activeIntegrationsRef.current = responseBody['active_integrations'];
         setActiveIntegrations(responseBody['active_integrations']);
+        return;
       }
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 
@@ -169,9 +151,9 @@ const IntegrationModal = ({
     if (accessToken && showModal) {
       fetchUserIntegrations();
       // Then set up the interval to call it every 10 seconds
-      // const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
+      const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
       // Make sure to clear the interval when the component unmounts
-      // return () => clearInterval(intervalId);
+      return () => clearInterval(intervalId);
     }
   }, [accessToken, showModal]);
 
