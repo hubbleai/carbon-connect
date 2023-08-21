@@ -59,6 +59,7 @@ const IntegrationModal = ({
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
+            data_source_external_id: newIntegration.data_source_external_id,
             action: 'ADD',
             data: newIntegration?.synced_files || [],
           };
@@ -84,6 +85,7 @@ const IntegrationModal = ({
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
+            data_source_external_id: newIntegration.data_source_external_id,
             action: 'UPDATE',
             data: newFiles.filter((item) => newAdditions.includes(item.id)),
           };
@@ -131,7 +133,7 @@ const IntegrationModal = ({
         return;
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 
