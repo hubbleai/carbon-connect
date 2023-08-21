@@ -12,7 +12,7 @@ import {
   HiDownload,
   HiInformationCircle,
 } from 'react-icons/hi';
-
+import { FaSitemap, FaLaptop } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -237,34 +237,42 @@ function WebScraper({
               className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
             />
           )}
-          <h1>Web Scraper</h1>
+
+          <div className="cc-flex cc-w-full">
+            <div
+              onClick={() => setActiveTab('webpages')}
+              className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
+                activeTab === 'webpages' ? 'cc-border-b-2' : 'cc-border-b'
+              } cc-items-center cc-space-x-2 cc-justify-center`}
+              style={{
+                borderColor:
+                  activeTab === 'webpages' ? primaryBackgroundColor : 'black',
+                color: activeTab === 'webpages' ? primaryTextColor : 'black',
+              }}
+            >
+              <FaLaptop />
+              <p>Website</p>
+            </div>
+            <div
+              onClick={() => setActiveTab('sitemap')}
+              className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
+                activeTab === 'sitemap' ? 'cc-border-b-2' : 'cc-border-b'
+              } cc-items-center cc-space-x-2 cc-justify-center`}
+              style={{
+                borderColor:
+                  activeTab === 'sitemap' ? primaryBackgroundColor : 'black',
+                color: activeTab === 'sitemap' ? primaryTextColor : 'black',
+              }}
+            >
+              <FaSitemap />
+              <p>Sitemap</p>
+            </div>
+          </div>
         </div>
       </Dialog.Title>
 
       {!scrapingResponse && (
         <>
-          <div className="cc-flex cc-w-full">
-            <div
-              onClick={() => setActiveTab('webpages')}
-              className={`cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
-                activeTab === 'webpages'
-                  ? 'cc-border-b-2 cc-border-blue-500'
-                  : 'cc-border-b cc-border-black'
-              }`}
-            >
-              <p>Websites</p>
-            </div>
-            <div
-              onClick={() => setActiveTab('sitemap')}
-              className={`cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
-                activeTab === 'sitemap'
-                  ? 'cc-border-b-2 cc-border-blue-500'
-                  : 'cc-border-b cc-border-black'
-              }`}
-            >
-              Sitemap
-            </div>
-          </div>
           <div className="py-4 cc-flex cc-grow cc-w-full">
             {activeTab === 'webpages' && (
               <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
@@ -417,13 +425,13 @@ function WebScraper({
           <p className="cc-flex cc-text-gray-500 cc-pb-2 cc-space-x-2">
             <HiInformationCircle className="cc-w-4 cc-h-4" />
             {activeTab === 'sitemap' ? (
-              <span className="text-xs">{`You can select upto ${
+              <span className="text-xs">{`Select a max of ${
                 service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE
-              } pages for scraping.`}</span>
+              } links to sync.`}</span>
             ) : (
-              <span className="text-xs">{`Scrapes upto a maximum of ${
+              <span className="text-xs">{`The first ${
                 service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE
-              } pages per website`}</span>
+              } links per website are synced.`}</span>
             )}
           </p>
           <button

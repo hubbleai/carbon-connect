@@ -67,8 +67,10 @@ const IntegrationModal = ({
           continue;
         }
 
-        const newFiles = newIntegration?.synced_files || [];
-        const oldFiles = oldIntegration?.synced_files || [];
+        const newFiles =
+          newIntegration?.synced_files || newIntegration.files || [];
+        const oldFiles =
+          oldIntegration?.synced_files || oldIntegration.files || [];
 
         const newIds = newFiles?.map((item) => item.id);
         const oldIds = oldFiles?.map((item) => item.id);
