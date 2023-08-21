@@ -242,7 +242,9 @@ function WebScraper({
             <div
               onClick={() => setActiveTab('webpages')}
               className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
-                activeTab === 'webpages' ? 'cc-border-b-2' : 'cc-border-b'
+                activeTab === 'webpages'
+                  ? 'cc-border-b-2 cc-font-bold'
+                  : 'cc-border-b cc-font-normal'
               } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
                 borderColor:
@@ -256,7 +258,9 @@ function WebScraper({
             <div
               onClick={() => setActiveTab('sitemap')}
               className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${
-                activeTab === 'sitemap' ? 'cc-border-b-2' : 'cc-border-b'
+                activeTab === 'sitemap'
+                  ? 'cc-border-b-2 cc-font-bold'
+                  : 'cc-border-b cc-font-normal'
               } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
                 borderColor:
