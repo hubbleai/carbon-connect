@@ -89,7 +89,6 @@ const IntegrationModal = ({
             action: 'UPDATE',
             data: newFiles.filter((item) => newAdditions.includes(item.id)),
           };
-
           response.push(onSuccessObject);
         }
       }

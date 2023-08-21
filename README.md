@@ -248,8 +248,8 @@ The `data` field will contain the following information:
 {
   data_source_external_id: `<Email address of the Notion account>`,
   sync_status: `<Sync status>`,
-  objects: `<Array of objects corresponding to the files / pages selected>`,
-  tags: `<Tags passed in to the CC>`,
+  data: `<Array of objects corresponding to the files / pages selected>`,
+  integration: `<Integration name>`,
 }
 ```
 
