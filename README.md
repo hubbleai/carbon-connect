@@ -242,24 +242,23 @@ The `data` field will contain the following information:
   }
 ```
 
-2. For `NOTION` and `GOOGLE_DRIVE`: An array containing only one object in the following format
-
-```js
-{
-  data_source_external_id: `<Email address of the Notion account>`,
-  sync_status: `<Sync status>`,
-  data: `<Array of objects corresponding to the files / pages selected>`,
-  integration: `<Integration name>`,
-}
-```
-
-3. For `WEB_SCRAPER`: An array containing only one object in the following format
+2. For `WEB_SCRAPER`: An array containing only one object in the following format
 
 ```js
 {
   urls: `<Array of user inputed URLs>`,
   validUrls: `<Array of valid URLs>`,
   tags: `<Tags passed in to the CC>`,
+}
+```
+
+3. For 3rd party integrations: An array containing only one object in the following format
+
+```js
+{
+  data_source_external_id: `<Email address of the Notion account>`,
+  sync_status: `<Sync status>`,
+  data: `<Array of objects corresponding to the files / pages selected>`,
 }
 ```
 

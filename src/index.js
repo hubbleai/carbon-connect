@@ -59,9 +59,12 @@ const IntegrationModal = ({
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
-            data_source_external_id: newIntegration.data_source_external_id,
             action: 'ADD',
-            data: newIntegration?.synced_files || [],
+            data: {
+              data_source_external_id: newIntegration.data_source_external_id,
+              files: newIntegration?.synced_files || [],
+              sync_status: newIntegration.sync_status,
+            },
           };
 
           response.push(onSuccessObject);
@@ -85,9 +88,12 @@ const IntegrationModal = ({
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
-            data_source_external_id: newIntegration.data_source_external_id,
             action: 'UPDATE',
-            data: newFiles.filter((item) => newAdditions.includes(item.id)),
+            data: {
+              data_source_external_id: newIntegration.data_source_external_id,
+              files: newFiles.filter((item) => newAdditions.includes(item.id)),
+              sync_status: newIntegration.sync_status,
+            },
           };
           response.push(onSuccessObject);
         }
