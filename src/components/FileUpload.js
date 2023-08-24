@@ -178,8 +178,13 @@ function FileUpload({ setActiveStep }) {
               topLevelOverlapSize ||
               defaultOverlapSize;
 
+            const skipEmbeddingGeneration =
+              fileTypeConfig?.skipEmbeddingGeneration ||
+              filesConfig?.skipEmbeddingGeneration ||
+              false;
+
             const uploadResponse = await authenticatedFetch(
-              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}`,
+              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}`,
               {
                 method: 'POST',
                 body: formData,

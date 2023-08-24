@@ -182,6 +182,7 @@ export const CarbonProvider = ({
         service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
       const overlapSizeValue =
         service?.overlapSize || overlapSize || DEFAAULT_OVERLAP_SIZE;
+      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -195,6 +196,7 @@ export const CarbonProvider = ({
             service: service?.data_source_type,
             chunk_size: chunkSizeValue,
             chunk_overlap: overlapSizeValue,
+            skip_embedding_generation: skipEmbeddingGeneration,
           }),
         }
       );

@@ -283,6 +283,7 @@ const CarbonConnect = ({
       overlapSize: 10,
       maxFileSize: 20000000,
       allowMultipleFiles: true,
+      skipEmbeddingGeneration: false,
       allowedFileTypes: [
         {
           extension: 'csv',

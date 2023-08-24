@@ -176,24 +176,41 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
    - `maxFileSize`: This is the maximum file size in bytes that is allowed to be uploaded. Defaults to 10 MB.
    - `allowMultipleFiles`: Whether or not to allow multiple files to be uploaded at once. Defaults to `false`.
    - `maxFilesCount`: This is the maximum no.of files that can be uploaded at once. Defaults to 10.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
    - `allowedFileTypes`: This is an array of objects. Each object represents a file type that is allowed to be uploaded. Each object can have the following properties:
      - `extension`: The file extension of the file type. This is a required property.
      - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
      - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+     - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 2. `NOTION`: This integration lets you upload files from your notion account. You can pass the following configuration for this integration
 
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 3. `WEB_SCRAPER`: This integration lets you scrape URLs. You can pass the following configuration for this integration:
 
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 4. `GOOGLE_DRIVE`: This integration lets you upload files from your Google Docs. You can pass the following configuration for this integration:
+
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
+
+5. `INTERCOM`: This integration lets you select pages from your Intercom. You can pass the following configuration for this integration:
+
+   - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
+   - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
+
+6. `DROPBOX`: This integration lets you upload files from your Dropbox. You can pass the following configuration for this integration:
+   - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
+   - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 ## Callback function props
 

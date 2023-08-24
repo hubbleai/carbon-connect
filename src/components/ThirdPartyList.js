@@ -26,6 +26,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
+      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -40,6 +41,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             service: service?.data_source_type,
             chunk_size: chunkSize,
             chunk_overlap: overlapSize,
+            skip_embedding_generation: skipEmbeddingGeneration,
           }),
         }
       );
@@ -49,7 +51,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
-    } catch (err) {}
+    } catch (err) {
+      // console.log('Error: ', err);
+    }
   };
 
   return (
@@ -108,7 +112,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                         handleServiceOAuthFlow(integration);
                       }
                     }
-                  } catch (err) {}
+                  } catch (err) {
+                    // console.log('Error: ', err);
+                  }
                 }}
               >
                 <div className="cc-flex cc-flex-row cc-items-center">

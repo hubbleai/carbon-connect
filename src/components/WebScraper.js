@@ -91,6 +91,7 @@ function WebScraper({
       const recursionDepth = service?.recursionDepth || DEFAULT_RECURSION_DEPTH;
       const maxPagesToScrape =
         service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE;
+      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
 
       setIsLoading(true);
       const urlPattern = new RegExp(
@@ -127,6 +128,7 @@ function WebScraper({
               max_pages_to_scrape: 1,
               chunk_size: chunkSize,
               chunk_overlap: overlapSize,
+              skip_embedding_generation: skipEmbeddingGeneration,
             }))
           : validUrls.map((url) => ({
               url: url,
@@ -135,6 +137,7 @@ function WebScraper({
               max_pages_to_scrape: maxPagesToScrape,
               chunk_size: chunkSize,
               chunk_overlap: overlapSize,
+              skip_embedding_generation: skipEmbeddingGeneration,
             }));
 
       const uploadResponse = await authenticatedFetch(
