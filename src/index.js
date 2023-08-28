@@ -29,22 +29,33 @@ const IntegrationModal = ({
   tags = {},
   environment = 'PRODUCTION',
   entryPoint = null,
-  open,
-  setOpen,
-  alwaysOpen,
+  activeStep,
+  setActiveStep,
+  // open,
+  // setOpen,
+  // alwaysOpen,
 }) => {
-  const [activeStep, setActiveStep] = useState(
-    entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
-      ? entryPoint
-      : 0
-  );
-  const [showModal, setShowModal] = useState(open);
+  // const [activeStep, setActiveStep] = useState(
+  //   entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
+  //     ? entryPoint
+  //     : 0
+  // );
+  // const [showModal, setShowModal] = useState(open);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
   const activeIntegrationsRef = useRef(activeIntegrations);
   const firstFetchCompletedRef = useRef(false);
 
-  const { accessToken, fetchTokens, authenticatedFetch } = useCarbon();
+  const {
+    accessToken,
+    fetchTokens,
+    authenticatedFetch,
+    // open,
+    setOpen,
+    alwaysOpen,
+    showModal,
+    manageModalOpenState,
+  } = useCarbon();
 
   const findModifications = (newIntegrations, oldIntegrations) => {
     const response = [];
@@ -142,9 +153,9 @@ const IntegrationModal = ({
     }
   };
 
-  useEffect(() => {
-    setShowModal(open);
-  }, [open]);
+  // useEffect(() => {
+  //   setShowModal(open);
+  // }, [open]);
 
   useEffect(() => {
     activeIntegrationsRef.current = activeIntegrations;
@@ -174,16 +185,17 @@ const IntegrationModal = ({
 
   return (
     <Dialog.Root
-      onOpenChange={(modalOpenState) => {
-        if (alwaysOpen) return;
-        if (!modalOpenState) {
-          if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
-            setActiveStep(entryPoint);
-          else setActiveStep(0);
-        }
-        if (setOpen) setOpen(modalOpenState);
-        setShowModal(modalOpenState);
-      }}
+      onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
+      //   {
+      //   if (alwaysOpen) return;
+      //   if (!modalOpenState) {
+      //     if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
+      //       setActiveStep(entryPoint);
+      //     else setActiveStep(0);
+      //   }
+      //   if (setOpen) setOpen(modalOpenState);
+      //   setShowModal(modalOpenState);
+      // }}
       open={alwaysOpen ? true : showModal}
     >
       <Dialog.Trigger asChild>
@@ -309,7 +321,14 @@ const CarbonConnect = ({
   tosURL = 'https://carbon.ai/terms',
   privacyPolicyURL = 'https://carbon.ai/privacy',
   alwaysOpen = false,
+  navigateBackURL = null,
 }) => {
+  const [activeStep, setActiveStep] = useState(
+    entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
+      ? entryPoint
+      : 0
+  );
+
   return (
     <CarbonProvider
       tokenFetcher={tokenFetcher}
@@ -331,7 +350,12 @@ const CarbonConnect = ({
       overlapSize={overlapSize}
       tosURL={tosURL}
       privacyPolicyURL={privacyPolicyURL}
+      open={open}
+      setOpen={setOpen}
       alwaysOpen={alwaysOpen}
+      navigateBackURL={navigateBackURL}
+      activeStep={activeStep}
+      setActiveStep={setActiveStep}
     >
       <IntegrationModal
         orgName={orgName}
@@ -351,6 +375,8 @@ const CarbonConnect = ({
         open={open}
         setOpen={setOpen}
         alwaysOpen={alwaysOpen}
+        activeStep={activeStep}
+        setActiveStep={setActiveStep}
       >
         {children}
       </IntegrationModal>

@@ -114,14 +114,33 @@ export const CarbonProvider = ({
   maxFileCount,
   tosURL,
   privacyPolicyURL,
+  open,
+  setOpen,
+  alwaysOpen,
+  navigateBackURL,
+  activeStep,
+  setActiveStep,
 }) => {
-  const [accessToken, setAccessToken] = useState(null);
+  const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const [accessToken, setAccessToken] = useState(null);
   const [processedIntegrations, setProcessedIntegrations] = useState([]);
   const [entryPointIntegrationObject, setEntryPointIntegrationObject] =
     useState(null);
   const [whiteLabelingData, setWhiteLabelingData] = useState(null);
+
+  const manageModalOpenState = (modalOpenState) => {
+    if (alwaysOpen) return;
+    if (!modalOpenState) {
+      if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
+        setActiveStep(entryPoint);
+      else setActiveStep(0);
+    }
+    if (setOpen) setOpen(modalOpenState);
+    setShowModal(modalOpenState);
+  };
 
   const authenticatedFetch = async (url, options = {}, retry = true) => {
     try {
@@ -242,7 +261,9 @@ export const CarbonProvider = ({
     }
   }, []);
 
-  useEffect(() => {}, [processedIntegrations]);
+  useEffect(() => {
+    setShowModal(open);
+  }, [open]);
 
   const contextValues = {
     accessToken,
@@ -274,6 +295,15 @@ export const CarbonProvider = ({
     whiteLabelingData,
     tosURL,
     privacyPolicyURL,
+    open,
+    // setOpen,
+    showModal,
+    setShowModal,
+    alwaysOpen,
+    navigateBackURL,
+    manageModalOpenState,
+    activeStep,
+    setActiveStep,
   };
 
   return (

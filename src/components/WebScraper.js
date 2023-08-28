@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import {
@@ -37,6 +38,9 @@ function WebScraper({
   secondaryTextColor,
 }) {
   const MAX_URLS = 2;
+  const [submitButtonHoveredState, setSubmitButtonHoveredState] =
+    useState(false);
+  const [fetchButtonHoveredState, setFetchButtonHoveredState] = useState(false);
 
   // These will be used to store the list of URLs to be scraped.
   const [urls, setUrls] = useState(['']); // List of URLs to be scraped.
@@ -333,10 +337,14 @@ function WebScraper({
                     className="cc-text-sm cc-border cc-border-gray-400 cc-w-14 cc-h-10 cc-p-2 cc-cursor-pointer cc-items-center"
                     onClick={handleFetchSitemapUrls}
                     style={{
-                      backgroundColor: primaryBackgroundColor,
+                      backgroundColor: fetchButtonHoveredState
+                        ? darkenColor(primaryBackgroundColor, -10)
+                        : primaryBackgroundColor,
                       color: primaryTextColor,
                       borderRadius: '0.375rem',
                     }}
+                    onMouseEnter={() => setFetchButtonHoveredState(true)}
+                    onMouseLeave={() => setFetchButtonHoveredState(false)}
                   >
                     Fetch
                   </div>
@@ -444,10 +452,14 @@ function WebScraper({
           <button
             className={`cc-w-full cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
             style={{
-              backgroundColor: primaryBackgroundColor,
+              backgroundColor: submitButtonHoveredState
+                ? darkenColor(primaryBackgroundColor, -10)
+                : primaryBackgroundColor,
               color: primaryTextColor,
             }}
             onClick={submitScrapeRequest}
+            onMouseEnter={() => setSubmitButtonHoveredState(true)}
+            onMouseLeave={() => setSubmitButtonHoveredState(false)}
           >
             {isLoading ? (
               <LuLoader2 className={`cc-animate-spin`} />

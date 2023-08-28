@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
 import carbonLogo from '../carbon.svg';
 import { useCarbon } from '../contexts/CarbonContext';
+import { darkenColor } from '../utils/helpers';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">
@@ -22,17 +23,25 @@ Feature.propTypes = {
 };
 
 const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
+  const [connectButtonHoveredState, setConnectButtonHoveredState] =
+    useState(false);
+  const [backButtonHoveredState, setBackButtonHoveredState] = useState(false);
+
   const {
     orgName,
     brandIcon,
     primaryBackgroundColor,
     primaryTextColor,
+    secondaryBackgroundColor,
+    secondaryTextColor,
     entryPoint,
     entryPointIntegrationObject,
     handleServiceOAuthFlow,
     whiteLabelingData,
     tosURL,
     privacyPolicyURL,
+    navigateBackURL,
+    manageModalOpenState,
   } = useCarbon();
 
   const isEntryPoint = Boolean(entryPoint);
@@ -63,6 +72,11 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     } else {
       setActiveStep(1);
     }
+  };
+
+  const navigateBack = () => {
+    if (navigateBackURL) window.open(navigateBackURL, '_self');
+    else manageModalOpenState(false);
   };
 
   return (
@@ -174,12 +188,32 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
         <button
           className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
           style={{
-            backgroundColor: primaryBackgroundColor,
+            backgroundColor: connectButtonHoveredState
+              ? darkenColor(primaryBackgroundColor, -10)
+              : primaryBackgroundColor,
+
             color: primaryTextColor,
           }}
           onClick={handleButtonClick}
+          onMouseEnter={() => setConnectButtonHoveredState(true)}
+          onMouseLeave={() => setConnectButtonHoveredState(false)}
         >
           <p>Connect</p>
+        </button>
+
+        <button
+          className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
+          style={{
+            backgroundColor: backButtonHoveredState
+              ? darkenColor(secondaryBackgroundColor, -10)
+              : secondaryBackgroundColor,
+            color: secondaryTextColor,
+          }}
+          onClick={navigateBack}
+          onMouseEnter={() => setBackButtonHoveredState(true)}
+          onMouseLeave={() => setBackButtonHoveredState(false)}
+        >
+          <p>Back</p>
         </button>
       </div>
     </div>

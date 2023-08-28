@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import PropTypes from 'prop-types';
+import { darkenColor } from '../utils/helpers';
 
 import { FileUploader } from 'react-drag-drop-files';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -28,6 +28,8 @@ import { useCarbon } from '../contexts/CarbonContext';
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
 function FileUpload({ setActiveStep }) {
+  const [uploadButtonHoveredState, setUploadButtonHoveredState] =
+    useState(false);
   const [files, setFiles] = useState([]);
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -449,7 +451,9 @@ function FileUpload({ setActiveStep }) {
               <button
                 className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                 style={{
-                  backgroundColor: primaryBackgroundColor,
+                  backgroundColor: uploadButtonHoveredState
+                    ? darkenColor(primaryBackgroundColor, -10)
+                    : primaryBackgroundColor,
                   color: primaryTextColor,
                 }}
                 onClick={() => {
@@ -463,6 +467,8 @@ function FileUpload({ setActiveStep }) {
                   if (files.length > 0) uploadSelectedFiles();
                   else toast.error('Please select a file to upload');
                 }}
+                onMouseEnter={() => setUploadButtonHoveredState(true)}
+                onMouseLeave={() => setUploadButtonHoveredState(false)}
               >
                 {isLoading ? (
                   <LuLoader2 className={`cc-animate-spin`} />
