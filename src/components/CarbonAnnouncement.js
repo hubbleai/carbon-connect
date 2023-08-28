@@ -201,20 +201,17 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           <p>Connect</p>
         </button>
 
-        <button
-          className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
-          style={{
-            backgroundColor: backButtonHoveredState
-              ? darkenColor(secondaryBackgroundColor, -10)
-              : secondaryBackgroundColor,
-            color: secondaryTextColor,
-          }}
-          onClick={navigateBack}
-          onMouseEnter={() => setBackButtonHoveredState(true)}
-          onMouseLeave={() => setBackButtonHoveredState(false)}
-        >
-          <p>Back</p>
-        </button>
+        {navigateBackURL && (
+          <p
+            className="cc-flex cc-flex-row cc-items-center cc-justify-center cc-cursor-pointer cc-text-xs hover:cc-underline"
+            style={{
+              color: secondaryTextColor,
+            }}
+            onClick={navigateBack}
+          >
+            Go Back
+          </p>
+        )}
       </div>
     </div>
   );

@@ -52,6 +52,7 @@ The `CarbonConnect` component accepts the following properties:
 | `setOpen`                  | Function        | No        | A function that will be called to set the open state of the component. Defaults to `None`.                              |
 | `tosURL`                   | String          | No        | A URL to your organization's terms of service. Defaults to `https://carbon.ai/terms`.                                   |
 | `privacyPolicyURL`         | String          | No        | A URL to your organization's privacy policy. Defaults to `https://carbon.ai/privacy`.                                   |
+| `navigateBackURL`          | String          | No        | A URL to your intended destination. Defaults to `None`.                                                                 |
 
 When u do not pass `open` or `setOpen`, CC will manage the open state internally. If you pass `open` and `setOpen`, you will have to manage the open state yourself.
 
