@@ -14,11 +14,8 @@ import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
 import WebScraper from './components/WebScraper';
 
 const IntegrationModal = ({
-  orgName,
-  brandIcon,
   maxFileSize,
   children,
-  enabledIntegrations,
   onSuccess,
   onError,
   primaryBackgroundColor,
@@ -31,16 +28,7 @@ const IntegrationModal = ({
   entryPoint = null,
   activeStep,
   setActiveStep,
-  // open,
-  // setOpen,
-  // alwaysOpen,
 }) => {
-  // const [activeStep, setActiveStep] = useState(
-  //   entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
-  //     ? entryPoint
-  //     : 0
-  // );
-  // const [showModal, setShowModal] = useState(open);
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
   const activeIntegrationsRef = useRef(activeIntegrations);
@@ -50,7 +38,6 @@ const IntegrationModal = ({
     accessToken,
     fetchTokens,
     authenticatedFetch,
-    // open,
     setOpen,
     alwaysOpen,
     showModal,
@@ -82,27 +69,42 @@ const IntegrationModal = ({
           continue;
         }
 
-        const newFiles =
-          newIntegration?.synced_files || newIntegration.files || [];
-        const oldFiles =
-          oldIntegration?.synced_files || oldIntegration.files || [];
+        const newFiles = newIntegration?.synced_files || [];
+        const oldFiles = oldIntegration?.synced_files || [];
 
-        const newIds = newFiles?.map((item) => item.id);
-        const oldIds = oldFiles?.map((item) => item.id);
+        const additions = [];
+        // const deletions = [];
+        const reselections = [];
+        for (let j = 0; j < newFiles.length; j++) {
+          const newFileObject = newFiles[j];
+          const oldFileObject = oldFiles.find(
+            (oldFile) => oldFile.id === newFileObject.id
+          );
 
-        const newAdditions =
-          newIds?.filter((item) => !oldIds.includes(item)) || [];
-        const newDeletions =
-          oldIds?.filter((item) => !newIds.includes(item)) || [];
-
-        if (newAdditions.length > 0) {
+          if (!oldFileObject) {
+            additions.push(newFileObject);
+            continue;
+          }
+          if (oldFileObject.updated_at !== newFileObject.updated_at) {
+            reselections.push(newFileObject);
+          }
+        }
+        const upserts = [...additions, ...reselections];
+        console.log(
+          'Upserts: ',
+          upserts.length,
+          ' for ',
+          newIntegration.data_source_type,
+          ' integration'
+        );
+        if (upserts.length > 0) {
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
             action: 'UPDATE',
             data: {
               data_source_external_id: newIntegration.data_source_external_id,
-              files: newFiles.filter((item) => newAdditions.includes(item.id)),
+              files: upserts,
               sync_status: newIntegration.sync_status,
             },
           };
@@ -153,10 +155,6 @@ const IntegrationModal = ({
     }
   };
 
-  // useEffect(() => {
-  //   setShowModal(open);
-  // }, [open]);
-
   useEffect(() => {
     activeIntegrationsRef.current = activeIntegrations;
   }, [activeIntegrations]);
@@ -170,7 +168,7 @@ const IntegrationModal = ({
   useEffect(() => {
     if (accessToken && showModal) {
       fetchUserIntegrations();
-      // Then set up the interval to call it every 10 seconds
+      // Then set up the interval to call it every 5 seconds
       const intervalId = setInterval(fetchUserIntegrations, 5000); // 5000 ms = 5 s
       // Make sure to clear the interval when the component unmounts
       return () => clearInterval(intervalId);
