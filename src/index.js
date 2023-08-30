@@ -2,12 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import './index.css';
 
-import { HiCheckCircle, HiPlus, HiTrash, HiX, HiXCircle } from 'react-icons/hi';
+import { HiPlus } from 'react-icons/hi';
 import CarbonAnnouncement from './components/CarbonAnnouncement';
 import ThirdPartyList from './components/ThirdPartyList';
 import GoogleDocsSelector from './components/GoogleDocsSelector';
 import FileUpload from './components/FileUpload';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 
 import { BASE_URL } from './constants';
 import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
@@ -90,13 +90,7 @@ const IntegrationModal = ({
           }
         }
         const upserts = [...additions, ...reselections];
-        console.log(
-          'Upserts: ',
-          upserts.length,
-          ' for ',
-          newIntegration.data_source_type,
-          ' integration'
-        );
+
         if (upserts.length > 0) {
           const onSuccessObject = {
             status: 200,
@@ -184,26 +178,13 @@ const IntegrationModal = ({
   return (
     <Dialog.Root
       onOpenChange={(modalOpenState) => manageModalOpenState(modalOpenState)}
-      //   {
-      //   if (alwaysOpen) return;
-      //   if (!modalOpenState) {
-      //     if (entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER')
-      //       setActiveStep(entryPoint);
-      //     else setActiveStep(0);
-      //   }
-      //   if (setOpen) setOpen(modalOpenState);
-      //   setShowModal(modalOpenState);
-      // }}
       open={alwaysOpen ? true : showModal}
     >
       <Dialog.Trigger asChild>
         {setOpen ? null : children ? (
           <div>{children}</div>
         ) : (
-          <HiPlus
-            className="cc-w-6 cc-h-6 hover:cc-bg-gray-300 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer"
-            // onClick={fetchTokens}
-          />
+          <HiPlus className="cc-w-6 cc-h-6 hover:cc-bg-gray-300 cc-rounded-md cc-p-1 cc-mr-5 cc-cursor-pointer" />
         )}
       </Dialog.Trigger>
 
