@@ -13,11 +13,11 @@ export function darkenColor(color, percent) {
 
 // Utility function to set the flag
 export function setFlag(flagName, flagValue) {
-  try {
-    localStorage.setItem(flagName, flagValue);
-  } catch (e) {
-    document.cookie = `${flagName}=${flagValue}; path=/`;
-  }
+  // try {
+  //   localStorage.setItem(flagName, flagValue);
+  // } catch (e) {
+  //   document.cookie = `${flagName}=${flagValue}; path=/`;
+  // }
 }
 
 // Utility function to get the flag
@@ -37,5 +37,81 @@ export function getFlag(flagName) {
       }
     }
     return '';
+  }
+}
+
+// Utility function to increment the flag
+export function incrementOAuthCounter(flagName) {
+  try {
+    const currentValue = localStorage.getItem(flagName);
+    console.log('currentValue', currentValue);
+    const newValue = currentValue ? parseInt(currentValue) + 1 : 1;
+    localStorage.setItem(flagName, newValue);
+  } catch (e) {
+    const cookies = document.cookie.split(';');
+    let currentValue;
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.indexOf(flagName) === 0) {
+        currentValue = cookie.substring(flagName.length + 1);
+      }
+    }
+    const newValue = currentValue ? parseInt(currentValue) + 1 : 1;
+    document.cookie = `${flagName}=${newValue}; path=/`;
+  }
+}
+
+// Utility function to decrement the flag
+export function decrementOAuthCounter(flagName) {
+  try {
+    const currentValue = localStorage.getItem(flagName);
+    if (currentValue) {
+      const newValue = parseInt(currentValue) - 1;
+      localStorage.setItem(flagName, newValue);
+    }
+  } catch (e) {
+    const cookies = document.cookie.split(';');
+    let currentValue;
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.indexOf(flagName) === 0) {
+        currentValue = cookie.substring(flagName.length + 1);
+      }
+    }
+    if (currentValue) {
+      const newValue = parseInt(currentValue) - 1;
+      document.cookie = `${flagName}=${newValue}; path=/`;
+    }
+  }
+}
+
+// Utility function to get the flag
+export function getOAuthCounter(flagName) {
+  try {
+    const flagValue = localStorage.getItem(flagName);
+    console.log('flagValue', flagValue);
+    return flagValue ? parseInt(flagValue) : 0;
+  } catch (e) {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.indexOf(flagName) === 0) {
+        const flagValue = cookie.substring(flagName.length + 1);
+        return flagValue ? parseInt(flagValue) : 0;
+      }
+    }
+    return 0;
+  }
+}
+
+// Utility function to delete all cookies
+export function deleteAllCookies() {
+  const cookies = document.cookie.split(';');
+  console.log('cookies', cookies);
+  for (let i = 0; i < cookies.length; i++) {
+    const cookie = cookies[i];
+    const eqPos = cookie.indexOf('=');
+    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
   }
 }
