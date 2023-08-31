@@ -16,6 +16,7 @@ export function setFlag(flagName, flagValue) {
   try {
     localStorage.setItem(flagName, flagValue);
   } catch (e) {
+    console.log("Couldn't set the flag in localStorage", e);
     document.cookie = `${flagName}=${flagValue}; path=/`;
   }
 }
@@ -105,13 +106,12 @@ export function getOAuthCounter(flagName) {
 }
 
 // Utility function to delete all cookies
-export function deleteAllCookies() {
-  const cookies = document.cookie.split(';');
-  console.log('cookies', cookies);
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    const eqPos = cookie.indexOf('=');
-    const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-    document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-  }
+export function deleteAllData(keys) {
+  keys.forEach((key) => {
+    localStorage.removeItem(key);
+  });
+
+  keys.forEach((cookieName) => {
+    document.cookie = `${cookieName}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+  });
 }

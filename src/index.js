@@ -12,7 +12,7 @@ import { ToastContainer } from 'react-toastify';
 import { BASE_URL } from './constants';
 import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
 import WebScraper from './components/WebScraper';
-import { getFlag, setFlag } from './utils/helpers';
+import { deleteAllData, getFlag, setFlag } from './utils/helpers';
 import { set } from 'lodash';
 
 const IntegrationModal = ({
@@ -56,8 +56,7 @@ const IntegrationModal = ({
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
 
-        const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
-        if (alreadyActiveOAuth !== 'true') {
+        if (oldIntegration?.last_synced_at === newIntegration?.last_synced_at) {
           continue;
         }
 
@@ -74,7 +73,7 @@ const IntegrationModal = ({
           };
 
           response.push(onSuccessObject);
-          setFlag(newIntegration?.data_source_type, false);
+          // setFlag(newIntegration?.data_source_type, false);
           continue;
         }
 
@@ -100,7 +99,10 @@ const IntegrationModal = ({
         }
         const upserts = [...additions, ...reselections];
 
-        if (upserts.length > 0) {
+        if (
+          upserts.length > 0 ||
+          newIntegration.data_source_type === 'NOTION'
+        ) {
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
@@ -111,14 +113,14 @@ const IntegrationModal = ({
               sync_status: newIntegration.sync_status,
             },
           };
+          // setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
-          setFlag(newIntegration?.data_source_type, false);
         }
       }
 
       return response;
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   };
 

@@ -199,13 +199,13 @@ export const CarbonProvider = ({
 
   const handleServiceOAuthFlow = async (service) => {
     try {
-      const alreadyActiveOAuth = getFlag(service?.data_source_type);
-      if (alreadyActiveOAuth === 'true') {
-        toast.error(
-          `Please finish the ${service?.data_source_type} authentication before starting another.`
-        );
-        return;
-      }
+      // const alreadyActiveOAuth = getFlag(service?.data_source_type);
+      // if (alreadyActiveOAuth === 'true') {
+      //   toast.error(
+      //     `Please finish the ${service?.data_source_type} authentication before starting another.`
+      //   );
+      //   return;
+      // }
 
       const chunkSizeValue =
         service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
@@ -231,7 +231,7 @@ export const CarbonProvider = ({
       );
 
       if (oAuthURLResponse.status === 200) {
-        setFlag(service?.data_source_type, true);
+        // setFlag(service?.data_source_type, true);
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
