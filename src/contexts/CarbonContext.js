@@ -231,7 +231,13 @@ export const CarbonProvider = ({
       );
 
       if (oAuthURLResponse.status === 200) {
-        // setFlag(service?.data_source_type, true);
+        setFlag(service?.data_source_type, true);
+        onSuccess({
+          status: 200,
+          data: null,
+          integration: service?.data_source_type,
+          event: 'INITIATED',
+        });
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');

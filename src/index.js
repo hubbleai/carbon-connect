@@ -56,7 +56,8 @@ const IntegrationModal = ({
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
 
-        if (oldIntegration?.last_synced_at === newIntegration?.last_synced_at) {
+        const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
+        if (alreadyActiveOAuth !== 'true') {
           continue;
         }
 
@@ -73,10 +74,9 @@ const IntegrationModal = ({
           };
 
           response.push(onSuccessObject);
-          // setFlag(newIntegration?.data_source_type, false);
+          setFlag(newIntegration?.data_source_type, false);
           continue;
         }
-
         const newFiles = newIntegration?.synced_files || [];
         const oldFiles = oldIntegration?.synced_files || [];
 
@@ -100,8 +100,9 @@ const IntegrationModal = ({
         const upserts = [...additions, ...reselections];
 
         if (
-          upserts.length > 0 ||
-          newIntegration.data_source_type === 'NOTION'
+          upserts.length > 0
+          // ||
+          // newIntegration.data_source_type === 'NOTION'
         ) {
           const onSuccessObject = {
             status: 200,
@@ -113,14 +114,14 @@ const IntegrationModal = ({
               sync_status: newIntegration.sync_status,
             },
           };
-          // setFlag(newIntegration?.data_source_type, false);
+          setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
         }
       }
 
       return response;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   };
 

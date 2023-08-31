@@ -21,17 +21,18 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
+    onSuccess,
   } = useCarbon();
 
   const handleServiceOAuthFlow = async (service) => {
     try {
-      const alreadyActiveOAuth = getFlag(service?.data_source_type);
-      if (alreadyActiveOAuth === 'true') {
-        toast.error(
-          `Please finish the ${service?.data_source_type} authentication before starting another.`
-        );
-        return;
-      }
+      // const alreadyActiveOAuth = getFlag(service?.data_source_type);
+      // if (alreadyActiveOAuth === 'true') {
+      //   toast.error(
+      //     `Please finish the ${service?.data_source_type} authentication before starting another.`
+      //   );
+      //   return;
+      // }
 
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
@@ -58,13 +59,19 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       );
 
       if (oAuthURLResponse.status === 200) {
-        // setFlag(service?.data_source_type, true);
+        setFlag(service?.data_source_type, true);
+        onSuccess({
+          status: 200,
+          data: null,
+          integration: service?.data_source_type,
+          event: 'INITIATED',
+        });
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (err) {
-      // console.log('Error: ', err);
+      console.log('Error: ', err);
     }
   };
 
