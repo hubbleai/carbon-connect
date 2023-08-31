@@ -13,11 +13,11 @@ export function darkenColor(color, percent) {
 
 // Utility function to set the flag
 export function setFlag(flagName, flagValue) {
-  // try {
-  //   localStorage.setItem(flagName, flagValue);
-  // } catch (e) {
-  //   document.cookie = `${flagName}=${flagValue}; path=/`;
-  // }
+  try {
+    localStorage.setItem(flagName, flagValue);
+  } catch (e) {
+    document.cookie = `${flagName}=${flagValue}; path=/`;
+  }
 }
 
 // Utility function to get the flag
