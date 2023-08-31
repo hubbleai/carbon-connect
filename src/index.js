@@ -12,6 +12,8 @@ import { ToastContainer } from 'react-toastify';
 import { BASE_URL } from './constants';
 import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
 import WebScraper from './components/WebScraper';
+import { getFlag, setFlag } from './utils/helpers';
+import { set } from 'lodash';
 
 const IntegrationModal = ({
   maxFileSize,
@@ -49,9 +51,15 @@ const IntegrationModal = ({
     try {
       for (let i = 0; i < newIntegrations.length; i++) {
         const newIntegration = newIntegrations[i];
+
         const oldIntegration = oldIntegrations.find(
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
+
+        const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
+        if (alreadyActiveOAuth !== 'true') {
+          continue;
+        }
 
         if (!oldIntegration) {
           const onSuccessObject = {
@@ -66,6 +74,7 @@ const IntegrationModal = ({
           };
 
           response.push(onSuccessObject);
+          setFlag(newIntegration?.data_source_type, false);
           continue;
         }
 
@@ -103,6 +112,7 @@ const IntegrationModal = ({
             },
           };
           response.push(onSuccessObject);
+          setFlag(newIntegration?.data_source_type, false);
         }
       }
 

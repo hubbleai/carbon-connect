@@ -5,6 +5,7 @@ import '../index.css';
 import carbonLogo from '../carbon.svg';
 import { useCarbon } from '../contexts/CarbonContext';
 import { darkenColor } from '../utils/helpers';
+import { setFlag } from '../utils/helpers';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">
@@ -57,16 +58,6 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
       if (!entryPointIntegrationObject?.requiresOAuth) {
         setActiveStep(entryPointIntegrationObject.data_source_type);
       } else {
-        // TODO: Remove this block once all the users migrate to the new entry point i.e. GOOGLE_DRIVE
-        if (entryPointIntegrationObject?.data_source_type === 'GOOGLE_DOCS') {
-          let googleDocsIndex = activeIntegrations.findIndex(
-            (integration) => integration.data_source_type === 'GOOGLE_DOCS'
-          );
-          if (googleDocsIndex !== -1) {
-            setActiveStep(entryPointIntegrationObject?.data_source_type);
-            return;
-          }
-        }
         handleServiceOAuthFlow(entryPointIntegrationObject);
       }
     } else {

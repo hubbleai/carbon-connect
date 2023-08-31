@@ -6,6 +6,9 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BASE_URL } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
+import { getFlag, setFlag } from '../utils/helpers';
+import { get } from 'lodash';
+import { toast } from 'react-toastify';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const {
@@ -22,6 +25,14 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
 
   const handleServiceOAuthFlow = async (service) => {
     try {
+      const alreadyActiveOAuth = getFlag(service?.data_source_type);
+      if (alreadyActiveOAuth === 'true') {
+        toast.error(
+          `Please finish the ${service?.data_source_type} authentication before starting another.`
+        );
+        return;
+      }
+
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
@@ -47,6 +58,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       );
 
       if (oAuthURLResponse.status === 200) {
+        setFlag(service?.data_source_type, true);
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
@@ -98,17 +110,6 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                       if (!integration.requiresOAuth) {
                         setActiveStep(integration.data_source_type);
                       } else {
-                        // TODO: Remove this block once all the users migrate to the new entry point i.e. GOOGLE_DRIVE
-                        if (integration.data_source_type === 'GOOGLE_DOCS') {
-                          let googleDocsIndex = activeIntegrations.findIndex(
-                            (integration) =>
-                              integration.data_source_type === 'GOOGLE_DOCS'
-                          );
-                          if (googleDocsIndex !== -1) {
-                            setActiveStep(integration.data_source_type);
-                            return;
-                          }
-                        }
                         handleServiceOAuthFlow(integration);
                       }
                     }

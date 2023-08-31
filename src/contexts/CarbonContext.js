@@ -4,7 +4,10 @@ import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
+import { GrOnedrive } from 'react-icons/gr';
 import { BASE_URL } from '../constants';
+import { getFlag, setFlag } from '../utils/helpers';
+import { toast } from 'react-toastify';
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -21,18 +24,6 @@ const integrationsList = [
     data_source_type: 'DROPBOX',
     requiresOAuth: true,
   },
-  // {
-  //   id: 'GOOGLE_DOCS',
-  //   subpath: 'google',
-  //   name: 'Google Docs',
-  //   description: 'Lets your users connect their Google Docs to Carbon.',
-  //   announcementName: 'to connect Google Docs',
-  //   icon: <BsGoogle className="cc-w-7 cc-h-7" />,
-  //   active: true,
-  //   data_source_type: 'GOOGLE_DOCS',
-  //   requiresOAuth: true,
-  //   scope: 'docs',
-  // },
   {
     id: 'GOOGLE_DRIVE',
     subpath: 'google',
@@ -64,6 +55,17 @@ const integrationsList = [
     icon: <RxNotionLogo className="cc-w-8 cc-h-8" />,
     active: true,
     data_source_type: 'NOTION',
+    requiresOAuth: true,
+  },
+  {
+    id: 'ONEDRIVE',
+    subpath: 'onedrive',
+    name: 'OneDrive',
+    description: 'Lets your users connect their OneDrive accounts to Carbon.',
+    announcementName: 'to connect OneDrive',
+    icon: <GrOnedrive className="cc-w-8 cc-h-8" />,
+    active: true,
+    data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
   },
   {
@@ -197,6 +199,14 @@ export const CarbonProvider = ({
 
   const handleServiceOAuthFlow = async (service) => {
     try {
+      const alreadyActiveOAuth = getFlag(service?.data_source_type);
+      if (alreadyActiveOAuth === 'true') {
+        toast.error(
+          `Please finish the ${service?.data_source_type} authentication before starting another.`
+        );
+        return;
+      }
+
       const chunkSizeValue =
         service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
       const overlapSizeValue =
@@ -221,6 +231,7 @@ export const CarbonProvider = ({
       );
 
       if (oAuthURLResponse.status === 200) {
+        setFlag(service?.data_source_type, true);
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
