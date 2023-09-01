@@ -76,7 +76,7 @@ const IntegrationModal = ({
 
           response.push(onSuccessObject);
           // setFlag(newIntegration?.data_source_type, false);
-          continue;
+          // continue;
         } else if (
           oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
           newIntegration?.last_sync_action === 'CANCEL'
@@ -95,9 +95,11 @@ const IntegrationModal = ({
           setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
           continue;
-        } else if (
+        }
+        if (
           oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
-          newIntegration?.last_sync_action === 'UPDATE'
+          (newIntegration?.last_sync_action === 'UPDATE' ||
+            newIntegration?.last_sync_action === 'ADD')
         ) {
           const newFiles = newIntegration?.synced_files || [];
           const oldFiles = oldIntegration?.synced_files || [];
