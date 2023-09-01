@@ -75,6 +75,22 @@ const IntegrationModal = ({
           };
 
           response.push(onSuccessObject);
+
+          if (newIntegration?.data_source_type === 'NOTION') {
+            setFlag(newIntegration?.data_source_type, false);
+            const onSuccessObject = {
+              status: 200,
+              integration: newIntegration.data_source_type,
+              action: onSuccessEvents.UPDATE,
+              event: onSuccessEvents.UPDATE,
+              data: {
+                data_source_external_id: newIntegration.data_source_external_id,
+                files: newIntegration?.synced_files || [],
+                sync_status: newIntegration.sync_status,
+              },
+            };
+            response.push(onSuccessObject);
+          }
           // setFlag(newIntegration?.data_source_type, false);
           // continue;
         } else if (
@@ -95,17 +111,15 @@ const IntegrationModal = ({
           setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
           continue;
-        }
-        if (
+        } else if (
           oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
-          (newIntegration?.last_sync_action === 'UPDATE' ||
-            newIntegration?.last_sync_action === 'ADD')
+          newIntegration?.last_sync_action === 'UPDATE'
         ) {
           const newFiles = newIntegration?.synced_files || [];
           const oldFiles = oldIntegration?.synced_files || [];
 
           const additions = [];
-          // const deletions = [];
+          const deletions = [];
           const reselections = [];
           for (let j = 0; j < newFiles.length; j++) {
             const newFileObject = newFiles[j];
@@ -124,10 +138,29 @@ const IntegrationModal = ({
               });
             }
           }
-          const upserts = [...additions, ...reselections];
+
+          for (let j = 0; j < oldFiles.length; j++) {
+            const oldFileObject = oldFiles[j];
+            const newFileObject = newFiles.find(
+              (newFile) => newFile.id === oldFileObject.id
+            );
+
+            if (!newFileObject) {
+              deletions.push({
+                ...oldFileObject,
+                action: onSuccessEvents.REMOVE,
+              });
+            }
+          }
+
+          const fileModifications = [
+            ...additions,
+            ...reselections,
+            ...deletions,
+          ];
 
           if (
-            upserts.length > 0
+            fileModifications.length > 0
             // ||
             // newIntegration.data_source_type === 'NOTION'
           ) {
@@ -138,7 +171,7 @@ const IntegrationModal = ({
               event: onSuccessEvents.UPDATE,
               data: {
                 data_source_external_id: newIntegration.data_source_external_id,
-                files: upserts,
+                files: fileModifications,
                 sync_status: newIntegration.sync_status,
               },
             };
