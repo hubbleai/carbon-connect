@@ -9,7 +9,7 @@ import GoogleDocsSelector from './components/GoogleDocsSelector';
 import FileUpload from './components/FileUpload';
 import { ToastContainer } from 'react-toastify';
 
-import { BASE_URL } from './constants';
+import { BASE_URL, onSuccessEvents } from './constants';
 import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
 import WebScraper from './components/WebScraper';
 import { deleteAllData, getFlag, setFlag } from './utils/helpers';
@@ -56,66 +56,93 @@ const IntegrationModal = ({
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
 
-        const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
-        if (alreadyActiveOAuth !== 'true') {
-          continue;
-        }
+        // const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
+        // if (alreadyActiveOAuth !== 'true') {
+        //   continue;
+        // }
 
         if (!oldIntegration) {
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
-            action: 'ADD',
+            action: onSuccessEvents.ADD,
+            event: onSuccessEvents.ADD,
             data: {
               data_source_external_id: newIntegration.data_source_external_id,
-              files: newIntegration?.synced_files || [],
+              files: null, //newIntegration?.synced_files || [],
               sync_status: newIntegration.sync_status,
             },
           };
 
           response.push(onSuccessObject);
-          setFlag(newIntegration?.data_source_type, false);
+          // setFlag(newIntegration?.data_source_type, false);
           continue;
-        }
-        const newFiles = newIntegration?.synced_files || [];
-        const oldFiles = oldIntegration?.synced_files || [];
-
-        const additions = [];
-        // const deletions = [];
-        const reselections = [];
-        for (let j = 0; j < newFiles.length; j++) {
-          const newFileObject = newFiles[j];
-          const oldFileObject = oldFiles.find(
-            (oldFile) => oldFile.id === newFileObject.id
-          );
-
-          if (!oldFileObject) {
-            additions.push(newFileObject);
-            continue;
-          }
-          if (oldFileObject.updated_at !== newFileObject.updated_at) {
-            reselections.push(newFileObject);
-          }
-        }
-        const upserts = [...additions, ...reselections];
-
-        if (
-          upserts.length > 0
-          // ||
-          // newIntegration.data_source_type === 'NOTION'
+        } else if (
+          oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+          newIntegration?.last_sync_action === 'CANCEL'
         ) {
           const onSuccessObject = {
             status: 200,
             integration: newIntegration.data_source_type,
-            action: 'UPDATE',
+            action: onSuccessEvents.CANCEL,
+            event: onSuccessEvents.CANCEL,
             data: {
               data_source_external_id: newIntegration.data_source_external_id,
-              files: upserts,
+              files: null, //newIntegration?.synced_files || [],
               sync_status: newIntegration.sync_status,
             },
           };
           setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
+          continue;
+        } else if (
+          oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
+          newIntegration?.last_sync_action === 'UPDATE'
+        ) {
+          const newFiles = newIntegration?.synced_files || [];
+          const oldFiles = oldIntegration?.synced_files || [];
+
+          const additions = [];
+          // const deletions = [];
+          const reselections = [];
+          for (let j = 0; j < newFiles.length; j++) {
+            const newFileObject = newFiles[j];
+            const oldFileObject = oldFiles.find(
+              (oldFile) => oldFile.id === newFileObject.id
+            );
+
+            if (!oldFileObject) {
+              additions.push({ ...newFileObject, action: onSuccessEvents.ADD });
+              continue;
+            }
+            if (oldFileObject.updated_at !== newFileObject.updated_at) {
+              reselections.push({
+                ...newFileObject,
+                action: onSuccessEvents.UPDATE,
+              });
+            }
+          }
+          const upserts = [...additions, ...reselections];
+
+          if (
+            upserts.length > 0
+            // ||
+            // newIntegration.data_source_type === 'NOTION'
+          ) {
+            const onSuccessObject = {
+              status: 200,
+              integration: newIntegration.data_source_type,
+              action: onSuccessEvents.UPDATE,
+              event: onSuccessEvents.UPDATE,
+              data: {
+                data_source_external_id: newIntegration.data_source_external_id,
+                files: upserts,
+                sync_status: newIntegration.sync_status,
+              },
+            };
+            setFlag(newIntegration?.data_source_type, false);
+            response.push(onSuccessObject);
+          }
         }
       }
 

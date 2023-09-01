@@ -4,7 +4,7 @@ import '../index.css';
 import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
-import { BASE_URL } from '../constants';
+import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 import { getFlag, setFlag } from '../utils/helpers';
 import { get } from 'lodash';
@@ -64,7 +64,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
           status: 200,
           data: null,
           integration: service?.data_source_type,
-          event: 'INITIATED',
+          action: onSuccessEvents.INITIATE,
+          event: onSuccessEvents.INITIATE,
         });
         const oAuthURLResponseData = await oAuthURLResponse.json();
 

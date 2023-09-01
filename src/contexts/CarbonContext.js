@@ -5,7 +5,7 @@ import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
 import { GrOnedrive } from 'react-icons/gr';
-import { BASE_URL } from '../constants';
+import { BASE_URL, onSuccessEvents } from '../constants';
 import { getFlag, setFlag } from '../utils/helpers';
 import { toast } from 'react-toastify';
 
@@ -236,7 +236,8 @@ export const CarbonProvider = ({
           status: 200,
           data: null,
           integration: service?.data_source_type,
-          event: 'INITIATED',
+          action: onSuccessEvents.INITIATE,
+          event: onSuccessEvents.INITIATE,
         });
         const oAuthURLResponseData = await oAuthURLResponse.json();
 

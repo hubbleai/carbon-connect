@@ -17,7 +17,7 @@ import { FaSitemap, FaLaptop } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import '../index.css';
-import { BASE_URL } from '../constants';
+import { BASE_URL, onSuccessEvents } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 import { BiLoaderAlt } from 'react-icons/bi';
@@ -161,7 +161,8 @@ function WebScraper({
         onSuccess({
           status: 200,
           data: [{ urls: urls, validUrls: validUrls, tags: tags }],
-          action: 'ADD',
+          action: onSuccessEvents.ADD,
+          event: onSuccessEvents.ADD,
           integration: 'WEB_SCRAPER',
         });
       }
@@ -171,7 +172,8 @@ function WebScraper({
       onError({
         status: 400,
         data: [{ message: 'Error initiating scraping. Please try again.' }],
-        action: 'ADD',
+        action: onSuccessEvents.ADD,
+        event: onSuccessEvents.ADD,
         integration: 'WEB_SCRAPER',
       });
       setScrapingResponse(null);

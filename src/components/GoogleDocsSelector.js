@@ -8,7 +8,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiXCircle, HiArrowLeft } from 'react-icons/hi';
 import { BiLoaderAlt } from 'react-icons/bi';
 
-import { BASE_URL } from '../constants';
+import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 
 const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
@@ -81,7 +81,8 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
               tags: tags,
             },
           ],
-          action: 'UPDATE',
+          action: onSuccessEvents.UPDATE,
+          event: onSuccessEvents.UPDATE,
           integration: 'GOOGLE_DOCS',
         });
       }
@@ -93,7 +94,8 @@ const GoogleDocsSelector = ({ integrationData, setActiveStep }) => {
             message: `Error syncing files. Please try again. Error Message: ${err.message}`,
           },
         ],
-        action: 'UPDATE',
+        action: onSuccessEvents.UPDATE,
+        event: onSuccessEvents.UPDATE,
         integration: 'GOOGLE_DOCS',
       });
     }

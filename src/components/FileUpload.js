@@ -22,7 +22,7 @@ import { toast } from 'react-toastify';
 import { LuLoader2 } from 'react-icons/lu';
 
 import '../index.css';
-import { BASE_URL } from '../constants';
+import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
@@ -99,7 +99,8 @@ function FileUpload({ setActiveStep }) {
                 message: `Tried selecting ${files.length} files at a time.`,
               },
             ],
-            action: 'ADD',
+            action: onSuccessEvents.ADD,
+            event: onSuccessEvents.ADD,
             integration: 'LOCAL_FILES',
           });
           return;
@@ -118,7 +119,8 @@ function FileUpload({ setActiveStep }) {
                   } files at a time.`,
                 },
               ],
-              action: 'ADD',
+              action: onSuccessEvents.ADD,
+              event: onSuccessEvents.ADD,
               integration: 'LOCAL_FILES',
             });
             return prevList;
@@ -258,7 +260,8 @@ function FileUpload({ setActiveStep }) {
         onSuccess({
           status: 200,
           data: successfulUploads,
-          action: 'ADD',
+          action: onSuccessEvents.ADD,
+          event: onSuccessEvents.ADD,
           integration: 'LOCAL_FILES',
         });
 
@@ -266,7 +269,8 @@ function FileUpload({ setActiveStep }) {
         onError({
           status: 400,
           data: failedUploads,
-          action: 'ADD',
+          action: onSuccessEvents.ADD,
+          event: onSuccessEvents.ADD,
           integration: 'LOCAL_FILES',
         });
       }
@@ -278,7 +282,8 @@ function FileUpload({ setActiveStep }) {
       onError({
         status: 400,
         data: [{ message: 'Error uploading files' }],
-        action: 'ADD',
+        action: onSuccessEvents.ADD,
+        event: onSuccessEvents.ADD,
         integration: 'LOCAL_FILES',
       });
     }
@@ -337,7 +342,8 @@ function FileUpload({ setActiveStep }) {
                       }`,
                     },
                   ],
-                  action: 'ADD',
+                  action: onSuccessEvents.ADD,
+                  event: onSuccessEvents.ADD,
                   integration: 'LOCAL_FILES',
                 });
               }}
@@ -352,7 +358,8 @@ function FileUpload({ setActiveStep }) {
                       message: `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
                     },
                   ],
-                  action: 'ADD',
+                  action: onSuccessEvents.ADD,
+                  event: onSuccessEvents.ADD,
                   integration: 'LOCAL_FILES',
                 });
               }}
