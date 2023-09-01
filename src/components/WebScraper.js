@@ -161,8 +161,8 @@ function WebScraper({
         onSuccess({
           status: 200,
           data: [{ urls: urls, validUrls: validUrls, tags: tags }],
-          action: onSuccessEvents.ADD,
-          event: onSuccessEvents.ADD,
+          action: onSuccessEvents.UPDATE,
+          event: onSuccessEvents.UPDATE,
           integration: 'WEB_SCRAPER',
         });
       }
@@ -172,8 +172,8 @@ function WebScraper({
       onError({
         status: 400,
         data: [{ message: 'Error initiating scraping. Please try again.' }],
-        action: onSuccessEvents.ADD,
-        event: onSuccessEvents.ADD,
+        action: onSuccessEvents.UPDATE,
+        event: onSuccessEvents.UPDATE,
         integration: 'WEB_SCRAPER',
       });
       setScrapingResponse(null);

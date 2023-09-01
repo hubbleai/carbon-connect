@@ -99,8 +99,8 @@ function FileUpload({ setActiveStep }) {
                 message: `Tried selecting ${files.length} files at a time.`,
               },
             ],
-            action: onSuccessEvents.ADD,
-            event: onSuccessEvents.ADD,
+            action: onSuccessEvents.UPDATE,
+            event: onSuccessEvents.UPDATE,
             integration: 'LOCAL_FILES',
           });
           return;
@@ -119,8 +119,8 @@ function FileUpload({ setActiveStep }) {
                   } files at a time.`,
                 },
               ],
-              action: onSuccessEvents.ADD,
-              event: onSuccessEvents.ADD,
+              action: onSuccessEvents.UPDATE,
+              event: onSuccessEvents.UPDATE,
               integration: 'LOCAL_FILES',
             });
             return prevList;
@@ -260,8 +260,8 @@ function FileUpload({ setActiveStep }) {
         onSuccess({
           status: 200,
           data: successfulUploads,
-          action: onSuccessEvents.ADD,
-          event: onSuccessEvents.ADD,
+          action: onSuccessEvents.UPDATE,
+          event: onSuccessEvents.UPDATE,
           integration: 'LOCAL_FILES',
         });
 
@@ -269,8 +269,8 @@ function FileUpload({ setActiveStep }) {
         onError({
           status: 400,
           data: failedUploads,
-          action: onSuccessEvents.ADD,
-          event: onSuccessEvents.ADD,
+          action: onSuccessEvents.UPDATE,
+          event: onSuccessEvents.UPDATE,
           integration: 'LOCAL_FILES',
         });
       }
@@ -282,8 +282,8 @@ function FileUpload({ setActiveStep }) {
       onError({
         status: 400,
         data: [{ message: 'Error uploading files' }],
-        action: onSuccessEvents.ADD,
-        event: onSuccessEvents.ADD,
+        action: onSuccessEvents.UPDATE,
+        event: onSuccessEvents.UPDATE,
         integration: 'LOCAL_FILES',
       });
     }
@@ -342,8 +342,8 @@ function FileUpload({ setActiveStep }) {
                       }`,
                     },
                   ],
-                  action: onSuccessEvents.ADD,
-                  event: onSuccessEvents.ADD,
+                  action: onSuccessEvents.UPDATE,
+                  event: onSuccessEvents.UPDATE,
                   integration: 'LOCAL_FILES',
                 });
               }}
@@ -358,8 +358,8 @@ function FileUpload({ setActiveStep }) {
                       message: `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
                     },
                   ],
-                  action: onSuccessEvents.ADD,
-                  event: onSuccessEvents.ADD,
+                  action: onSuccessEvents.UPDATE,
+                  event: onSuccessEvents.UPDATE,
                   integration: 'LOCAL_FILES',
                 });
               }}

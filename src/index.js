@@ -76,7 +76,10 @@ const IntegrationModal = ({
 
           response.push(onSuccessObject);
 
-          if (newIntegration?.data_source_type === 'NOTION') {
+          if (
+            newIntegration?.data_source_type === 'NOTION' ||
+            newIntegration?.data_source_type === 'INTERCOM'
+          ) {
             setFlag(newIntegration?.data_source_type, false);
             const onSuccessObject = {
               status: 200,
