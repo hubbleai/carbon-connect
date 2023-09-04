@@ -7,9 +7,10 @@ import postcss from 'rollup-plugin-postcss';
 import autoprefixer from 'autoprefixer';
 import tailwindcss from 'tailwindcss';
 import image from '@rollup/plugin-image';
+import typescript from '@rollup/plugin-typescript';
 
 export default {
-  input: 'src/index.js',
+  input: 'src/index.tsx',
   output: [
     { file: pkg.main, format: 'cjs' },
     { file: pkg.module, format: 'esm' },
@@ -32,6 +33,7 @@ export default {
     resolve(),
     commonjs(),
     terser(),
+    typescript(),
   ],
   external: Object.keys(pkg.peerDependencies),
 };
