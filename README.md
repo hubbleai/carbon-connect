@@ -209,20 +209,27 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
    - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 6. `DROPBOX`: This integration lets you upload files from your Dropbox. You can pass the following configuration for this integration:
+
+   - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
+   - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
+   - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
+
+7. `ONEDRIVE`: This integration lets you upload files from your Onedrive. You can pass the following configuration for this integration:
    - `chunkSize`: This is the no.of tokens per chunk. Defaults to 1500.
    - `overlapSize`: This is the size of the overlap in tokens. Defaults to 20.
    - `skipEmbeddingGeneration`: Whether or not to skip embeddings generation. Defaults to `false`.
 
 ## Callback function props
 
-1. `onSuccess`: You can let CC trigger a callback function upon successful file upload, 3rd party account connection, Google Docs files selection, Webscraping request initiation. This function will pass data in the following format:
+1. `onSuccess`: You can let CC trigger a callback function upon successful file upload, 3rd party account connection and file selection, Webscraping request initiation. This function will pass data in the following format:
 
 ```js
 {
   status: 200,
-  data: [Object 1, Object 2, ...],
-  action: <ACTION_TYPE>,  `ACTION_TYPE` can be one of the following: `ADD`, `UPDATE`
-  integration: <INTEGRATION_NAME>, `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DRIVE`
+  data: [Object 1, Object 2, ...] or null,
+  action: <ACTION_TYPE>, // `ACTION_TYPE` can be one of the following: `INITIATE`, `ADD`, `UPDATE`, `CANCEL`
+  event: <EVENT_TYPE>, // `EVENT_TYPE` can be one of the following: `INITIATE`, `ADD`, `UPDATE`, `CANCEL`
+  integration: <INTEGRATION_NAME>, // `INTEGRATION_NAME` can be one of the following: `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DRIVE`, `INTERCOM`, `DROPBOX`, `ONEDRIVE`
 }
 ```
 
@@ -231,17 +238,19 @@ Another important prop is enabledIntegrations. This prop lets you choose which i
 ```js
 {
   status: 400,
-  data: [{
-    file_name: `<Name of the file>` , // This field will be present only if the error is related to a file
-    message: `<String describing the error>`,
-  },
-  {
-    file_name: `<Name of the file>` , // This field will be present only if the error is related to a file
-    message: `<String describing the error>`,
-  }, ...
-  ]
+  action: 'UPDATE',
+  event: 'UPDATE',
+  integration: `<INTEGRATION_NAME>`, // 'LOCAL_FILES' or 'WEB_SCRAPER',
+  data: `<data_object>`, // This field will be present only if the error is related to a file or web scraper
 }
 ```
+
+### `onSuccess`` Event Types
+
+1. `INITIATE`: This event type is triggered when a user enters the integration flow (either for auth or file selection)
+2. `ADD`: This event type is triggered when a user authenticates an account under an integration.
+3. `UPDATE`: This event type is triggered when a user adds or removes files for an integration. We’ll list the files added or removed.
+4. `CANCEL`: This event type is triggered when when a user exits the integration flow without taking any action.
 
 ### Data format for `onSuccess` callback
 
@@ -277,6 +286,35 @@ The `data` field will contain the following information:
   data_source_external_id: `<Email address of the Notion account>`,
   sync_status: `<Sync status>`,
   data: `<Array of objects corresponding to the files / pages selected>`,
+}
+```
+
+Each file object will be in the following format:
+
+```js
+{
+    "id": `Unique ID for the file, can be used for resyncing, deleting, updating tags etc.`,
+    "source": `<integration_name>`, // One among `LOCAL_FILES`, `NOTION`, `WEB_SCRAPER`, `GOOGLE_DRIVE`, `INTERCOM`, `DROPBOX`, `ONEDRIVE`
+    "organization_id": `<organization_id>`, // This is your unique organization id in carbon
+    "organization_supplied_user_id": `<organization_supplied_user_id>`, // This is the unique user id that you pass to CC
+    "organization_user_data_source_id": `<organization_user_data_source_id>`, // This is the unique user data source id that CC creates for each user for each integration
+    "external_file_id": `<external_file_id>`, // This is the unique file id in the 3rd party integration
+    "external_url": `<external_url>`, // This is the unique url of the file in the 3rd party integration
+    "sync_status": `<sync_status>`, // This is the sync status of the file. It can be one of the following: `READY`, `QUEUED_FOR_SYNCING`, `SYNCING`, `SYNC_ERROR`
+    "last_sync": `<last_sync>`, // This is the timestamp of the last sync
+    "tags": `<tags>`, // These are the tags passed in to CC
+    "file_statistics": `<file_statistics>`, // This is the file statistics object
+    "file_metadata": `<file_metadata>`, // This is the file metadata object
+    "chunk_size":   `<chunk_size>`, // This is the chunk size used for the file
+    "chunk_overlap": `<chunk_overlap>`, // This is the chunk overlap used for the file
+    "name": `<name>`, // This is the name of the file
+    "enable_auto_sync": `<enable_auto_sync>`, // This is the auto sync status of the file. This is a boolean flag
+    "presigned_url": `<presigned_url>`, // This is the presigned url of the file
+    "parsed_text_url": `<parsed_text_url>`, // This is the parsed text url of the file
+    "skip_embedding_generation": `<skip_embedding_generation>`, // This is the skip embedding generation status of the file. This is a boolean flag
+    "created_at": `<created_at>`, // This is the timestamp of the file creation
+    "updated_at": `<updated_at>`, // This is the timestamp of the file updation
+    "action": `<action>`, // This is the action type. It can be one of the following: `ADD`, `UPDATE`, `REMOVE`
 }
 ```
 
