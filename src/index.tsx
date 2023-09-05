@@ -13,12 +13,12 @@ interface FileType {
 
 interface Integration {
   id: string;
-  chunkSize: number;
-  overlapSize: number;
-  maxFileSize: number;
-  allowMultipleFiles: boolean;
-  skipEmbeddingGeneration: boolean;
-  allowedFileTypes: FileType[];
+  chunkSize?: number;
+  overlapSize?: number;
+  maxFileSize?: number;
+  allowMultipleFiles?: boolean;
+  skipEmbeddingGeneration?: boolean;
+  allowedFileTypes?: FileType[];
 }
 
 interface CarbonConnectProps {
