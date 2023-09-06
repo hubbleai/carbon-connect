@@ -16,6 +16,7 @@ export default {
     { file: pkg.module, format: 'esm' },
   ],
   plugins: [
+    typescript(),
     babel({
       babelHelpers: 'bundled',
       exclude: 'node_modules/**',
@@ -33,7 +34,6 @@ export default {
     resolve(),
     commonjs(),
     terser(),
-    typescript(),
   ],
   external: Object.keys(pkg.peerDependencies),
 };

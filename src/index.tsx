@@ -7,28 +7,128 @@ import IntegrationModal from './components/IntegrationModal';
 // @ts-ignore
 import { CarbonProvider } from './contexts/CarbonContext';
 
-interface FileType {
-  extension: string;
+// Enums
+enum ActionType {
+  INITIATE = 'INITIATE',
+  ADD = 'ADD',
+  UPDATE = 'UPDATE',
+  CANCEL = 'CANCEL',
 }
 
-interface Integration {
-  id: string;
+enum IntegrationName {
+  LOCAL_FILES = 'LOCAL_FILES',
+  NOTION = 'NOTION',
+  WEB_SCRAPER = 'WEB_SCRAPER',
+  GOOGLE_DRIVE = 'GOOGLE_DRIVE',
+  INTERCOM = 'INTERCOM',
+  DROPBOX = 'DROPBOX',
+  ONEDRIVE = 'ONEDRIVE',
+}
+
+enum SyncStatus {
+  READY = 'READY',
+  QUEUED_FOR_SYNCING = 'QUEUED_FOR_SYNCING',
+  SYNCING = 'SYNCING',
+  SYNC_ERROR = 'SYNC_ERROR',
+}
+
+interface FileType {
+  extension: string;
   chunkSize?: number;
   overlapSize?: number;
-  maxFileSize?: number;
-  allowMultipleFiles?: boolean;
-  skipEmbeddingGeneration?: boolean;
+}
+interface BaseIntegration {
+  id: IntegrationName;
+  chunkSize?: number;
+  overlapSize?: number;
+}
+interface LocalFilesIntegration extends BaseIntegration {
+  maxFileSize: number;
+  allowMultipleFiles: boolean;
+  maxFilesCount?: number;
   allowedFileTypes?: FileType[];
 }
+interface WebScraperIntegration extends BaseIntegration {
+  recursionDepth?: number;
+  maxPagesToScrape?: number;
+}
+
+type Integration =
+  | LocalFilesIntegration
+  | WebScraperIntegration
+  | BaseIntegration;
+
+// Data structures
+interface LocalFile {
+  id: string;
+  name: string;
+  source: IntegrationName;
+  external_file_id: string;
+  tags: string[];
+  sync_status: SyncStatus;
+}
+
+interface WebScraper {
+  urls: string[];
+  validUrls: string[];
+  tags: string[];
+}
+
+interface ThirdPartyIntegrationFile {
+  id: string;
+  source: IntegrationName;
+  organization_id: string;
+  organization_supplied_user_id: string;
+  organization_user_data_source_id: string;
+  external_file_id: string;
+  external_url: string;
+  sync_status: SyncStatus;
+  last_sync: string;
+  tags: Record<string, TagValue> | null;
+  // TODO: Need a more detailed type
+  file_statistics: object;
+  // TODO: Need a more detailed type
+  file_metadata: object;
+  chunk_size: number;
+  chunk_overlap: number;
+  name: string;
+  enable_auto_sync: boolean;
+  presigned_url: string;
+  parsed_text_url: string;
+  skip_embedding_generation: boolean;
+  created_at: string;
+  updated_at: string;
+  action: ActionType;
+}
+
+// Callback data types
+interface OnSuccessData {
+  status: number;
+  data: LocalFile[] | WebScraper[] | ThirdPartyIntegrationFile[] | null;
+  action: ActionType;
+  event: ActionType;
+  integration: IntegrationName;
+}
+
+interface OnErrorData {
+  status: number;
+  action: ActionType;
+  event: ActionType;
+  integration: IntegrationName;
+  // TODO: Need a more detailed type
+  data?: object;
+}
+
+type TagValue = string | number | string[] | number[];
 
 interface CarbonConnectProps {
   orgName: string;
   brandIcon: string;
   children?: ReactNode;
-  tokenFetcher?: () => void;
-  onSuccess?: () => void;
-  onError?: () => void;
-  tags?: string[];
+  tokenFetcher: () => Promise<{ access_token: string }>;
+  onSuccess?: (data: OnSuccessData) => void;
+  onError?: (data: OnErrorData) => void;
+  tags?: Record<string, TagValue>;
   maxFileSize?: number;
   environment?: string;
   entryPoint?: string | null;
