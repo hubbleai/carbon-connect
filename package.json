@@ -4,6 +4,7 @@
   "description": "",
   "main": "dist/index.cjs",
   "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c --watch"
@@ -15,7 +16,7 @@
     "react",
     "embeddings"
   ],
-  "author": "",
+  "author": "carbon.ai",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
