@@ -1,19 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import './index.css';
+import '../index.css';
 
 import { HiPlus } from 'react-icons/hi';
-import CarbonAnnouncement from './components/CarbonAnnouncement';
-import ThirdPartyList from './components/ThirdPartyList';
-import GoogleDocsSelector from './components/GoogleDocsSelector';
-import FileUpload from './components/FileUpload';
+import CarbonAnnouncement from '../components/CarbonAnnouncement';
+import ThirdPartyList from '../components/ThirdPartyList';
+import GoogleDocsSelector from '../components/GoogleDocsSelector';
+import FileUpload from '../components/FileUpload';
 import { ToastContainer } from 'react-toastify';
 
-import { BASE_URL, onSuccessEvents } from './constants';
-import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
-import WebScraper from './components/WebScraper';
-import { deleteAllData, getFlag, setFlag } from './utils/helpers';
-import { set } from 'lodash';
+import { BASE_URL, onSuccessEvents } from '../constants';
+import { useCarbon } from '../contexts/CarbonContext';
+import WebScraper from '../components/WebScraper';
+import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({
   maxFileSize,
@@ -334,111 +333,4 @@ const IntegrationModal = ({
   );
 };
 
-const CarbonConnect = ({
-  orgName,
-  brandIcon,
-  children,
-  tokenFetcher = () => {},
-  onSuccess = () => {},
-  onError = () => {},
-  tags = [],
-  maxFileSize = 20000000,
-  environment = 'PRODUCTION',
-  entryPoint = null,
-  enabledIntegrations = [
-    {
-      id: 'LOCAL_FILES',
-      chunkSize: 100,
-      overlapSize: 10,
-      maxFileSize: 20000000,
-      allowMultipleFiles: true,
-      skipEmbeddingGeneration: false,
-      allowedFileTypes: [
-        {
-          extension: 'csv',
-        },
-        {
-          extension: 'txt',
-        },
-        {
-          extension: 'pdf',
-        },
-      ],
-    },
-  ],
-  primaryBackgroundColor = '#000000',
-  primaryTextColor = '#FFFFFF',
-  secondaryBackgroundColor = '#FFFFFF',
-  secondaryTextColor = '#000000',
-  allowMultipleFiles = false,
-  open = false,
-  setOpen = null,
-  chunkSize = 1500,
-  overlapSize = 20,
-  tosURL = 'https://carbon.ai/terms',
-  privacyPolicyURL = 'https://carbon.ai/privacy',
-  alwaysOpen = false,
-  navigateBackURL = null,
-}) => {
-  const [activeStep, setActiveStep] = useState(
-    entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
-      ? entryPoint
-      : 0
-  );
-
-  return (
-    <CarbonProvider
-      tokenFetcher={tokenFetcher}
-      enabledIntegrations={enabledIntegrations}
-      orgName={orgName}
-      brandIcon={brandIcon}
-      environment={environment}
-      entryPoint={entryPoint}
-      tags={tags}
-      maxFileSize={maxFileSize}
-      onSuccess={onSuccess}
-      onError={onError}
-      primaryBackgroundColor={primaryBackgroundColor}
-      primaryTextColor={primaryTextColor}
-      secondaryBackgroundColor={secondaryBackgroundColor}
-      secondaryTextColor={secondaryTextColor}
-      allowMultipleFiles={allowMultipleFiles}
-      chunkSize={chunkSize}
-      overlapSize={overlapSize}
-      tosURL={tosURL}
-      privacyPolicyURL={privacyPolicyURL}
-      open={open}
-      setOpen={setOpen}
-      alwaysOpen={alwaysOpen}
-      navigateBackURL={navigateBackURL}
-      activeStep={activeStep}
-      setActiveStep={setActiveStep}
-    >
-      <IntegrationModal
-        orgName={orgName}
-        brandIcon={brandIcon}
-        environment={environment}
-        entryPoint={entryPoint}
-        tags={tags}
-        maxFileSize={maxFileSize}
-        enabledIntegrations={enabledIntegrations}
-        onSuccess={onSuccess}
-        onError={onError}
-        primaryBackgroundColor={primaryBackgroundColor}
-        primaryTextColor={primaryTextColor}
-        secondaryBackgroundColor={secondaryBackgroundColor}
-        secondaryTextColor={secondaryTextColor}
-        allowMultipleFiles={allowMultipleFiles}
-        open={open}
-        setOpen={setOpen}
-        alwaysOpen={alwaysOpen}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-      >
-        {children}
-      </IntegrationModal>
-    </CarbonProvider>
-  );
-};
-
-export { CarbonConnect };
+export default IntegrationModal;
