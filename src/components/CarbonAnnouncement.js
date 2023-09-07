@@ -5,7 +5,6 @@ import '../index.css';
 import carbonLogo from '../carbon.svg';
 import { useCarbon } from '../contexts/CarbonContext';
 import { darkenColor } from '../utils/helpers';
-import { setFlag } from '../utils/helpers';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">
@@ -26,7 +25,6 @@ Feature.propTypes = {
 const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
   const [connectButtonHoveredState, setConnectButtonHoveredState] =
     useState(false);
-  const [backButtonHoveredState, setBackButtonHoveredState] = useState(false);
 
   const {
     orgName,
@@ -176,21 +174,39 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           </p>
         )}
 
-        <button
-          className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
-          style={{
-            backgroundColor: connectButtonHoveredState
-              ? darkenColor(primaryBackgroundColor, -10)
-              : primaryBackgroundColor,
+        {entryPoint === 'GOOGLE_DRIVE' ? (
+          <div
+            className="cc-bg-google-blue cc-w-52 cc-h-11 cc-rounded-sm cc-shadow-md cc-relative cc-cursor-pointer hover:cc-shadow-lg active:cc-bg-button-active-blue cc-flex cc-flex-row cc-p-0.5 cc-space-x-[1.125rem] cc-items-center"
+            onClick={handleButtonClick}
+          >
+            <div className="cc-bg-white cc-w-10 cc-h-10 cc-rounded-sm cc-flex">
+              <img
+                className="cc-w-5 cc-h-5 cc-items-center cc-justify-center cc-m-auto"
+                src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                alt="Google logo"
+              />
+            </div>
+            <p className="cc-text-white cc-text-sm cc-items-center cc-justify-center cc-font-roboto cc-font-medium">
+              <b>Sign in with Google</b>
+            </p>
+          </div>
+        ) : (
+          <button
+            className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer"
+            style={{
+              backgroundColor: connectButtonHoveredState
+                ? darkenColor(primaryBackgroundColor, -10)
+                : primaryBackgroundColor,
 
-            color: primaryTextColor,
-          }}
-          onClick={handleButtonClick}
-          onMouseEnter={() => setConnectButtonHoveredState(true)}
-          onMouseLeave={() => setConnectButtonHoveredState(false)}
-        >
-          <p>Connect</p>
-        </button>
+              color: primaryTextColor,
+            }}
+            onClick={handleButtonClick}
+            onMouseEnter={() => setConnectButtonHoveredState(true)}
+            onMouseLeave={() => setConnectButtonHoveredState(false)}
+          >
+            <p>Connect</p>
+          </button>
+        )}
 
         {navigateBackURL && (
           <p

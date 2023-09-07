@@ -24,14 +24,6 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
 
   const handleServiceOAuthFlow = async (service) => {
     try {
-      // const alreadyActiveOAuth = getFlag(service?.data_source_type);
-      // if (alreadyActiveOAuth === 'true') {
-      //   toast.error(
-      //     `Please finish the ${service?.data_source_type} authentication before starting another.`
-      //   );
-      //   return;
-      // }
-
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
@@ -57,7 +49,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       );
 
       if (oAuthURLResponse.status === 200) {
-        setFlag(service?.data_source_type, true);
+        // setFlag(service?.data_source_type, true);
         onSuccess({
           status: 200,
           data: null,
@@ -95,10 +87,6 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             integration.data_source_type
           );
 
-          // if (!enabledIntegrations.includes(integration.data_source_type)) {
-          //   return null;
-          // }
-
           return (
             <li
               key={integration.id}
@@ -119,15 +107,15 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                         handleServiceOAuthFlow(integration);
                       }
                     }
-                  } catch (err) {
-                    // console.log('Error: ', err);
-                  }
+                  } catch (err) {}
                 }}
               >
                 <div className="cc-flex cc-flex-row cc-items-center">
                   <span className="cc-mr-4">{integration.icon}</span>
-                  <h1 className="cc-text-md cc-font-normal">
-                    {integration.name}
+                  <h1 className="cc-text-base cc-font-roboto cc-items-center cc-justify-center cc-font-medium">
+                    {integration.data_source_type === 'GOOGLE_DRIVE'
+                      ? 'Connect your Google Drive'
+                      : integration.name}
                   </h1>
                 </div>
                 <div className="cc-flex cc-flex-col">

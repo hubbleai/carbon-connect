@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { darkenColor } from '../utils/helpers';
+import { darkenColor, formatFileSize } from '../utils/helpers';
 
 import { FileUploader } from 'react-drag-drop-files';
 import * as Dialog from '@radix-ui/react-dialog';
+
 import {
   HiXCircle,
   HiCheckCircle,
@@ -444,7 +445,7 @@ function FileUpload({ setActiveStep }) {
                         {file.name}
                       </h1>
                       <p className="cc-text-sm cc-text-gray-400">
-                        {`${parseFloat(file.size / 1000000).toFixed(2)} MB`}
+                        {formatFileSize(file.size)}
                       </p>
                     </div>
                     <HiX

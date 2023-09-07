@@ -11,6 +11,19 @@ export function darkenColor(color, percent) {
   );
 }
 
+export function formatFileSize(sizeInBytes) {
+  const sizeInKB = sizeInBytes / 1000;
+  const sizeInMB = sizeInBytes / 1000000;
+
+  if (sizeInMB >= 1) {
+    return `${sizeInMB.toFixed(2)} MB`;
+  } else if (sizeInKB >= 1) {
+    return `${sizeInKB.toFixed(2)} KB`;
+  } else {
+    return `${sizeInBytes} bytes`;
+  }
+}
+
 // Utility function to set the flag
 export function setFlag(flagName, flagValue) {
   try {

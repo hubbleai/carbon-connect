@@ -4,6 +4,7 @@ import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
+import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { getFlag, setFlag } from '../utils/helpers';
@@ -30,7 +31,7 @@ const integrationsList = [
     name: 'Google Drive',
     description: 'Lets your users connect their Google Drive to Carbon.',
     announcementName: 'to connect Google Drive',
-    icon: <BsGoogle className="cc-w-7 cc-h-7" />,
+    icon: <FcGoogle className="cc-w-7 cc-h-7" />,
     active: true,
     data_source_type: 'GOOGLE_DRIVE',
     requiresOAuth: true,

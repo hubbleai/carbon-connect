@@ -5,14 +5,13 @@ import '../index.css';
 import { HiPlus } from 'react-icons/hi';
 import CarbonAnnouncement from '../components/CarbonAnnouncement';
 import ThirdPartyList from '../components/ThirdPartyList';
-import GoogleDocsSelector from '../components/GoogleDocsSelector';
 import FileUpload from '../components/FileUpload';
 import { ToastContainer } from 'react-toastify';
 
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 import WebScraper from '../components/WebScraper';
-import { setFlag } from '../utils/helpers';
+// import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({
   maxFileSize,
@@ -55,11 +54,6 @@ const IntegrationModal = ({
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
 
-        // const alreadyActiveOAuth = getFlag(newIntegration?.data_source_type);
-        // if (alreadyActiveOAuth !== 'true') {
-        //   continue;
-        // }
-
         if (!oldIntegration) {
           const onSuccessObject = {
             status: 200,
@@ -68,7 +62,7 @@ const IntegrationModal = ({
             event: onSuccessEvents.ADD,
             data: {
               data_source_external_id: newIntegration.data_source_external_id,
-              files: null, //newIntegration?.synced_files || [],
+              files: null,
               sync_status: newIntegration.sync_status,
             },
           };
@@ -79,7 +73,7 @@ const IntegrationModal = ({
             newIntegration?.data_source_type === 'NOTION' ||
             newIntegration?.data_source_type === 'INTERCOM'
           ) {
-            setFlag(newIntegration?.data_source_type, false);
+            // setFlag(newIntegration?.data_source_type, false);
             const onSuccessObject = {
               status: 200,
               integration: newIntegration.data_source_type,
@@ -110,7 +104,7 @@ const IntegrationModal = ({
               sync_status: newIntegration.sync_status,
             },
           };
-          setFlag(newIntegration?.data_source_type, false);
+          // setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
           continue;
         } else if (
@@ -177,7 +171,7 @@ const IntegrationModal = ({
                 sync_status: newIntegration.sync_status,
               },
             };
-            setFlag(newIntegration?.data_source_type, false);
+            // setFlag(newIntegration?.data_source_type, false);
             response.push(onSuccessObject);
           }
         }
@@ -281,14 +275,6 @@ const IntegrationModal = ({
             />
           )}
 
-          {activeStep === 'GOOGLE_DOCS' && (
-            <GoogleDocsSelector
-              integrationData={activeIntegrations
-                .filter((i) => i.data_source_type === 'GOOGLE_DRIVE')
-                .pop()}
-              setActiveStep={setActiveStep}
-            />
-          )}
           {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               setActiveStep={setActiveStep}
