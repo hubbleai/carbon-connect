@@ -13,7 +13,8 @@ export declare enum IntegrationName {
     GOOGLE_DRIVE = "GOOGLE_DRIVE",
     INTERCOM = "INTERCOM",
     DROPBOX = "DROPBOX",
-    ONEDRIVE = "ONEDRIVE"
+    ONEDRIVE = "ONEDRIVE",
+    BOX = "BOX"
 }
 export declare enum SyncStatus {
     READY = "READY",

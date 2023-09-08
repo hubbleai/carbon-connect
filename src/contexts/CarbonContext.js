@@ -6,6 +6,7 @@ import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
+import { SiBox } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { getFlag, setFlag } from '../utils/helpers';
 import { toast } from 'react-toastify';
@@ -14,6 +15,17 @@ const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
 
 const integrationsList = [
+  {
+    id: 'BOX',
+    subpath: 'box',
+    name: 'Box',
+    description: 'Lets your users connect their Box accounts to Carbon.',
+    announcementName: 'to connect Box',
+    icon: <SiBox className="cc-w-8 cc-h-8" />,
+    active: true,
+    data_source_type: 'BOX',
+    requiresOAuth: true,
+  },
   {
     id: 'DROPBOX',
     subpath: 'dropbox',
@@ -232,7 +244,7 @@ export const CarbonProvider = ({
       );
 
       if (oAuthURLResponse.status === 200) {
-        setFlag(service?.data_source_type, true);
+        // setFlag(service?.data_source_type, true);
         onSuccess({
           status: 200,
           data: null,

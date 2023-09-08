@@ -23,6 +23,7 @@ export enum IntegrationName {
   INTERCOM = 'INTERCOM',
   DROPBOX = 'DROPBOX',
   ONEDRIVE = 'ONEDRIVE',
+  BOX = 'BOX',
 }
 
 export enum SyncStatus {
