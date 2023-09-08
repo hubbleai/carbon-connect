@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import './index.css';
-declare enum ActionType {
+export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
     UPDATE = "UPDATE",
     CANCEL = "CANCEL"
 }
-declare enum IntegrationName {
+export declare enum IntegrationName {
     LOCAL_FILES = "LOCAL_FILES",
     NOTION = "NOTION",
     WEB_SCRAPER = "WEB_SCRAPER",
@@ -15,34 +15,34 @@ declare enum IntegrationName {
     DROPBOX = "DROPBOX",
     ONEDRIVE = "ONEDRIVE"
 }
-declare enum SyncStatus {
+export declare enum SyncStatus {
     READY = "READY",
     QUEUED_FOR_SYNCING = "QUEUED_FOR_SYNCING",
     SYNCING = "SYNCING",
     SYNC_ERROR = "SYNC_ERROR"
 }
-interface FileType {
+export interface FileType {
     extension: string;
     chunkSize?: number;
     overlapSize?: number;
 }
-interface BaseIntegration {
+export interface BaseIntegration {
     id: IntegrationName;
     chunkSize?: number;
     overlapSize?: number;
 }
-interface LocalFilesIntegration extends BaseIntegration {
+export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
     allowMultipleFiles: boolean;
     maxFilesCount?: number;
     allowedFileTypes?: FileType[];
 }
-interface WebScraperIntegration extends BaseIntegration {
+export interface WebScraperIntegration extends BaseIntegration {
     recursionDepth?: number;
     maxPagesToScrape?: number;
 }
-type Integration = LocalFilesIntegration | WebScraperIntegration | BaseIntegration;
-interface LocalFile {
+export type Integration = LocalFilesIntegration | WebScraperIntegration | BaseIntegration;
+export interface LocalFile {
     id: string;
     name: string;
     source: IntegrationName;
@@ -50,12 +50,12 @@ interface LocalFile {
     tags: string[];
     sync_status: SyncStatus;
 }
-interface WebScraper {
+export interface WebScraper {
     urls: string[];
     validUrls: string[];
     tags: string[];
 }
-interface ThirdPartyIntegrationFile {
+export interface ThirdPartyIntegrationFile {
     id: string;
     source: IntegrationName;
     organization_id: string;
@@ -79,26 +79,26 @@ interface ThirdPartyIntegrationFile {
     updated_at: string;
     action: ActionType;
 }
-interface OnSuccessData {
+export interface OnSuccessData {
     status: number;
     data: LocalFile[] | WebScraper[] | ThirdPartyIntegrationFile[] | null;
     action: ActionType;
     event: ActionType;
     integration: IntegrationName;
 }
-interface OnErrorData {
+export interface OnErrorData {
     status: number;
     action: ActionType;
     event: ActionType;
     integration: IntegrationName;
     data?: object;
 }
-type TagValue = string | number | string[] | number[];
-interface CarbonConnectProps {
+export type TagValue = string | number | string[] | number[];
+export interface CarbonConnectProps {
     orgName: string;
     brandIcon: string;
     children?: ReactNode;
-    tokenFetcher: () => Promise<{
+    tokenFetcher?: () => Promise<{
         access_token: string;
     }>;
     onSuccess?: (data: OnSuccessData) => void;

@@ -8,14 +8,14 @@ import IntegrationModal from './components/IntegrationModal';
 import { CarbonProvider } from './contexts/CarbonContext';
 
 // Enums
-enum ActionType {
+export enum ActionType {
   INITIATE = 'INITIATE',
   ADD = 'ADD',
   UPDATE = 'UPDATE',
   CANCEL = 'CANCEL',
 }
 
-enum IntegrationName {
+export enum IntegrationName {
   LOCAL_FILES = 'LOCAL_FILES',
   NOTION = 'NOTION',
   WEB_SCRAPER = 'WEB_SCRAPER',
@@ -25,41 +25,40 @@ enum IntegrationName {
   ONEDRIVE = 'ONEDRIVE',
 }
 
-enum SyncStatus {
+export enum SyncStatus {
   READY = 'READY',
   QUEUED_FOR_SYNCING = 'QUEUED_FOR_SYNCING',
   SYNCING = 'SYNCING',
   SYNC_ERROR = 'SYNC_ERROR',
 }
 
-interface FileType {
+export interface FileType {
   extension: string;
   chunkSize?: number;
   overlapSize?: number;
 }
-interface BaseIntegration {
+export interface BaseIntegration {
   id: IntegrationName;
   chunkSize?: number;
   overlapSize?: number;
 }
-interface LocalFilesIntegration extends BaseIntegration {
+export interface LocalFilesIntegration extends BaseIntegration {
   maxFileSize: number;
   allowMultipleFiles: boolean;
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
 }
-interface WebScraperIntegration extends BaseIntegration {
+export interface WebScraperIntegration extends BaseIntegration {
   recursionDepth?: number;
   maxPagesToScrape?: number;
 }
 
-type Integration =
+export type Integration =
   | LocalFilesIntegration
   | WebScraperIntegration
   | BaseIntegration;
 
-// Data structures
-interface LocalFile {
+export interface LocalFile {
   id: string;
   name: string;
   source: IntegrationName;
@@ -68,13 +67,13 @@ interface LocalFile {
   sync_status: SyncStatus;
 }
 
-interface WebScraper {
+export interface WebScraper {
   urls: string[];
   validUrls: string[];
   tags: string[];
 }
 
-interface ThirdPartyIntegrationFile {
+export interface ThirdPartyIntegrationFile {
   id: string;
   source: IntegrationName;
   organization_id: string;
@@ -102,7 +101,7 @@ interface ThirdPartyIntegrationFile {
 }
 
 // Callback data types
-interface OnSuccessData {
+export interface OnSuccessData {
   status: number;
   data: LocalFile[] | WebScraper[] | ThirdPartyIntegrationFile[] | null;
   action: ActionType;
@@ -110,7 +109,7 @@ interface OnSuccessData {
   integration: IntegrationName;
 }
 
-interface OnErrorData {
+export interface OnErrorData {
   status: number;
   action: ActionType;
   event: ActionType;
@@ -119,13 +118,13 @@ interface OnErrorData {
   data?: object;
 }
 
-type TagValue = string | number | string[] | number[];
+export type TagValue = string | number | string[] | number[];
 
-interface CarbonConnectProps {
+export interface CarbonConnectProps {
   orgName: string;
   brandIcon: string;
   children?: ReactNode;
-  tokenFetcher: () => Promise<{ access_token: string }>;
+  tokenFetcher?: () => Promise<{ access_token: string }>;
   onSuccess?: (data: OnSuccessData) => void;
   onError?: (data: OnErrorData) => void;
   tags?: Record<string, TagValue>;
