@@ -220,15 +220,7 @@ function FileUpload({ setActiveStep }) {
 
               if (appendTagsResponse.status === 200) {
                 const appendTagsResponseData = await appendTagsResponse.json();
-                const dataObject = {
-                  id: appendTagsResponseData['id'],
-                  name: appendTagsResponseData['name'],
-                  source: appendTagsResponseData['source'],
-                  external_file_id: appendTagsResponseData['external_file_id'],
-                  tags: appendTagsResponseData['tags'],
-                  sync_status: appendTagsResponseData['sync_status'],
-                };
-                successfulUploads.push(dataObject);
+                successfulUploads.push(appendTagsResponseData);
               } else {
                 failedUploads.push({
                   fileName: file.name,
@@ -260,7 +252,11 @@ function FileUpload({ setActiveStep }) {
       if (successfulUploads.length > 0)
         onSuccess({
           status: 200,
-          data: successfulUploads,
+          data: {
+            data_source_external_id: null,
+            sync_status: null,
+            files: successfulUploads,
+          },
           action: onSuccessEvents.UPDATE,
           event: onSuccessEvents.UPDATE,
           integration: 'LOCAL_FILES',
