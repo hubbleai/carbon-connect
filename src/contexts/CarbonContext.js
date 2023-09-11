@@ -137,7 +137,7 @@ export const CarbonProvider = ({
   setActiveStep,
 }) => {
   const [showModal, setShowModal] = useState(open);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const [accessToken, setAccessToken] = useState(null);

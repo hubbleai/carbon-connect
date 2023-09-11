@@ -157,10 +157,15 @@ function WebScraper({
       );
 
       if (uploadResponse.status === 200) {
+        const responseData = await uploadResponse.json();
         setScrapingResponse('Scraping request initiated successfully.');
         onSuccess({
           status: 200,
-          data: [{ urls: urls, validUrls: validUrls, tags: tags }],
+          data: {
+            data_source_external_id: null,
+            sync_status: null,
+            files: responseData,
+          },
           action: onSuccessEvents.UPDATE,
           event: onSuccessEvents.UPDATE,
           integration: 'WEB_SCRAPER',

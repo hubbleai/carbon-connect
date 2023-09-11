@@ -74,7 +74,7 @@ export interface WebScraper {
   tags: string[];
 }
 
-export interface ThirdPartyIntegrationFile {
+export interface OnSuccessDataFileObject {
   id: string;
   source: IntegrationName;
   organization_id: string;
@@ -104,7 +104,11 @@ export interface ThirdPartyIntegrationFile {
 // Callback data types
 export interface OnSuccessData {
   status: number;
-  data: LocalFile[] | WebScraper[] | ThirdPartyIntegrationFile[] | null;
+  data: {
+    data_source_external_id: string | null;
+    sync_status: string | null;
+    files: LocalFile[] | WebScraper[] | OnSuccessDataFileObject[] | null;
+  };
   action: ActionType;
   event: ActionType;
   integration: IntegrationName;
