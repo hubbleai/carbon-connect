@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';

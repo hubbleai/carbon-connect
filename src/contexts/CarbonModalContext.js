@@ -232,9 +232,9 @@ export const CarbonModalProvider = ({
   };
 
   return (
-    <CarbonContext.Provider value={contextValues}>
+    <CarbonModalContext.Provider value={contextValues}>
       {children}
-    </CarbonContext.Provider>
+    </CarbonModalContext.Provider>
   );
 };
 
