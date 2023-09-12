@@ -38,6 +38,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     tosURL,
     privacyPolicyURL,
     navigateBackURL,
+    handleServiceOAuthFlow,
   } = useCarbonModal();
 
   const isEntryPoint = Boolean(entryPoint);

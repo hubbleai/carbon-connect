@@ -151,11 +151,7 @@ const IntegrationModal = ({
             ...deletions,
           ];
 
-          if (
-            fileModifications.length > 0
-            // ||
-            // newIntegration.data_source_type === 'NOTION'
-          ) {
+          if (fileModifications.length > 0) {
             const onSuccessObject = {
               status: 200,
               integration: newIntegration.data_source_type,
