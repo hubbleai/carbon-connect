@@ -5,8 +5,7 @@ import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
 import { BASE_URL, onSuccessEvents } from '../constants';
-import { useCarbon } from '../contexts/CarbonContext';
-import { setFlag } from '../utils/helpers';
+import { useCarbonModal } from '../contexts/CarbonModalContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const {
@@ -18,9 +17,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
-    authenticatedFetch,
+    carbonFetch,
     onSuccess,
-  } = useCarbon();
+  } = useCarbonModal();
 
   const handleServiceOAuthFlow = async (service) => {
     try {
@@ -29,7 +28,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
-      const oAuthURLResponse = await authenticatedFetch(
+      const oAuthURLResponse = await carbonFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
           method: 'POST',
@@ -49,7 +48,6 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       );
 
       if (oAuthURLResponse.status === 200) {
-        // setFlag(service?.data_source_type, true);
         onSuccess({
           status: 200,
           data: null,

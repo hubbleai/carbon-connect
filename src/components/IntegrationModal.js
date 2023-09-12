@@ -2,16 +2,16 @@ import React, { useState, useEffect, useRef } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import '../index.css';
 
-import { HiPlus } from 'react-icons/hi';
 import CarbonAnnouncement from '../components/CarbonAnnouncement';
 import ThirdPartyList from '../components/ThirdPartyList';
 import FileUpload from '../components/FileUpload';
+import WebScraper from '../components/WebScraper';
 import { ToastContainer } from 'react-toastify';
 
 import { BASE_URL, onSuccessEvents } from '../constants';
-import { useCarbon } from '../contexts/CarbonContext';
-import WebScraper from '../components/WebScraper';
-// import { setFlag } from '../utils/helpers';
+import { useCarbonModal } from '../contexts/CarbonModalContext';
+
+import { HiPlus } from 'react-icons/hi';
 
 const IntegrationModal = ({
   maxFileSize,
@@ -37,12 +37,12 @@ const IntegrationModal = ({
   const {
     accessToken,
     fetchTokens,
-    authenticatedFetch,
+    carbonFetch,
     setOpen,
     alwaysOpen,
     showModal,
     manageModalOpenState,
-  } = useCarbon();
+  } = useCarbonModal();
 
   const findModifications = (newIntegrations, oldIntegrations) => {
     const response = [];
@@ -73,7 +73,6 @@ const IntegrationModal = ({
             newIntegration?.data_source_type === 'NOTION' ||
             newIntegration?.data_source_type === 'INTERCOM'
           ) {
-            // setFlag(newIntegration?.data_source_type, false);
             const onSuccessObject = {
               status: 200,
               integration: newIntegration.data_source_type,
@@ -87,8 +86,6 @@ const IntegrationModal = ({
             };
             response.push(onSuccessObject);
           }
-          // setFlag(newIntegration?.data_source_type, false);
-          // continue;
         } else if (
           oldIntegration?.last_synced_at !== newIntegration?.last_synced_at &&
           newIntegration?.last_sync_action === 'CANCEL'
@@ -104,7 +101,6 @@ const IntegrationModal = ({
               sync_status: newIntegration.sync_status,
             },
           };
-          // setFlag(newIntegration?.data_source_type, false);
           response.push(onSuccessObject);
           continue;
         } else if (
@@ -171,7 +167,6 @@ const IntegrationModal = ({
                 sync_status: newIntegration.sync_status,
               },
             };
-            // setFlag(newIntegration?.data_source_type, false);
             response.push(onSuccessObject);
           }
         }
@@ -185,7 +180,7 @@ const IntegrationModal = ({
 
   const fetchUserIntegrationsHelper = async () => {
     try {
-      const userIntegrationsResponse = await authenticatedFetch(
+      const userIntegrationsResponse = await carbonFetch(
         `${BASE_URL[environment]}/integrations/`,
         {
           method: 'GET',

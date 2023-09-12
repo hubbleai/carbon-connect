@@ -11,3 +11,6 @@ export const onSuccessEvents = {
   UPDATE: 'UPDATE',
   CANCEL: 'CANCEL',
 };
+
+export const DEFAAULT_CHUNK_SIZE = 1500;
+export const DEFAAULT_OVERLAP_SIZE = 20;

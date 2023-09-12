@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { HiLockClosed, HiLink } from 'react-icons/hi';
 import '../index.css';
 import carbonLogo from '../carbon.svg';
-import { useCarbon } from '../contexts/CarbonContext';
+import { useCarbonModal } from '../contexts/CarbonModalContext';
 import { darkenColor } from '../utils/helpers';
 
 const Feature = ({ Icon, title, children }) => (
@@ -31,17 +31,14 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     brandIcon,
     primaryBackgroundColor,
     primaryTextColor,
-    secondaryBackgroundColor,
     secondaryTextColor,
     entryPoint,
     entryPointIntegrationObject,
-    handleServiceOAuthFlow,
     whiteLabelingData,
     tosURL,
     privacyPolicyURL,
     navigateBackURL,
-    manageModalOpenState,
-  } = useCarbon();
+  } = useCarbonModal();
 
   const isEntryPoint = Boolean(entryPoint);
   const isWhiteLabeledOrg = Boolean(whiteLabelingData?.remove_branding);
@@ -51,7 +48,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
       whiteLabelingData?.integrations?.[entryPoint]
   );
 
-  const handleButtonClick = () => {
+  const handleConnectButtonClick = () => {
     if (entryPointIntegrationObject?.active) {
       if (!entryPointIntegrationObject?.requiresOAuth) {
         setActiveStep(entryPointIntegrationObject.data_source_type);
@@ -63,7 +60,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     }
   };
 
-  const navigateBack = () => {
+  const navigateBackFromAnnouncement = () => {
     if (navigateBackURL) window.open(navigateBackURL, '_self');
     else manageModalOpenState(false);
   };
@@ -177,7 +174,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
         {entryPoint === 'GOOGLE_DRIVE' ? (
           <div
             className="cc-bg-google-blue cc-w-52 cc-h-11 cc-rounded-sm cc-shadow-md cc-relative cc-cursor-pointer hover:cc-shadow-lg active:cc-bg-button-active-blue cc-flex cc-flex-row cc-p-0.5 cc-space-x-[1.125rem] cc-items-center"
-            onClick={handleButtonClick}
+            onClick={handleConnectButtonClick}
           >
             <div className="cc-bg-white cc-w-10 cc-h-10 cc-rounded-sm cc-flex">
               <img
@@ -200,7 +197,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
 
               color: primaryTextColor,
             }}
-            onClick={handleButtonClick}
+            onClick={handleConnectButtonClick}
             onMouseEnter={() => setConnectButtonHoveredState(true)}
             onMouseLeave={() => setConnectButtonHoveredState(false)}
           >
@@ -214,7 +211,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
             style={{
               color: secondaryTextColor,
             }}
-            onClick={navigateBack}
+            onClick={navigateBackFromAnnouncement}
           >
             Go Back
           </p>

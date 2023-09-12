@@ -24,7 +24,7 @@ import { LuLoader2 } from 'react-icons/lu';
 
 import '../index.css';
 import { BASE_URL, onSuccessEvents } from '../constants';
-import { useCarbon } from '../contexts/CarbonContext';
+import { useCarbonModal } from '../contexts/CarbonModalContext';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
@@ -55,16 +55,16 @@ function FileUpload({ setActiveStep }) {
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
-    authenticatedFetch,
-  } = useCarbon();
+    carbonFetch,
+  } = useCarbonModal();
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (!accessToken) {
-        fetchTokens();
-      }
-    }, 1000);
-  }, [accessToken]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (!accessToken) {
+  //       fetchTokens();
+  //     }
+  //   }, 1000);
+  // }, [accessToken]);
 
   useEffect(() => {
     const newFilesConfig = processedIntegrations.find(
@@ -188,7 +188,7 @@ function FileUpload({ setActiveStep }) {
               filesConfig?.skipEmbeddingGeneration ||
               false;
 
-            const uploadResponse = await authenticatedFetch(
+            const uploadResponse = await carbonFetch(
               `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}`,
               {
                 method: 'POST',
@@ -203,7 +203,7 @@ function FileUpload({ setActiveStep }) {
             if (uploadResponse.status === 200) {
               const uploadResponseData = await uploadResponse.json();
 
-              const appendTagsResponse = await authenticatedFetch(
+              const appendTagsResponse = await carbonFetch(
                 `${BASE_URL[environment]}/create_user_file_tags`,
                 {
                   method: 'POST',

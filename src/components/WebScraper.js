@@ -9,8 +9,6 @@ import {
   HiUpload,
   HiX,
   HiPlus,
-  HiTrash,
-  HiDownload,
   HiInformationCircle,
 } from 'react-icons/hi';
 import { FaSitemap, FaLaptop } from 'react-icons/fa';
@@ -19,7 +17,7 @@ import { toast } from 'react-toastify';
 import '../index.css';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
-import { useCarbon } from '../contexts/CarbonContext';
+import { useCarbonModal } from '../contexts/CarbonModalContext';
 import { BiLoaderAlt } from 'react-icons/bi';
 
 const DEFAULT_RECURSION_DEPTH = 3;
@@ -75,8 +73,8 @@ function WebScraper({
     topLevelOverlapSize,
     defaultChunkSize,
     defaultOverlapSize,
-    authenticatedFetch,
-  } = useCarbon();
+    carbonFetch,
+  } = useCarbonModal();
 
   const submitScrapeRequest = async () => {
     try {
@@ -144,7 +142,7 @@ function WebScraper({
               skip_embedding_generation: skipEmbeddingGeneration,
             }));
 
-      const uploadResponse = await authenticatedFetch(
+      const uploadResponse = await carbonFetch(
         `${BASE_URL[environment]}/web_scrape`,
         {
           method: 'POST',
@@ -208,7 +206,7 @@ function WebScraper({
         return;
       }
       setSitemapUrlsLoading(true);
-      const response = await authenticatedFetch(
+      const response = await carbonFetch(
         `${BASE_URL[environment]}/process_sitemap?url=${sitemapUrl}`,
         {
           method: 'GET',
