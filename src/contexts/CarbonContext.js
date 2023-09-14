@@ -109,7 +109,7 @@ const integrationsList = [
     name: 'Zendesk',
     description: 'Lets your users connect their Zendesk accounts to Carbon.',
     announcementName: 'to connect Zendesk',
-    icon: <SiZendesk className="cc-w-8 cc-h-8" />,
+    icon: <SiZendesk className="cc-w-7 cc-h-7" />,
     active: true,
     data_source_type: 'ZENDESK',
     requiresOAuth: true,

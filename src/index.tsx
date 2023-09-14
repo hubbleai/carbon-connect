@@ -24,6 +24,7 @@ export enum IntegrationName {
   DROPBOX = 'DROPBOX',
   ONEDRIVE = 'ONEDRIVE',
   BOX = 'BOX',
+  ZENDESK = 'ZENDESK',
 }
 
 export enum SyncStatus {
