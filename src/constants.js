@@ -5,9 +5,10 @@ export const BASE_URL = {
 };
 
 export const onSuccessEvents = {
-  INITIATE: 'INITIATE',
   ADD: 'ADD',
+  CANCEL: 'CANCEL',
+  ERROR: 'ERROR',
+  INITIATE: 'INITIATE',
   REMOVE: 'REMOVE',
   UPDATE: 'UPDATE',
-  CANCEL: 'CANCEL',
 };

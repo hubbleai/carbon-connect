@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 import WebScraper from '../components/WebScraper';
+import ZendeskScreen from './ZendeskScreen';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({
@@ -299,6 +300,21 @@ const IntegrationModal = ({
               environment={environment}
               tags={tags}
               maxFileSize={maxFileSize}
+              onSuccess={onSuccess}
+              onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
+            />
+          )}
+
+          {activeStep === 'ZENDESK' && (
+            <ZendeskScreen
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
               onSuccess={onSuccess}
               onError={onError}
               primaryBackgroundColor={primaryBackgroundColor}

@@ -56,6 +56,10 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
       if (!entryPointIntegrationObject?.requiresOAuth) {
         setActiveStep(entryPointIntegrationObject.data_source_type);
       } else {
+        if (entryPointIntegrationObject?.multiStep) {
+          setActiveStep(entryPointIntegrationObject.data_source_type);
+          return;
+        }
         handleServiceOAuthFlow(entryPointIntegrationObject);
       }
     } else {

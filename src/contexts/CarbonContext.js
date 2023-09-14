@@ -113,6 +113,7 @@ const integrationsList = [
     active: true,
     data_source_type: 'ZENDESK',
     requiresOAuth: true,
+    multiStep: true,
   },
 ];
 
