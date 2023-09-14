@@ -6,7 +6,7 @@ import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
-import { SiBox } from 'react-icons/si';
+import { SiBox, SiZendesk } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { getFlag, setFlag } from '../utils/helpers';
 import { toast } from 'react-toastify';
@@ -36,6 +36,17 @@ const integrationsList = [
     active: true,
     data_source_type: 'DROPBOX',
     requiresOAuth: true,
+  },
+  {
+    id: 'LOCAL_FILES',
+    subpath: 'local',
+    name: 'File Upload',
+    description: 'Lets your users upload local files to Carbon.',
+    announcementName: 'to upload local files',
+    icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'LOCAL_FILES',
+    requiresOAuth: false,
   },
   {
     id: 'GOOGLE_DRIVE',
@@ -93,15 +104,15 @@ const integrationsList = [
     requiresOAuth: false,
   },
   {
-    id: 'LOCAL_FILES',
-    subpath: 'local',
-    name: 'File Upload',
-    description: 'Lets your users upload local files to Carbon.',
-    announcementName: 'to upload local files',
-    icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
+    id: 'ZENDESK',
+    subpath: 'zendesk',
+    name: 'Zendesk',
+    description: 'Lets your users connect their Zendesk accounts to Carbon.',
+    announcementName: 'to connect Zendesk',
+    icon: <SiZendesk className="cc-w-8 cc-h-8" />,
     active: true,
-    data_source_type: 'LOCAL_FILES',
-    requiresOAuth: false,
+    data_source_type: 'ZENDESK',
+    requiresOAuth: true,
   },
 ];
 
