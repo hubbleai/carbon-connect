@@ -59,6 +59,10 @@ function ZendeskScreen({
 
   const fetchOauthURL = async () => {
     try {
+      if (!zendeskSubdomain) {
+        toast.error('Please enter a subdomain.');
+        return;
+      }
       setIsLoading(true);
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
