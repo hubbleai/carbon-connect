@@ -7,6 +7,9 @@ import IntegrationModal from './components/IntegrationModal';
 // @ts-ignore
 import { CarbonModalProvider } from './contexts/CarbonModalContext';
 
+// @ts-ignore
+import { CarbonProvider, useCarbon } from './contexts/CarbonContext';
+
 import { CarbonConnectProps } from './types';
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -116,4 +119,4 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   );
 };
 
-export { CarbonConnect };
+export { CarbonConnect, CarbonProvider, useCarbon };
