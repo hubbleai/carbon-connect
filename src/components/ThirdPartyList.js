@@ -104,6 +104,12 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                       if (!integration.requiresOAuth) {
                         setActiveStep(integration.data_source_type);
                       } else {
+                        if (entryPointIntegrationObject?.multiStep) {
+                          setActiveStep(
+                            entryPointIntegrationObject.data_source_type
+                          );
+                          return;
+                        }
                         handleServiceOAuthFlow(integration);
                       }
                     }

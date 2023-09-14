@@ -62,21 +62,33 @@ Our oAuth app is in approval phase. your users will see a warning message when t
 
 ## Usage
 
-Here's an illustrative example of how to use the `CarbonConnect` component in a Next.js project:
+This section demonstrates how to integrate the CarbonConnect component within a Next.js project.
+
+### Client Side Configuration
+
+1. Import necessary libraries and components:
 
 ```jsx
 import { CarbonConnect } from 'carbon-connect';
 import axios from 'axios';
+```
 
+2. Token Retrieval:
+   Set up the tokenFetcher function. It's designed to request authentication tokens from your backend:
+
+```js
 const tokenFetcher = async () => {
   const response = await axios.get('/api/auth/fetchCarbonTokens', {
     params: { customer_id: 'your_customer_id' },
   });
-
-  // Just return the response data which contains the access_token.
-  return response.data;
+  return response.data; // Must return data containing access_token
 };
+```
 
+3. Implement CarbonConnect Component:
+   Here's a concise usage example. Customize according to your requirements:
+
+```jsx
 <CarbonConnect
   orgName="Your Organization"
   brandIcon="path/to/your/brand/icon"
@@ -138,12 +150,12 @@ const tokenFetcher = async () => {
   chunkSize={1500}
   overlapSize={20}
   // entryPoint="LOCAL_FILES"
-></CarbonConnect>;
+></CarbonConnect>
 ```
 
-In this example, `tokenFetcher` is a helper function that retrieves the necessary tokens for authentication. This function should be implemented in your client-side code and is designed to hit an API on your backend server. This API, in turn, requests tokens from the Carbon token creation endpoint. `maxFileSize` is set to 25,000,000 bytes and a custom button is used as the trigger to open the dialog.
+### Server Side Configuration
 
-Below is an example of how the backend server might request new access tokens:
+Your backend should handle token requests like this:
 
 ```js
 const response = await axios.get('https://api.carbon.ai/auth/v1/access_token', {
@@ -158,12 +170,14 @@ if (response.status === 200 && response.data) {
 }
 ```
 
-## Regarding the return value from tokenFetcher
+### Return Value Expectation:
 
-CarbonConnect expects an object which will be of this structure:
+Ensure that your tokenFetcher returns an object structured as:
 
-```
-{ access_token: string }
+```js
+{
+  access_token: string;
+}
 ```
 
 ## Enabling integrations
