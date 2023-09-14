@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from 'react';
+
 import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
-import {
-  HiXCircle,
-  HiCheckCircle,
-  HiArrowLeft,
-  HiUpload,
-  HiX,
-  HiPlus,
-  HiTrash,
-  HiDownload,
-  HiInformationCircle,
-} from 'react-icons/hi';
-import { FaSitemap, FaLaptop } from 'react-icons/fa';
+import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
+import { SiZendesk } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
-import { BiLoaderAlt } from 'react-icons/bi';
 
 function ZendeskScreen({
   setActiveStep,
@@ -31,8 +21,6 @@ function ZendeskScreen({
   onError,
   primaryBackgroundColor,
   primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
 }) {
   const [zendeskSubdomain, setZendeskSubdomain] = useState('');
   const [submitButtonHoveredState, setSubmitButtonHoveredState] =
@@ -55,6 +43,8 @@ function ZendeskScreen({
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
+    secondaryBackgroundColor,
+    secondaryTextColor,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -69,6 +59,14 @@ function ZendeskScreen({
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
+      const subdomain = zendeskSubdomain
+        .replace('https://www.', '')
+        .replace('http://www.', '')
+        .replace('https://', '')
+        .replace('http://', '')
+        .replace('.zendesk.com', '')
+        .replace(/\/$/, '')
+        .trim();
 
       const requestObject = {
         tags: tags,
@@ -76,7 +74,7 @@ function ZendeskScreen({
         chunk_size: chunkSize,
         chunk_overlap: overlapSize,
         skip_embedding_generation: skipEmbeddingGeneration,
-        zendesk_subdomain: zendeskSubdomain,
+        zendesk_subdomain: subdomain,
       };
 
       const response = await authenticatedFetch(
@@ -119,37 +117,53 @@ function ZendeskScreen({
   return (
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
-        <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
+        <div className="cc-w-full cc-flex cc-items-center cc-relative cc-justify-center">
           {!entryPoint && (
             <HiArrowLeft
               onClick={() => setActiveStep(1)}
-              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
+              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
             />
           )}
-
-          <div className="cc-flex cc-w-full">
-            <h1 className="cc-text-lg cc-font-medium cc-text-gray-700">
-              Zendesk
-            </h1>
-          </div>
+          <SiZendesk className="cc-text-3xl cc-text-black" />
         </div>
       </Dialog.Title>
 
       <>
         <div className="py-4 cc-flex cc-grow cc-w-full">
           <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
+            <span className="cc-text-sm">
+              Please enter the Zendesk{' '}
+              <span class="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
+                your-subdomain
+              </span>{' '}
+              of the account you wish to connect.
+            </span>
+
             <div className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10">
               <input
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="Enter subdomain"
+                placeholder="your-subdomain.zendesk.com"
                 value={zendeskSubdomain}
                 onChange={(e) => setZendeskSubdomain(e.target.value)}
               />
             </div>
           </div>
         </div>
+        <p
+          className="cc-flex cc-text-gray-500 cc-p-2 cc-space-x-2 cc-bg-gray-100 cc-rounded-md cc-mb-2 cc-items-center"
+          style={{
+            color: secondaryTextColor,
+            backgroundColor: secondaryBackgroundColor,
+          }}
+        >
+          <HiInformationCircle className="cc-w-8 cc-h-8" />
+          <span className="text-xs">
+            By connecting to Zendesk, you are providing us with access to your
+            Zendesk profile and Help Center articles.
+          </span>
+        </p>
 
         <button
           className={`cc-w-full cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
