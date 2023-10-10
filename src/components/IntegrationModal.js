@@ -156,11 +156,7 @@ const IntegrationModal = ({
             ...deletions,
           ];
 
-          if (
-            fileModifications.length > 0
-            // ||
-            // newIntegration.data_source_type === 'NOTION'
-          ) {
+          if (fileModifications.length > 0) {
             const onSuccessObject = {
               status: 200,
               integration: newIntegration.data_source_type,
@@ -179,9 +175,7 @@ const IntegrationModal = ({
       }
 
       return response;
-    } catch (error) {
-      // console.log(error);
-    }
+    } catch (error) {}
   };
 
   const fetchUserIntegrationsHelper = async () => {
@@ -262,7 +256,7 @@ const IntegrationModal = ({
 
       <Dialog.Portal>
         <Dialog.Overlay className="cc-bg-blackA9 data-[state=open]:cc-animate-overlayShow cc-fixed cc-inset-0 cc-bg-black/30" />
-        <Dialog.Content className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none">
+        <Dialog.Content className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none cc-z-[100]">
           {activeStep === 0 && (
             <CarbonAnnouncement
               setActiveStep={setActiveStep}

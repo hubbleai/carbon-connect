@@ -56,6 +56,8 @@ function FileUpload({ setActiveStep }) {
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
+    navigateBackURL,
+    manageModalOpenState,
   } = useCarbon();
 
   useEffect(() => {
@@ -286,6 +288,11 @@ function FileUpload({ setActiveStep }) {
     }
   };
 
+  const navigateBack = () => {
+    if (navigateBackURL) window.open(navigateBackURL, '_self');
+    else manageModalOpenState(false);
+  };
+
   return (
     <div className="cc-flex cc-flex-col cc-items-center cc-relative cc-h-full">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
@@ -296,7 +303,13 @@ function FileUpload({ setActiveStep }) {
               className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
             />
           )}
-          <h1>Upload Files</h1>
+          <h1 className="cc-grow">Upload Files</h1>
+          {entryPoint && (
+            <HiX
+              onClick={navigateBack}
+              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-mr-0"
+            />
+          )}
         </div>
       </Dialog.Title>
       {!syncResponse && (

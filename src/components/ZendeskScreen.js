@@ -133,7 +133,7 @@ function ZendeskScreen({
           <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
             <span className="cc-text-sm">
               Please enter the Zendesk{' '}
-              <span class="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
+              <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
                 your-subdomain
               </span>{' '}
               of the account you wish to connect.

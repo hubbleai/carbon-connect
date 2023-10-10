@@ -76,6 +76,8 @@ function WebScraper({
     defaultChunkSize,
     defaultOverlapSize,
     authenticatedFetch,
+    navigateBackURL,
+    manageModalOpenState,
   } = useCarbon();
 
   const submitScrapeRequest = async () => {
@@ -241,6 +243,11 @@ function WebScraper({
     });
   };
 
+  const navigateBack = () => {
+    if (navigateBackURL) window.open(navigateBackURL, '_self');
+    else manageModalOpenState(false);
+  };
+
   return (
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
@@ -261,9 +268,8 @@ function WebScraper({
                   : 'cc-border-b cc-font-normal'
               } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
-                borderColor:
+                color:
                   activeTab === 'webpages' ? primaryBackgroundColor : 'black',
-                color: activeTab === 'webpages' ? primaryTextColor : 'black',
               }}
             >
               <FaLaptop />
@@ -277,9 +283,8 @@ function WebScraper({
                   : 'cc-border-b cc-font-normal'
               } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
-                borderColor:
+                color:
                   activeTab === 'sitemap' ? primaryBackgroundColor : 'black',
-                color: activeTab === 'sitemap' ? primaryTextColor : 'black',
               }}
             >
               <FaSitemap />
@@ -475,6 +480,17 @@ function WebScraper({
             )}
             <p>Submit</p>
           </button>
+          {entryPoint && (
+            <p
+              className="cc-flex cc-flex-row cc-items-center cc-justify-center cc-cursor-pointer cc-text-xs hover:cc-underline cc-pt-2"
+              style={{
+                color: secondaryTextColor,
+              }}
+              onClick={navigateBack}
+            >
+              Go Back
+            </p>
+          )}
         </>
       )}
 
