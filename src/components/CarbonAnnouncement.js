@@ -145,8 +145,6 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
             {isWhiteLabeledOrg
               ? `By connecting, your data is securely shared with ${orgName} and 3rd parties like OpenAI.`
               : `By connecting with Carbon, your data is securely shared with ${orgName} and 3rd parties like OpenAI.`}
-            You can select to give {orgName} access to specific information
-            only.
           </Feature>
         </ul>
         <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-items-center">
