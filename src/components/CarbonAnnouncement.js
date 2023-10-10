@@ -139,7 +139,11 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
         )}
         <ul className="">
           <Feature Icon={HiLockClosed} title="Private">
-            Your credentials will never be made available to {orgName}.
+            {isWhiteLabeledOrg
+              ? `By connecting, your data will be shared with ${orgName} and 3rd parties like OpenAI.`
+              : `By connecting with Carbon, your data will be shared with ${orgName} and 3rd parties like OpenAI.`}
+            By connecting with Carbon, your data will be shared with {orgName}
+            and 3rd parties like OpenAI.
           </Feature>
           <Feature Icon={HiLink} title="Secure">
             You can select to give {orgName} access to specific information
