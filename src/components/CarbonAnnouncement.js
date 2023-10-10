@@ -9,8 +9,11 @@ import * as Dialog from '@radix-ui/react-dialog';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">
-    <Icon className="cc-w-7 cc-h-7 cc-mr-1 cc-text-gray-400" />
-    <div className="cc-flex cc-flex-col cc-gap-y-1">
+    <div className="cc-w-1/12">
+      <Icon className="cc-w-6 cc-h-6 cc-mr-1 cc-text-gray-400" />
+    </div>
+    {/* <div className="cc-w-1/12"></div> */}
+    <div className="cc-flex cc-flex-col cc-gap-y-1 cc-w-10/12">
       <h1 className="cc-text-base cc-font-medium">{title}</h1>
       <p className="cc-text-sm cc-font-normal cc-text-gray-400">{children}</p>
     </div>
