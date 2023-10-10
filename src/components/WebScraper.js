@@ -36,6 +36,7 @@ function WebScraper({
   primaryTextColor,
   secondaryBackgroundColor,
   secondaryTextColor,
+  backButtonText,
 }) {
   const MAX_URLS = 2;
   const [submitButtonHoveredState, setSubmitButtonHoveredState] =
@@ -488,7 +489,7 @@ function WebScraper({
               }}
               onClick={navigateBack}
             >
-              Go Back
+              {backButtonText || 'Go back'}
             </p>
           )}
         </>

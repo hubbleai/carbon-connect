@@ -127,6 +127,7 @@ export interface CarbonConnectProps {
     privacyPolicyURL?: string;
     alwaysOpen?: boolean;
     navigateBackURL?: string | null;
+    backButtonText?: string;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

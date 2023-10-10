@@ -151,6 +151,7 @@ export interface CarbonConnectProps {
   privacyPolicyURL?: string;
   alwaysOpen?: boolean;
   navigateBackURL?: string | null;
+  backButtonText?: string;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -198,6 +199,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   privacyPolicyURL = 'https://carbon.ai/privacy',
   alwaysOpen = false,
   navigateBackURL = null,
+  backButtonText = 'Go Back',
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -232,6 +234,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       navigateBackURL={navigateBackURL}
       activeStep={activeStep}
       setActiveStep={setActiveStep}
+      backButtonText={backButtonText}
     >
       <IntegrationModal
         orgName={orgName}
@@ -253,6 +256,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
         alwaysOpen={alwaysOpen}
         activeStep={activeStep}
         setActiveStep={setActiveStep}
+        backButtonText={backButtonText}
       >
         {children}
       </IntegrationModal>

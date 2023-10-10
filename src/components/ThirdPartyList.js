@@ -3,7 +3,7 @@ import '../index.css';
 
 import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { HiCheckCircle, HiArrowLeft } from 'react-icons/hi';
+import { HiCheckCircle, HiArrowLeft, HiX } from 'react-icons/hi';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 import { setFlag } from '../utils/helpers';
@@ -20,6 +20,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     defaultOverlapSize,
     authenticatedFetch,
     onSuccess,
+    manageModalOpenState,
+    primaryTextColor,
   } = useCarbon();
 
   const handleServiceOAuthFlow = async (service) => {
@@ -74,7 +76,14 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             onClick={() => setActiveStep(0)}
             className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
           />
-          <h1>Integrations</h1>
+          <h1 className="cc-grow">Integrations</h1>
+          <HiX
+            onClick={() => manageModalOpenState(false)}
+            className="cc-cursor-pointer cc-h-5 cc-w-5"
+            style={{
+              color: primaryTextColor,
+            }}
+          />
         </div>
       </Dialog.Title>
       <ul className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">

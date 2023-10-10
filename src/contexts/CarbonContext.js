@@ -147,6 +147,7 @@ export const CarbonProvider = ({
   navigateBackURL,
   activeStep,
   setActiveStep,
+  backButtonText,
 }) => {
   const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(false);
@@ -347,6 +348,7 @@ export const CarbonProvider = ({
     manageModalOpenState,
     activeStep,
     setActiveStep,
+    backButtonText,
   };
 
   return (

@@ -304,12 +304,13 @@ function FileUpload({ setActiveStep }) {
             />
           )}
           <h1 className="cc-grow">Upload Files</h1>
-          {entryPoint && (
-            <HiX
-              onClick={navigateBack}
-              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-mr-0"
-            />
-          )}
+          <HiX
+            onClick={() => manageModalOpenState(false)}
+            className="cc-cursor-pointer cc-h-5 cc-w-5"
+            style={{
+              color: primaryTextColor,
+            }}
+          />
         </div>
       </Dialog.Title>
       {!syncResponse && (
