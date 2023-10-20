@@ -22,7 +22,6 @@ function SharepointScreen({
   primaryBackgroundColor,
   primaryTextColor,
 }) {
-  const [zendeskSubdomain, setZendeskSubdomain] = useState('');
   const [microsoftTenant, setMicrosoftTenant] = useState('');
   const [sharepointSiteName, setSharepointSiteName] = useState('');
 
