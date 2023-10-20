@@ -161,7 +161,7 @@ function SharepointScreen({
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="Your Subdomain"
+                placeholder="Your Site Name"
                 value={sharepointSiteName}
                 onChange={(e) => setSharepointSiteName(e.target.value)}
               />
