@@ -6,7 +6,7 @@ import { CgWebsite } from 'react-icons/cg';
 import { FaIntercom } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
-import { SiBox, SiZendesk } from 'react-icons/si';
+import { SiBox, SiMicrosoftsharepoint, SiZendesk } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { getFlag, setFlag } from '../utils/helpers';
 import { toast } from 'react-toastify';
@@ -91,6 +91,18 @@ const integrationsList = [
     active: true,
     data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
+  },
+  {
+    id: 'SHAREPOINT',
+    subpath: 'sharepoint',
+    name: 'Sharepoint',
+    description: 'Lets your users connect their Sharepoint accounts to Carbon.',
+    announcementName: 'to connect Sharepoint',
+    icon: <SiMicrosoftsharepoint className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'SHAREPOINT',
+    requiresOAuth: true,
+    multiStep: true,
   },
   {
     id: 'WEB_SCRAPER',
@@ -340,7 +352,7 @@ export const CarbonProvider = ({
     tosURL,
     privacyPolicyURL,
     open,
-    // setOpen,
+    setOpen,
     showModal,
     setShowModal,
     alwaysOpen,
