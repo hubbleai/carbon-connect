@@ -124,12 +124,10 @@ function SharepointScreen({
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-relative cc-justify-center">
-          {!entryPoint && (
-            <HiArrowLeft
-              onClick={() => setActiveStep(1)}
-              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
-            />
-          )}
+          <HiArrowLeft
+            onClick={() => setActiveStep(entryPoint ? 0 : 1)}
+            className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
+          />
           <SiMicrosoftsharepoint className="cc-text-3xl cc-text-black" />
         </div>
       </Dialog.Title>
@@ -186,7 +184,7 @@ function SharepointScreen({
         </p>
 
         <button
-          className={`cc-w-full cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+          className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
           style={{
             backgroundColor: submitButtonHoveredState
               ? darkenColor(primaryBackgroundColor, -10)
