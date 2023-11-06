@@ -8,8 +8,10 @@ import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
 import { SiBox, SiMicrosoftsharepoint, SiZendesk } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
-import { getFlag, setFlag } from '../utils/helpers';
-import { toast } from 'react-toastify';
+// import { getFlag, setFlag } from '../utils/helpers';
+// import { toast } from 'react-toastify';
+// import { SiZotero } from 'react-icons/si';
+import zoteroLogo from '../zotero.png';
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -124,6 +126,18 @@ const integrationsList = [
     icon: <SiZendesk className="cc-w-7 cc-h-7" />,
     active: true,
     data_source_type: 'ZENDESK',
+    requiresOAuth: true,
+    multiStep: true,
+  },
+  {
+    id: 'ZOTERO',
+    subpath: 'zotero',
+    name: 'Zotero',
+    description: 'Lets your users connect their Zotero accounts to Carbon.',
+    announcementName: 'to connect Zotero',
+    icon: <img src={zoteroLogo} className="cc-w-10 cc-h-10" />, // <SiZotero className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'ZOTERO',
     requiresOAuth: true,
     multiStep: true,
   },

@@ -26,6 +26,7 @@ export enum IntegrationName {
   BOX = 'BOX',
   ZENDESK = 'ZENDESK',
   SHAREPOINT = 'SHAREPOINT',
+  ZOTERO = 'ZOTERO',
 }
 
 export enum SyncStatus {
