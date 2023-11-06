@@ -89,7 +89,7 @@ export interface OnSuccessData {
         data_source_external_id: string | null;
         sync_status: string | null;
         files: LocalFile[] | WebScraper[] | OnSuccessDataFileObject[] | null;
-    };
+    } | null;
     action: ActionType;
     event: ActionType;
     integration: IntegrationName;

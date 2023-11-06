@@ -64,7 +64,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (err) {
-      console.log('Error: ', err);
+      console.log('[ThirdPartyList.js] Error in handleServiceOAuthFlow: ', err);
     }
   };
 
@@ -120,7 +120,12 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                         handleServiceOAuthFlow(integration);
                       }
                     }
-                  } catch (err) {}
+                  } catch (err) {
+                    console.log(
+                      '[ThirdPartyList.js] Error in handleServiceOAuthFlow: ',
+                      err
+                    );
+                  }
                 }}
               >
                 <div className="cc-flex cc-flex-row cc-items-center">
