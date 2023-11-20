@@ -17,7 +17,8 @@ export declare enum IntegrationName {
     BOX = "BOX",
     ZENDESK = "ZENDESK",
     SHAREPOINT = "SHAREPOINT",
-    ZOTERO = "ZOTERO"
+    ZOTERO = "ZOTERO",
+    CONFLUENCE = "CONFLUENCE"
 }
 export declare enum SyncStatus {
     READY = "READY",

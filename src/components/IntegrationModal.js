@@ -13,6 +13,7 @@ import { useCarbon } from '../contexts/CarbonContext';
 import WebScraper from '../components/WebScraper';
 import ZendeskScreen from './ZendeskScreen';
 import SharepointScreen from './SharepointScreen';
+import ConfluenceScreen from './ConfluenceScreen';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({
@@ -321,6 +322,21 @@ const IntegrationModal = ({
 
           {activeStep === 'ZENDESK' && (
             <ZendeskScreen
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
+              onSuccess={onSuccess}
+              onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
+            />
+          )}
+
+          {activeStep === 'CONFLUENCE' && (
+            <ConfluenceScreen
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}
