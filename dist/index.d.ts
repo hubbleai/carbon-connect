@@ -132,6 +132,7 @@ export interface CarbonConnectProps {
     alwaysOpen?: boolean;
     navigateBackURL?: string | null;
     backButtonText?: string;
+    zIndex?: number;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };
