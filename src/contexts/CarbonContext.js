@@ -13,9 +13,6 @@ import {
   SiZendesk,
 } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
-// import { getFlag, setFlag } from '../utils/helpers';
-// import { toast } from 'react-toastify';
-// import { SiZotero } from 'react-icons/si';
 import zoteroLogo from '../zotero.png';
 
 const DEFAAULT_CHUNK_SIZE = 1500;

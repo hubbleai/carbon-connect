@@ -6,7 +6,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { HiCheckCircle, HiArrowLeft, HiX } from 'react-icons/hi';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
-import { setFlag } from '../utils/helpers';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const {

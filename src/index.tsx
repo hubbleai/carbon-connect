@@ -156,6 +156,7 @@ export interface CarbonConnectProps {
   alwaysOpen?: boolean;
   navigateBackURL?: string | null;
   backButtonText?: string;
+  zIndex?: number;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -204,6 +205,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   alwaysOpen = false,
   navigateBackURL = null,
   backButtonText = 'Go Back',
+  zIndex = 1000,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -261,6 +263,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
         activeStep={activeStep}
         setActiveStep={setActiveStep}
         backButtonText={backButtonText}
+        zIndex={zIndex}
       >
         {children}
       </IntegrationModal>
