@@ -210,7 +210,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
       ? entryPoint
-      : 0
+      : 'GOOGLE_DRIVE'
   );
 
   return (

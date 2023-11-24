@@ -68,7 +68,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-h-full cc-items-center">
+    <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-p-6">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           <HiArrowLeft
@@ -108,20 +108,10 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                 className="cc-flex cc-flex-row cc-items-center cc-w-full cc-space-x-3 cc-py-4 cc-justify-between"
                 onClick={() => {
                   try {
-                    if (integration.active) {
-                      if (!integration.requiresOAuth) {
-                        setActiveStep(integration.data_source_type);
-                      } else {
-                        if (integration?.multiStep) {
-                          setActiveStep(integration.data_source_type);
-                          return;
-                        }
-                        handleServiceOAuthFlow(integration);
-                      }
-                    }
+                    setActiveStep(integration.data_source_type);
                   } catch (err) {
                     console.log(
-                      '[ThirdPartyList.js] Error in handleServiceOAuthFlow: ',
+                      '[ThirdPartyList.js] Error in thirdpartylist onClick ',
                       err
                     );
                   }

@@ -29,6 +29,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'BOX',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'CONFLUENCE',
@@ -41,6 +43,7 @@ const integrationsList = [
     data_source_type: 'CONFLUENCE',
     requiresOAuth: true,
     multiStep: true,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'DROPBOX',
@@ -52,6 +55,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'DROPBOX',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'LOCAL_FILES',
@@ -63,6 +68,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'LOCAL_FILES',
     requiresOAuth: false,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'GOOGLE_DRIVE',
@@ -74,6 +81,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'GOOGLE_DRIVE',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'INTERCOM',
@@ -85,6 +94,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'INTERCOM',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'NOTION',
@@ -96,6 +107,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'NOTION',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: true,
   },
   {
     id: 'ONEDRIVE',
@@ -107,6 +120,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'SHAREPOINT',
@@ -119,6 +134,7 @@ const integrationsList = [
     data_source_type: 'SHAREPOINT',
     requiresOAuth: true,
     multiStep: true,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'WEB_SCRAPER',
@@ -130,6 +146,8 @@ const integrationsList = [
     active: true,
     data_source_type: 'WEB_SCRAPER',
     requiresOAuth: false,
+    multiStep: false,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'ZENDESK',
@@ -142,6 +160,7 @@ const integrationsList = [
     data_source_type: 'ZENDESK',
     requiresOAuth: true,
     multiStep: true,
+    supportsMultipleAccounts: false,
   },
   {
     id: 'ZOTERO',
@@ -154,6 +173,7 @@ const integrationsList = [
     data_source_type: 'ZOTERO',
     requiresOAuth: true,
     multiStep: false,
+    supportsMultipleAccounts: false,
   },
 ];
 

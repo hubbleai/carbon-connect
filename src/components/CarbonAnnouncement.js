@@ -91,7 +91,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
           />
         </div>
       </Dialog.Title>
-      <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between">
+      <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-justify-between cc-p-6">
         <div className="cc-flex cc-pt-8 -cc-space-x-2">
           <img
             src={brandIcon}
@@ -126,8 +126,8 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
             <div>
               <span className="cc-font-normal">{orgName}</span>
               <span> uses </span>
-              <span className="cc-font-normal">Carbon</span>
-              <p>
+              <span className="cc-font-normal">Carbon </span>
+              <span>
                 to connect{' '}
                 {entryPointIntegrationObject?.announcementName ? (
                   <span className="cc-font-normal">
@@ -136,7 +136,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
                 ) : (
                   <span>your data</span>
                 )}
-              </p>
+              </span>
             </div>
           </div>
         )}

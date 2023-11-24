@@ -14,6 +14,7 @@ import WebScraper from '../components/WebScraper';
 import ZendeskScreen from './ZendeskScreen';
 import SharepointScreen from './SharepointScreen';
 import ConfluenceScreen from './ConfluenceScreen';
+import ThirdPartyHome from './ThirdPartyHome';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({
@@ -205,12 +206,14 @@ const IntegrationModal = ({
             for (let i = 0; i < integrationModifications.length; i++) {
               onSuccess(integrationModifications[i]);
             }
+            setActiveIntegrations(responseBody['active_integrations']);
           }
         } else {
           firstFetchCompletedRef.current = true;
+          activeIntegrationsRef.current = responseBody['active_integrations'];
+          setActiveIntegrations(responseBody['active_integrations']);
         }
-        activeIntegrationsRef.current = responseBody['active_integrations'];
-        setActiveIntegrations(responseBody['active_integrations']);
+
         return;
       }
     } catch (error) {
@@ -263,7 +266,7 @@ const IntegrationModal = ({
           style={{ zIndex: zIndex - 1 }}
         />
         <Dialog.Content
-          className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-h-[600px] cc-w-[375px] cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white cc-p-[25px] focus:cc-outline-none"
+          className="cc-flex cc-flex-col data-[state=open]:cc-animate-contentShow cc-fixed cc-top-[50%] cc-left-[50%] cc-w-1/2 cc-translate-x-[-50%] cc-translate-y-[-50%] cc-rounded-[6px] cc-bg-white focus:cc-outline-none cc-h-2/3"
           style={{ zIndex: zIndex }}
         >
           {activeStep === 0 && (
@@ -279,7 +282,28 @@ const IntegrationModal = ({
             />
           )}
 
-          {activeStep === 'LOCAL_FILES' && (
+          {[
+            'BOX',
+            'CONFLUENCE',
+            'DROPBOX',
+            'GOOGLE_DRIVE',
+            'INTERCOM',
+            'LOCAL_FILES',
+            'NOTION',
+            'ONEDRIVE',
+            'SHAREPOINT',
+            'WEB_SCRAPER',
+            'ZENDESK',
+            'ZOTERO',
+          ].includes(activeStep) && (
+            <ThirdPartyHome
+              activeIntegrations={activeIntegrations}
+              integrationName={activeStep}
+              setActiveStep={setActiveStep}
+            />
+          )}
+
+          {/* {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
@@ -294,9 +318,9 @@ const IntegrationModal = ({
               secondaryTextColor={secondaryTextColor}
               allowMultipleFiles={allowMultipleFiles}
             />
-          )}
+          )} */}
 
-          {activeStep === 'WEB_SCRAPER' && (
+          {/* {activeStep === 'WEB_SCRAPER' && (
             <WebScraper
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
@@ -355,7 +379,7 @@ const IntegrationModal = ({
               secondaryBackgroundColor={secondaryBackgroundColor}
               secondaryTextColor={secondaryTextColor}
             />
-          )}
+          )} */}
         </Dialog.Content>
 
         <ToastContainer
