@@ -1,13 +1,75 @@
-// index.js
 import '../index.css';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
-import { HiCheckCircle, HiArrowLeft, HiX } from 'react-icons/hi';
+import { HiCheckCircle, HiArrowLeft, HiX, HiSearch } from 'react-icons/hi';
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
 
+const ThirdPartyListItem = ({
+  integration,
+  integrationStatus,
+  setActiveStep,
+}) => {
+  return (
+    <div
+      key={integration.id}
+      className="cc-rounded-md cc-items-center cc-px-4 cc-w-40 cc-h-32 cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100 cc-shadow-lg cc-border"
+      onClick={() => {
+        try {
+          setActiveStep(integration.data_source_type);
+        } catch (err) {
+          console.log(
+            '[ThirdPartyList.js] Error in thirdpartylist onClick ',
+            err
+          );
+        }
+      }}
+    >
+      <span className="cc-flex cc-items-center cc-justify-center cc-w-full cc-h-2/3">
+        {integration.icon}
+      </span>
+
+      <div className="cc-flex cc-flex-row cc-items-center cc-justify-center cc-w-full">
+        <h1 className="cc-text-base cc-font-roboto cc-font-medium">
+          {integration.name}
+        </h1>
+        {integrationStatus && (
+          <div className="cc-ml-2 cc-w-1 cc-h-1 cc-bg-green-500 cc-rounded-full cc-animate-pulse" />
+        )}
+      </div>
+    </div>
+  );
+};
+
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
+  const [searchTerm, setSearchTerm] = useState(null);
+  const [filteredIntegrations, setFilteredIntegrations] = useState([]);
+
+  useEffect(() => {
+    if (searchTerm === '' || searchTerm === null) {
+      console.log(
+        '1. processedIntegrations: ',
+        processedIntegrations,
+        searchTerm
+      );
+      setFilteredIntegrations(processedIntegrations);
+    } else {
+      const filteredIntegrations = processedIntegrations.filter(
+        (i) =>
+          i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          i.id.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      console.log(
+        '2. filteredIntegrations: ',
+        filteredIntegrations,
+        searchTerm
+      );
+      setFilteredIntegrations(filteredIntegrations);
+    }
+    console.log('Processed Integrations: ', processedIntegrations);
+  }, [searchTerm, processedIntegrations]);
+
   const {
     accessToken,
     tags,
@@ -68,7 +130,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-p-6">
+    <div className="cc-flex cc-flex-col cc-h-full cc-items-center cc-px-4 cc-py-6">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           <HiArrowLeft
@@ -85,8 +147,21 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
           />
         </div>
       </Dialog.Title>
-      <ul className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
-        {processedIntegrations.map((integration) => {
+
+      <div className="cc-flex cc-items-center cc-w-full cc-bg-gray-300 cc-rounded-md cc-m-2 cc-border cc-space-x-2">
+        <HiSearch className="cc-text-gray-600 cc-mx-2" />
+        <input
+          type="text"
+          placeholder="Search Integrations"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="cc-flex-grow cc-border-none cc-text-sm cc-font-roboto cc-font-medium cc-text-gray-600 cc-placeholder-gray-400 cc-rounded-md cc-bg-transparent cc-outline-none focus:cc-outline-none focus:cc-ring-0"
+        />
+      </div>
+
+      {/* sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 */}
+      <div className="grid grid-cols-4 cc-gap-4 cc-w-full cc-h-full cc-overflow-y-auto">
+        {filteredIntegrations.map((integration) => {
           const activeIntegrationsList = activeIntegrations.map(
             (i) => i.data_source_type
           );
@@ -96,53 +171,14 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
           );
 
           return (
-            <li
-              key={integration.id}
-              className={`cc-border cc-rounded-md cc-h-fit cc-items-center cc-px-4 cc-w-full ${
-                !integration.active
-                  ? 'cc-bg-gray-200 cc-cursor-not-allowed'
-                  : 'cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100'
-              }`}
-            >
-              <div
-                className="cc-flex cc-flex-row cc-items-center cc-w-full cc-space-x-3 cc-py-4 cc-justify-between"
-                onClick={() => {
-                  try {
-                    setActiveStep(integration.data_source_type);
-                  } catch (err) {
-                    console.log(
-                      '[ThirdPartyList.js] Error in thirdpartylist onClick ',
-                      err
-                    );
-                  }
-                }}
-              >
-                <div className="cc-flex cc-flex-row cc-items-center">
-                  <span className="cc-mr-4">{integration.icon}</span>
-                  <h1 className="cc-text-base cc-font-roboto cc-items-center cc-justify-center cc-font-medium">
-                    {integration.data_source_type === 'GOOGLE_DRIVE'
-                      ? 'Connect your Google Drive'
-                      : integration.name}
-                  </h1>
-                </div>
-                <div className="cc-flex cc-flex-col">
-                  <div className="cc-flex cc-flex-row cc-w-full cc-items-center cc-space-x-4">
-                    {!integration.active && (
-                      <p className="cc-text-xs cc-text-gray-600 cc-bg-white cc-px-4 cc-py-1 cc-rounded-full ">
-                        Coming Soon
-                      </p>
-                    )}
-
-                    {integration.active && integrationStatus && (
-                      <HiCheckCircle className="cc-text-green-500 cc-w-6 cc-h-6" />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </li>
+            <ThirdPartyListItem
+              integration={integration}
+              integrationStatus={integrationStatus}
+              setActiveStep={setActiveStep}
+            />
           );
         })}
-      </ul>
+      </div>
     </div>
   );
 };

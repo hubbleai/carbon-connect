@@ -294,7 +294,7 @@ function FileUpload({ setActiveStep }) {
   };
 
   return (
-    <div className="cc-flex cc-flex-col cc-items-center cc-relative cc-h-full">
+    <div className="cc-flex cc-flex-col cc-items-center cc-relative cc-h-full cc-p-4 ">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
           {!entryPoint && (
@@ -314,7 +314,7 @@ function FileUpload({ setActiveStep }) {
         </div>
       </Dialog.Title>
       {!syncResponse && (
-        <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
+        <div className="cc-w-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
           {((!allowMultipleFiles && files.length === 0) ||
             allowMultipleFiles) && (
             <FileUploader

@@ -3,6 +3,7 @@ import { useCarbon } from '../contexts/CarbonContext';
 import { HiArrowLeft } from 'react-icons/hi';
 import { FixedSizeList as List } from 'react-window';
 import FileData from './FileData';
+import { getUserFiles } from 'carbon-connect-js';
 
 const ThirdPartyHome = ({
   integrationName,
@@ -13,11 +14,16 @@ const ThirdPartyHome = ({
   const [connected, setConnected] = useState([]);
   const [canConnectMore, setCanConnectMore] = useState(false);
   const [viewSelectedAccountData, setViewSelectedAccountData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { accessToken, processedIntegrations, entryPoint } = useCarbon();
+  const {
+    accessToken,
+    processedIntegrations,
+    entryPoint,
+    handleServiceOAuthFlow,
+  } = useCarbon();
 
   useEffect(() => {
-    console.log('processedIntegrations');
     const integrationData = processedIntegrations.find(
       (integration) => integration.id === integrationName
     );
@@ -25,7 +31,6 @@ const ThirdPartyHome = ({
   }, [processedIntegrations]);
 
   useEffect(() => {
-    console.log('activeIntegrations');
     const connected = activeIntegrations.filter(
       (integration) => integration.data_source_type === integrationName
     );
@@ -33,7 +38,6 @@ const ThirdPartyHome = ({
   }, [activeIntegrations]);
 
   useEffect(() => {
-    console.log('connected');
     if (integrationName === 'NOTION') setCanConnectMore(true);
     else if (connected.length !== 0) setCanConnectMore(false);
     else setCanConnectMore(true);
@@ -44,7 +48,31 @@ const ThirdPartyHome = ({
       );
       setViewSelectedAccountData(syncedAccount || null);
     }
+    setIsLoading(false);
   }, [connected, integrationName]);
+
+  const fetchRelevantFiles = async (dataSourceType) => {
+    const userFilesResponse = await getUserFiles({
+      accessToken: accessToken,
+      environment: 'DEVELOPMENT',
+      filters: {
+        source: dataSourceType,
+      },
+    });
+
+    if (userFilesResponse.status === 200) {
+      console.log('userFilesResponse', userFilesResponse);
+    }
+  };
+
+  useEffect(() => {
+    if (integrationName === 'LOCAL_FILES') fetchRelevantFiles(['LOCAL_FILES']);
+    else if (integrationName === 'WEB_SCRAPER')
+      fetchRelevantFiles(['WEB_SCRAPE']);
+    else if (integrationName === 'NOTION')
+      fetchRelevantFiles(['NOTION', 'NOTION_DATABASE']);
+    else fetchRelevantFiles([integrationName]);
+  }, []);
 
   return (
     <div className="cc-h-full cc-w-full cc-flex cc-flex-col">
@@ -69,17 +97,20 @@ const ThirdPartyHome = ({
           </div>
         </div>
 
-        {canConnectMore && (
-          <button
-            className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
-            onClick={() => handleServiceOAuthFlow(integrationData)}
-          >
-            Connect Account
-          </button>
-        )}
+        {!isLoading &&
+          (['LOCAL_FILES', 'WEB_SCRAPER'].includes(integrationName) ? (
+            <></>
+          ) : (
+            <button
+              className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
+              onClick={() => handleServiceOAuthFlow(integrationData)}
+            >
+              {canConnectMore ? 'Connect account' : 'Select more files'}
+            </button>
+          ))}
       </div>
 
-      <div className="cc-grow cc-flex cc-flex-col cc-py-2 cc-px-4 cc-space-y-4">
+      <div className="cc-grow cc-flex cc-flex-col cc-py-4 cc-px-4 cc-space-y-4">
         {integrationName === 'NOTION' && (
           <div className="cc-flex cc-flex-row cc-w-full cc-space-x-2 cc-items-center cc-justify-center">
             <label>{`Connected ${integrationData?.name} Account`}</label>
@@ -110,7 +141,11 @@ const ThirdPartyHome = ({
           </div>
         )}
 
-        {viewSelectedAccountData ? (
+        {isLoading ? (
+          <div className="cc-flex cc-flex-col cc-grow cc-items-center cc-justify-center">
+            <div className="cc-spinner cc-w-10 cc-h-10 cc-border-2 cc-border-t-4 cc-border-gray-200 cc-rounded-full cc-animate-spin"></div>
+          </div>
+        ) : viewSelectedAccountData ? (
           <div className="cc-flex-col cc-flex cc-overflow-y-auto">
             <List
               height={375} // Adjust height as needed
@@ -127,8 +162,8 @@ const ThirdPartyHome = ({
             </List>
           </div>
         ) : (
-          <div className="grow cc-w-full cc-h-full cc-items-center cc-justify-center cc-flex cc-bg-red-500">
-            No Account Selected
+          <div className="grow cc-w-full cc-h-full cc-items-center cc-justify-center cc-flex">
+            You have not connected any account yet
           </div>
         )}
       </div>

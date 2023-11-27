@@ -288,11 +288,11 @@ const IntegrationModal = ({
             'DROPBOX',
             'GOOGLE_DRIVE',
             'INTERCOM',
-            'LOCAL_FILES',
+            // 'LOCAL_FILES',
             'NOTION',
             'ONEDRIVE',
             'SHAREPOINT',
-            'WEB_SCRAPER',
+            // 'WEB_SCRAPER',
             'ZENDESK',
             'ZOTERO',
           ].includes(activeStep) && (
@@ -303,7 +303,7 @@ const IntegrationModal = ({
             />
           )}
 
-          {/* {activeStep === 'LOCAL_FILES' && (
+          {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
@@ -318,9 +318,9 @@ const IntegrationModal = ({
               secondaryTextColor={secondaryTextColor}
               allowMultipleFiles={allowMultipleFiles}
             />
-          )} */}
+          )}
 
-          {/* {activeStep === 'WEB_SCRAPER' && (
+          {activeStep === 'WEB_SCRAPER' && (
             <WebScraper
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
@@ -336,7 +336,7 @@ const IntegrationModal = ({
             />
           )}
 
-          {activeStep === 'SHAREPOINT' && (
+          {/*  {activeStep === 'SHAREPOINT' && (
             <SharepointScreen
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
