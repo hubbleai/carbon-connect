@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { Table, Column, InfiniteLoader, AutoSizer } from 'react-virtualized';
+import { toast } from 'react-toastify';
 import { useCarbon } from '../contexts/CarbonContext';
 import { HiArrowLeft } from 'react-icons/hi';
 import { FixedSizeList as List } from 'react-window';
 import FileData from './FileData';
-import { getUserFiles } from 'carbon-connect-js';
+import { getUserFiles, revokeAccessToDataSource } from 'carbon-connect-js';
+import { VscDebugDisconnect, VscLoading } from 'react-icons/vsc';
+
+import 'react-virtualized/styles.css'; // import styles
 
 const ThirdPartyHome = ({
   integrationName,
@@ -16,6 +21,11 @@ const ThirdPartyHome = ({
   const [viewSelectedAccountData, setViewSelectedAccountData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('files'); // ['files', 'config']
+  const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
+  const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [files, setFiles] = useState([]);
+  const [hasMoreFiles, setHasMoreFiles] = useState(true);
+  const [offset, setOffset] = useState(0);
 
   const {
     accessToken,
@@ -53,6 +63,35 @@ const ThirdPartyHome = ({
     setIsLoading(false);
   }, [connected, integrationName]);
 
+  useEffect(() => {
+    if (viewSelectedAccountData) {
+      loadMoreRows();
+    }
+  }, [viewSelectedAccountData]);
+
+  const loadMoreRows = async () => {
+    const userFilesResponse = await getUserFiles({
+      accessToken: accessToken,
+      environment: 'DEVELOPMENT',
+      offset: offset,
+      filters: {
+        organization_user_data_source_id: [viewSelectedAccountData.id],
+      },
+    });
+
+    if (userFilesResponse.status === 200) {
+      const count = userFilesResponse.data.count;
+      const userFiles = userFilesResponse.data.results;
+      const newFiles = [...files, ...userFiles];
+      setFiles(newFiles);
+      setOffset(offset + count);
+    }
+  };
+
+  const isRowLoaded = ({ index }) => {
+    return !!files[index];
+  };
+
   const fetchRelevantFiles = async (dataSourceType) => {
     const userFilesResponse = await getUserFiles({
       accessToken: accessToken,
@@ -75,6 +114,26 @@ const ThirdPartyHome = ({
       fetchRelevantFiles(['NOTION', 'NOTION_DATABASE']);
     else fetchRelevantFiles([integrationName]);
   }, []);
+
+  const dateCellRenderer = ({ cellData }) => {
+    // Format date using moment.js or JavaScript's Date object
+    const dateString = new Date(cellData).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const timeString = new Date(cellData).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    });
+    return dateString + ' ' + timeString;
+  };
+
+  const statusCellRenderer = ({ cellData }) => {
+    return <span className="">{cellData}</span>; // Add your own styling for statusPill
+  };
 
   return (
     <div className="cc-h-full cc-w-full cc-flex cc-flex-col">
@@ -100,55 +159,17 @@ const ThirdPartyHome = ({
               {integrationData?.description}
             </div>
           </div>
-        </div>
 
-        {!isLoading && connected?.length === 0 ? (
-          <button
-            className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
-            onClick={() => handleServiceOAuthFlow(integrationData)}
-          >
-            Connect account
-          </button>
-        ) : (
-          <select
-            className="cc-py-2 cc-px-4 cc-rounded-md cc-grow"
-            onChange={(e) => {
-              const selectedAccount = connected.find(
-                (account) => account.data_source_external_id === e.target.value
-              );
-              setViewSelectedAccountData(selectedAccount || null);
-            }}
-          >
-            <option value="">Select Account</option>
-            {connected.map((account) => {
-              const connectedAccountEmail =
-                account.data_source_external_id.split('|')[1];
-              return (
-                <option
-                  key={account.id}
-                  value={account.data_source_external_id}
-                >
-                  {connectedAccountEmail}
-                </option>
-              );
-            })}
-          </select>
-
-          // <button
-          //   className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
-          //   onClick={() => handleServiceOAuthFlow(integrationData)}
-          // >
-          //   {canConnectMore ? 'Connect account' : 'Select more files'}
-          // </button> */}
-        )}
-      </div>
-
-      <div className="cc-grow cc-flex cc-flex-col cc-py-4 cc-px-4 cc-space-y-4">
-        {integrationName === 'NOTION' && (
-          <div className="cc-flex cc-flex-row cc-w-full cc-space-x-2 cc-items-center cc-justify-center">
-            <label>{`Connected ${integrationData?.name} Account`}</label>
+          {!isLoading && connected?.length === 0 ? (
+            <button
+              className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
+              onClick={() => handleServiceOAuthFlow(integrationData)}
+            >
+              Connect account
+            </button>
+          ) : (
             <select
-              className="cc-py-2 cc-px-4 cc-rounded-md cc-grow"
+              className="cc-py-2 cc-px-4 cc-rounded-md cc-w-44"
               onChange={(e) => {
                 const selectedAccount = connected.find(
                   (account) =>
@@ -160,7 +181,8 @@ const ThirdPartyHome = ({
               <option value="">Select Account</option>
               {connected.map((account) => {
                 const connectedAccountEmail =
-                  account.data_source_external_id.split('|')[1];
+                  account.data_source_external_id.split('|')[1] ||
+                  account.data_source_external_id.split('-')[1];
                 return (
                   <option
                     key={account.id}
@@ -171,9 +193,11 @@ const ThirdPartyHome = ({
                 );
               })}
             </select>
-          </div>
-        )}
+          )}
+        </div>
+      </div>
 
+      <div className="cc-grow cc-flex cc-flex-col cc-py-4 cc-px-4 cc-space-y-4">
         {isLoading ? (
           <div className="cc-flex cc-flex-col cc-grow cc-items-center cc-justify-center">
             <div className="cc-spinner cc-w-10 cc-h-10 cc-border-2 cc-border-t-4 cc-border-gray-200 cc-rounded-full cc-animate-spin"></div>
@@ -203,27 +227,109 @@ const ThirdPartyHome = ({
               </button>
             </div>
 
-            {activeTab === 'files' && (
-              <List
-                height={375}
-                itemCount={viewSelectedAccountData.synced_files.length}
-                itemSize={35}
-                width={'100%'}
-              >
-                {({ index, style }) => (
-                  <FileData
-                    style={style}
-                    file={viewSelectedAccountData.synced_files[index]}
-                  />
-                )}
-              </List>
-            )}
+            {activeTab === 'files' &&
+              (viewSelectedAccountData.synced_files.length === 0 ? (
+                <div className="cc-flex cc-flex-col cc-items-center cc-justify-center">
+                  <p className="cc-text-gray-500 cc-text-sm">No files synced</p>
+                </div>
+              ) : (
+                <div className="cc-w-full cc-grow cc-h-full cc-flex">
+                  <InfiniteLoader
+                    isRowLoaded={isRowLoaded}
+                    loadMoreRows={loadMoreRows}
+                    rowCount={hasMoreFiles ? files.length + 1 : files.length}
+                  >
+                    {({ onRowsRendered, registerChild }) => (
+                      <Table
+                        width={688}
+                        height={300}
+                        headerHeight={20}
+                        rowHeight={30}
+                        rowCount={files.length}
+                        rowGetter={({ index }) => files[index]}
+                        onRowsRendered={onRowsRendered}
+                        ref={registerChild}
+                        onRowClick={({ index }) => setSelectedRowIndex(index)}
+                        rowClassName={({ index }) =>
+                          index === selectedRowIndex ? 'selectedRow' : ''
+                        }
+                      >
+                        <Column label="File Name" dataKey="name" width={288} />
+                        <Column
+                          label="Status"
+                          dataKey="sync_status"
+                          width={200}
+                          cellRenderer={statusCellRenderer}
+                        />
+                        <Column
+                          label="Last Sync Time"
+                          dataKey="last_sync"
+                          width={200}
+                          cellRenderer={dateCellRenderer}
+                        />
+                      </Table>
+                    )}
+                  </InfiniteLoader>
+                </div>
+                // <List
+                //   height={375}
+                //   itemCount={viewSelectedAccountData.synced_files.length}
+                //   itemSize={35}
+                //   width={'100%'}
+                // >
+                //   {({ index, style }) => (
+                //     <FileData
+                //       style={style}
+                //       file={viewSelectedAccountData.synced_files[index]}
+                //     />
+                //   )}
+                // </List>
+              ))}
 
             {activeTab === 'config' && (
-              <div className="cc-flex cc-flex-row cc-w-full cc-border cc-rounded-md cc-border-gray-500 cc-mt-2 cc-p-2 cc-items-center">
+              <div className="cc-flex cc-flex-row cc-w-full cc-border cc-rounded-md cc-border-gray-500 cc-mt-2 cc-px-4 cc-py-2 cc-items-center">
                 <h1 className="cc-grow cc-font-semibold">Disconnect Account</h1>
-                <button className="cc-text-red-600 cc-bg-red-200 cc-px-4 cc-py-2 cc-font-semibold cc-rounded-md">
-                  Disconnect
+                <button
+                  className="cc-text-red-600 cc-bg-red-200 cc-px-4 cc-py-2 cc-font-semibold cc-rounded-md cc-flex cc-items-center cc-space-x-2 cc-cursor-pointer"
+                  onClick={async () => {
+                    console.log(
+                      'Seclected Datasource: ',
+                      viewSelectedAccountData
+                    );
+                    setIsRevokingDataSource(true);
+                    const revokeAccessResponse = await revokeAccessToDataSource(
+                      {
+                        accessToken: accessToken,
+                        environment: 'DEVELOPMENT',
+                        dataSourceId: viewSelectedAccountData.id,
+                      }
+                    );
+                    if (revokeAccessResponse.status === 200) {
+                      console.log(
+                        'Revoke Access Response: ',
+                        revokeAccessResponse
+                      );
+                      toast.success('Successfully disconnected account');
+                      setIsRevokingDataSource(false);
+                      setViewSelectedAccountData(null);
+                      setActiveStep(1);
+                    } else {
+                      console.log(
+                        'Revoke Access Response: ',
+                        revokeAccessResponse
+                      );
+                      toast.error('Error disconnecting account');
+                      setIsRevokingDataSource(false);
+                    }
+                  }}
+                >
+                  {isRevokingDataSource ? (
+                    <VscLoading className="animate-spin" />
+                  ) : (
+                    <VscDebugDisconnect />
+                  )}
+
+                  <span>Disconnect</span>
                 </button>
               </div>
             )}
