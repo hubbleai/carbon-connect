@@ -36,6 +36,7 @@ export interface BaseIntegration {
     chunkSize?: number;
     overlapSize?: number;
     skipEmbeddingGeneration?: boolean;
+    enableAutoSync?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
