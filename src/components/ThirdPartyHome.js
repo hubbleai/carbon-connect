@@ -72,7 +72,6 @@ const ThirdPartyHome = ({
   }, [connected, integrationName]);
 
   useEffect(() => {
-    console.log('viewSelectedAccountData: ', viewSelectedAccountData);
     if (viewSelectedAccountData) {
       loadMoreRows();
     }
@@ -93,7 +92,13 @@ const ThirdPartyHome = ({
       const userFiles = userFilesResponse.data.results;
       const newFiles = [...files, ...userFiles];
       setFiles(newFiles);
-      setOffset(offset + count);
+      setOffset(offset + userFiles.length);
+
+      if (count > offset + userFiles.length) {
+        setHasMoreFiles(true);
+      } else {
+        setHasMoreFiles(false);
+      }
     } else {
       setHasMoreFiles(false);
     }
@@ -207,7 +212,6 @@ const ThirdPartyHome = ({
       });
     }
     setSortedFiles(tempFiles);
-    console.log('sortedFiles: ', tempFiles, sortBy, sortDirection);
     setSortState({ sortBy, sortDirection });
   };
 
@@ -220,7 +224,6 @@ const ThirdPartyHome = ({
     } else {
       newSelectedRows.add(selectedFile.id);
     }
-    console.log('newSelectedRows: ', newSelectedRows);
     setSelectedRows(newSelectedRows);
   };
 
@@ -242,12 +245,11 @@ const ThirdPartyHome = ({
       integrationName: integrationName,
     });
     if (generateOauthUrlResponse.status === 200) {
-      console.log('generateOauthUrlResponse: ', generateOauthUrlResponse);
       const oauthUrl = generateOauthUrlResponse.data.oauth_url;
       window.open(oauthUrl, '_blank');
     } else {
       toast.error('Error generating oauth url');
-      console.log(
+      console.error(
         'Error generating oauth url: ',
         generateOauthUrlResponse.error
       );
@@ -264,7 +266,7 @@ const ThirdPartyHome = ({
             '#F5F5F5',
         }}
       >
-        <div className="cc-flex cc-flex-row cc-items-center cc-space-x-4">
+        <div className="cc-flex cc-flex-row cc-items-center cc-space-x-4 cc-w-full">
           <HiArrowLeft
             onClick={() => {
               if (!entryPoint) setActiveStep(1);
@@ -485,7 +487,6 @@ const ThirdPartyHome = ({
                           fileId: fileId,
                         });
 
-                        console.log('resyncFileResponse: ', resyncFileResponse);
                         if (resyncFileResponse.status === 200) {
                           const fileData = resyncFileResponse.data;
 
@@ -530,10 +531,6 @@ const ThirdPartyHome = ({
                 <button
                   className="cc-text-red-600 cc-bg-red-200 cc-px-4 cc-py-2 cc-font-semibold cc-rounded-md cc-flex cc-items-center cc-space-x-2 cc-cursor-pointer"
                   onClick={async () => {
-                    console.log(
-                      'Seclected Datasource: ',
-                      viewSelectedAccountData
-                    );
                     setIsRevokingDataSource(true);
                     const revokeAccessResponse = await revokeAccessToDataSource(
                       {
@@ -543,19 +540,11 @@ const ThirdPartyHome = ({
                       }
                     );
                     if (revokeAccessResponse.status === 200) {
-                      console.log(
-                        'Revoke Access Response: ',
-                        revokeAccessResponse
-                      );
                       toast.success('Successfully disconnected account');
                       setIsRevokingDataSource(false);
                       setViewSelectedAccountData(null);
                       setActiveStep(1);
                     } else {
-                      console.log(
-                        'Revoke Access Response: ',
-                        revokeAccessResponse
-                      );
                       toast.error('Error disconnecting account');
                       setIsRevokingDataSource(false);
                     }

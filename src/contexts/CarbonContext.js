@@ -36,7 +36,7 @@ const integrationsList = [
     id: 'BOX',
     subpath: 'box',
     name: 'Box',
-    description: 'Lets your users connect their Box accounts to Carbon.',
+    description: 'Connect your Box account',
     announcementName: 'to connect Box',
     icon: <SiBox className="cc-w-7 cc-h-7" />,
     logo: BoxLogo,
@@ -62,7 +62,7 @@ const integrationsList = [
     id: 'CONFLUENCE',
     subpath: 'confluence',
     name: 'Confluence',
-    description: 'Lets your users connect their Confluence accounts to Carbon.',
+    description: 'Connect your Confluence account',
     announcementName: 'to connect Confluence',
     icon: <SiConfluence className="cc-w-7 cc-h-7" />,
     logo: ConfluenceLogo,
@@ -88,7 +88,7 @@ const integrationsList = [
     id: 'DROPBOX',
     subpath: 'dropbox',
     name: 'Dropbox',
-    description: 'Lets your users connect their Dropbox accounts to Carbon.',
+    description: 'Connect your Dropbox account',
     announcementName: 'to connect Dropbox',
     icon: <BsDropbox className="cc-w-7 cc-h-7" />,
     logo: DropboxLogo,
@@ -114,7 +114,7 @@ const integrationsList = [
     id: 'LOCAL_FILES',
     subpath: 'local',
     name: 'File Upload',
-    description: 'Lets your users upload local files to Carbon.',
+    description: 'Upload files from your computer',
     announcementName: 'to upload local files',
     icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
     active: true,
@@ -139,7 +139,7 @@ const integrationsList = [
     id: 'GOOGLE_DRIVE',
     subpath: 'google',
     name: 'Google Drive',
-    description: 'Lets your users connect their Google Drive to Carbon.',
+    description: 'Connect your Google Drive account',
     announcementName: 'to connect Google Drive',
     icon: <FcGoogle className="cc-w-7 cc-h-7" />,
     logo: GoogleDriveLogo,
@@ -165,7 +165,7 @@ const integrationsList = [
     id: 'INTERCOM',
     subpath: 'intercom',
     name: 'Intercom',
-    description: 'Lets your users connect their Intercom to Carbon.',
+    description: 'Connect your Intercom account',
     announcementName: 'to connect Intercom',
     icon: <FaIntercom className="cc-w-7 cc-h-7" />,
     logo: IntercomLogo,
@@ -191,7 +191,7 @@ const integrationsList = [
     id: 'NOTION',
     subpath: 'notion',
     name: 'Notion',
-    description: 'Lets your users connect their Notion accounts to Carbon.',
+    description: 'Connect your Notion accounts',
     announcementName: 'to connect Notion',
     icon: <RxNotionLogo className="cc-w-7 cc-h-7" />,
     logo: NotionLogo,
@@ -217,7 +217,7 @@ const integrationsList = [
     id: 'ONEDRIVE',
     subpath: 'onedrive',
     name: 'OneDrive',
-    description: 'Lets your users connect their OneDrive accounts to Carbon.',
+    description: 'Connect your OneDrive account',
     announcementName: 'to connect OneDrive',
     icon: <GrOnedrive className="cc-w-7 cc-h-7" />,
     logo: OneDriveLogo,
@@ -243,7 +243,7 @@ const integrationsList = [
     id: 'SHAREPOINT',
     subpath: 'sharepoint',
     name: 'Sharepoint',
-    description: 'Lets your users connect their Sharepoint accounts to Carbon.',
+    description: 'Connect your Sharepoint account',
     announcementName: 'to connect Sharepoint',
     icon: <SiMicrosoftsharepoint className="cc-w-7 cc-h-7" />,
     logo: SharePointLogo,
@@ -269,7 +269,7 @@ const integrationsList = [
     id: 'WEB_SCRAPER',
     subpath: 'scraper',
     name: 'Web Scraper',
-    description: 'Lets your users Scrape websites to Carbon.',
+    description: 'Scrape data from any website',
     announcementName: 'for Web Scraping',
     icon: <CgWebsite className="cc-w-7 cc-h-7" />,
     active: true,
@@ -294,7 +294,7 @@ const integrationsList = [
     id: 'ZENDESK',
     subpath: 'zendesk',
     name: 'Zendesk',
-    description: 'Lets your users connect their Zendesk accounts to Carbon.',
+    description: 'Connect your Zendesk account',
     announcementName: 'to connect Zendesk',
     icon: <SiZendesk className="cc-w-7 cc-h-7" />,
     logo: ZendeskLogo,
@@ -451,7 +451,7 @@ export const CarbonProvider = ({
       setLoading(false);
     } catch (err) {
       setError(true);
-      console.log('[CarbonContext.js: 235] Error in fetchTokens: ', err);
+      console.log('[CarbonContext.js] Error in fetchTokens: ', err);
     }
   };
 
@@ -502,10 +502,7 @@ export const CarbonProvider = ({
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (err) {
-      console.log(
-        '[CarbonContext.js: 285] Error in handleServiceOAuthFlow: ',
-        err
-      );
+      console.log('[CarbonContext.js] Error in handleServiceOAuthFlow: ', err);
     }
   };
 

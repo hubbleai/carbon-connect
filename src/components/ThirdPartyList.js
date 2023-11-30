@@ -48,11 +48,6 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
 
   useEffect(() => {
     if (searchTerm === '' || searchTerm === null) {
-      console.log(
-        '1. processedIntegrations: ',
-        processedIntegrations,
-        searchTerm
-      );
       setFilteredIntegrations(processedIntegrations);
     } else {
       const filteredIntegrations = processedIntegrations.filter(
@@ -60,14 +55,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
           i.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           i.id.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      console.log(
-        '2. filteredIntegrations: ',
-        filteredIntegrations,
-        searchTerm
-      );
+
       setFilteredIntegrations(filteredIntegrations);
     }
-    console.log('Processed Integrations: ', processedIntegrations);
   }, [searchTerm, processedIntegrations]);
 
   const {
