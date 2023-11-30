@@ -35,7 +35,7 @@ const ThirdPartyListItem = ({
           {integration.name}
         </h1>
         {integrationStatus && (
-          <div className="cc-ml-2 cc-w-1 cc-h-1 cc-bg-green-500 cc-rounded-full cc-animate-pulse" />
+          <div className="cc-ml-2 cc-w-2 cc-h-2 cc-bg-green-500 cc-rounded-full cc-animate-pulse" />
         )}
       </div>
     </div>
@@ -148,7 +148,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         </div>
       </Dialog.Title>
 
-      <div className="cc-flex cc-items-center cc-w-full cc-bg-gray-300 cc-rounded-md cc-m-2 cc-border cc-space-x-2">
+      {/* <div className="cc-flex cc-items-center cc-w-full cc-bg-gray-300 cc-rounded-md cc-m-2 cc-border cc-space-x-2">
         <HiSearch className="cc-text-gray-600 cc-mx-2" />
         <input
           type="text"
@@ -156,6 +156,16 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="cc-flex-grow cc-border-none cc-text-sm cc-font-roboto cc-font-medium cc-text-gray-600 cc-placeholder-gray-400 cc-rounded-md cc-bg-transparent cc-outline-none focus:cc-outline-none focus:cc-ring-0"
+        />
+      </div> */}
+      <div className="cc-flex cc-items-center cc-w-full cc-rounded-md cc-m-2 cc-border cc-px-2 cc-space-x-2 cc-border-gray-500">
+        <HiSearch className="cc-text-gray-600" />
+        <input
+          type="text"
+          placeholder="Search Integrations"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="cc-flex-grow cc-w-full cc-border-none cc-text-sm cc-font-roboto cc-font-medium cc-text-gray-600 cc-placeholder-gray-400 cc-rounded-md cc-outline-none focus:cc-outline-none focus:cc-ring-0"
         />
       </div>
 

@@ -72,6 +72,7 @@ const ThirdPartyHome = ({
   }, [connected, integrationName]);
 
   useEffect(() => {
+    console.log('viewSelectedAccountData: ', viewSelectedAccountData);
     if (viewSelectedAccountData) {
       loadMoreRows();
     }
@@ -422,46 +423,18 @@ const ThirdPartyHome = ({
                               selectedFile.id,
                               !selectedRows.has(selectedFile.id)
                             );
-
-                            // handleRowClick({ index });
                           }}
-                          rowClassName={
-                            ({ index }) => {
-                              let className =
-                                'cc-p-2 hover:cc-cursor-pointer hover:cc-bg-gray-50 ';
+                          rowClassName={({ index }) => {
+                            let className =
+                              'cc-p-2 hover:cc-cursor-pointer hover:cc-bg-gray-50 ';
 
-                              className +=
-                                index % 2 === 0
-                                  ? 'cc-bg-white'
-                                  : 'cc-bg-gray-100';
+                            className +=
+                              index % 2 === 0
+                                ? 'cc-bg-white'
+                                : 'cc-bg-gray-100';
 
-                              return className;
-                            }
-
-                            // {
-                            //   const selectedFile = sortedFiles[index];
-                            //   const selectedFileId = selectedFile?.id;
-
-                            //   let className = 'cc-p-2 hover:cc-cursor-pointer ';
-
-                            //   if (index >= 0) {
-                            //     className +=
-                            //       index % 2 === 0
-                            //         ? `${
-                            //             selectedRows.has(selectedFileId)
-                            //               ? 'cc-bg-blue-100 '
-                            //               : 'cc-bg-white hover:cc-bg-gray-50 '
-                            //           } `
-                            //         : `${
-                            //             selectedRows.has(selectedFileId)
-                            //               ? 'cc-bg-blue-100 '
-                            //               : 'cc-bg-gray-100 hover:cc-bg-gray-50 '
-                            //           }`;
-                            //   }
-
-                            //   return className;
-                            // }
-                          }
+                            return className;
+                          }}
                           sort={sort}
                           sortBy={sortState.sortBy}
                           sortDirection={sortState.sortDirection}
@@ -494,65 +467,6 @@ const ThirdPartyHome = ({
                             headerRenderer={headerRenderer}
                           />
                         </Table>
-                        {/* <AutoSizer>
-                          {({ width, height }) => (
-                            <Table
-                              width={688}
-                              height={300}
-                              headerHeight={20}
-                              headerClassName="cc-text-left cc-text-sm cc-font-semibold cc-text-gray-500 cc-border-b cc-border-gray-300 cc-p-2"
-                              rowHeight={30}
-                              rowCount={files.length}
-                              rowGetter={({ index }) => files[index]}
-                              onRowsRendered={onRowsRendered}
-                              ref={registerChild}
-                              onHeaderClick={({ columnData, dataKey }) => {
-                                console.log('dataKey: ', dataKey);
-                                console.log('columnData: ', columnData);
-
-                                // sort({
-                                //   sortBy: dataKey,
-                                //   sortDirection:
-                                //     sortState.sortBy === dataKey
-                                //       ? sortState.sortDirection === 'ASC'
-                                //         ? 'DESC'
-                                //         : 'ASC'
-                                //       : 'ASC',
-                                // });
-                              }}
-                              onRowClick={({ index }) =>
-                                setSelectedRowIndex(index)
-                              }
-                              rowClassName={({ index }) =>
-                                index === selectedRowIndex ? 'selectedRow' : ''
-                              }
-                              // sort={sort}
-                              // sortBy={sortState.sortBy}
-                              // sortDirection={sortState.sortDirection}
-                            >
-                              <Column
-                                label="File Name"
-                                dataKey="name"
-                                width={288}
-                                headerRenderer={headerRenderer}
-                              />
-                              <Column
-                                label="Status"
-                                dataKey="sync_status"
-                                width={200}
-                                cellRenderer={statusCellRenderer}
-                                headerRenderer={headerRenderer}
-                              />
-                              <Column
-                                label="Last Sync Time"
-                                dataKey="last_sync"
-                                width={200}
-                                cellRenderer={dateCellRenderer}
-                                headerRenderer={headerRenderer}
-                              />
-                            </Table>
-                          )}
-                        </AutoSizer> */}
                       </div>
                     )}
                   </InfiniteLoader>
