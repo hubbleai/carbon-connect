@@ -99,6 +99,7 @@ function WebScraper({
       const maxPagesToScrape =
         service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
+      const enableAutoSync = service?.enableAutoSync || false;
 
       setIsLoading(true);
       const urlPattern = new RegExp(
@@ -136,6 +137,7 @@ function WebScraper({
               chunk_size: chunkSize,
               chunk_overlap: overlapSize,
               skip_embedding_generation: skipEmbeddingGeneration,
+              enable_auto_sync: enableAutoSync,
             }))
           : validUrls.map((url) => ({
               url: url,
@@ -145,6 +147,7 @@ function WebScraper({
               chunk_size: chunkSize,
               chunk_overlap: overlapSize,
               skip_embedding_generation: skipEmbeddingGeneration,
+              enable_auto_sync: enableAutoSync,
             }));
 
       const uploadResponse = await authenticatedFetch(
