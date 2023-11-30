@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Column, InfiniteLoader, AutoSizer } from 'react-virtualized';
+import {
+  Table,
+  Column,
+  InfiniteLoader,
+  AutoSizer,
+  SortDirection,
+} from 'react-virtualized';
 import { toast } from 'react-toastify';
 import { useCarbon } from '../contexts/CarbonContext';
-import { HiArrowLeft } from 'react-icons/hi';
-import { FixedSizeList as List } from 'react-window';
-import FileData from './FileData';
-import { getUserFiles, revokeAccessToDataSource } from 'carbon-connect-js';
+import { HiArrowLeft, HiChevronDown, HiChevronUp } from 'react-icons/hi';
+import {
+  getUserFiles,
+  revokeAccessToDataSource,
+  generateOauthurl,
+  resyncFile,
+} from 'carbon-connect-js';
 import { VscDebugDisconnect, VscLoading } from 'react-icons/vsc';
-
 import 'react-virtualized/styles.css'; // import styles
 
 const ThirdPartyHome = ({
@@ -23,9 +31,15 @@ const ThirdPartyHome = ({
   const [activeTab, setActiveTab] = useState('files'); // ['files', 'config']
   const [isRevokingDataSource, setIsRevokingDataSource] = useState(false);
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+  const [selectedRows, setSelectedRows] = useState(new Set());
   const [files, setFiles] = useState([]);
+  const [sortedFiles, setSortedFiles] = useState([]);
   const [hasMoreFiles, setHasMoreFiles] = useState(true);
   const [offset, setOffset] = useState(0);
+  const [sortState, setSortState] = useState({
+    sortBy: '',
+    sortDirection: 'ASC',
+  });
 
   const {
     accessToken,
@@ -54,12 +68,6 @@ const ThirdPartyHome = ({
     else if (connected.length !== 0) setCanConnectMore(false);
     else setCanConnectMore(true);
 
-    // if (integrationName !== 'NOTION' && connected.length !== 0) {
-    //   const syncedAccount = connected.find(
-    //     (account) => account.data_source_type === integrationName
-    //   );
-    //   setViewSelectedAccountData(syncedAccount || null);
-    // }
     setIsLoading(false);
   }, [connected, integrationName]);
 
@@ -85,6 +93,8 @@ const ThirdPartyHome = ({
       const newFiles = [...files, ...userFiles];
       setFiles(newFiles);
       setOffset(offset + count);
+    } else {
+      setHasMoreFiles(false);
     }
   };
 
@@ -92,47 +102,135 @@ const ThirdPartyHome = ({
     return !!files[index];
   };
 
-  const fetchRelevantFiles = async (dataSourceType) => {
-    const userFilesResponse = await getUserFiles({
-      accessToken: accessToken,
-      environment: 'DEVELOPMENT',
-      filters: {
-        source: dataSourceType,
-      },
-    });
-
-    if (userFilesResponse.status === 200) {
-      console.log('userFilesResponse', userFilesResponse);
-    }
-  };
-
   useEffect(() => {
-    if (integrationName === 'LOCAL_FILES') fetchRelevantFiles(['LOCAL_FILES']);
-    else if (integrationName === 'WEB_SCRAPER')
-      fetchRelevantFiles(['WEB_SCRAPE']);
-    else if (integrationName === 'NOTION')
-      fetchRelevantFiles(['NOTION', 'NOTION_DATABASE']);
-    else fetchRelevantFiles([integrationName]);
-  }, []);
+    console.log('files: ', files, !files.length);
+    console.log('sortedFiles: ', sortedFiles, !sortedFiles.length);
+
+    // if (!sortedFiles.length) return;
+    if (!files.length) return;
+    setSortedFiles(files);
+  }, [files]);
 
   const dateCellRenderer = ({ cellData }) => {
-    // Format date using moment.js or JavaScript's Date object
     const dateString = new Date(cellData).toLocaleDateString('en-US', {
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
     });
 
     const timeString = new Date(cellData).toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
+      hour12: false, // Use 24-hour format
     });
-    return dateString + ' ' + timeString;
+
+    return `${dateString} ${timeString}`;
   };
 
   const statusCellRenderer = ({ cellData }) => {
-    return <span className="">{cellData}</span>; // Add your own styling for statusPill
+    let pillClass =
+      'cc-inline-block cc-px-2 cc-py-1 cc-text-xs cc-font-bold cc-rounded-full cc-text-center ';
+
+    switch (cellData) {
+      case 'READY':
+        pillClass += 'cc-text-green-700 cc-bg-green-300'; // Green for READY
+        break;
+      case 'SYNCING':
+        pillClass += 'cc-text-blue-700 cc-bg-blue-300'; // Blue for SYNCING
+        break;
+      case 'QUEUED_FOR_SYNCING':
+        pillClass += 'cc-text-yellow-700 cc-bg-yellow-300'; // Yellow for QUEUED_FOR_SYNCING
+        break;
+      case 'SYNC_ERROR':
+        pillClass += 'cc-text-red-700 cc-bg-red-300'; // Red for SYNC_ERROR
+        break;
+      case 'DELAYED':
+        pillClass += 'cc-text-gray-700 cc-bg-gray-300'; // Grey for DELAYED
+        break;
+      default:
+        pillClass += 'cc-text-blue-700 cc-bg-blue-300'; // Blue for any other status
+    }
+
+    return <span className={pillClass}>{cellData}</span>;
+  };
+
+  const headerRenderer = ({ label, dataKey }) => (
+    <div className="cc-flex cc-flex-row cc-items-center cc-space-x-2 cc-text-left cc-text-sm cc-font-semibold cc-text-gray-500 cc-p-2">
+      <span>{label}</span>
+
+      {sortState.sortBy === dataKey &&
+        (sortState.sortDirection === SortDirection.ASC ? (
+          <HiChevronUp className="cc-w-5 cc-h-5" />
+        ) : (
+          <HiChevronDown className="cc-w-5 cc-h-5" />
+        ))}
+    </div>
+  );
+
+  const headerRowRenderer = ({ columns }) => (
+    <div
+      className="cc-flex cc-flex-row cc-items-center cc-space-x-2 cc-text-left cc-text-sm cc-font-semibold cc-text-gray-500 cc-border-b cc-border-gray-300 cc-py-1 cc-mb-1"
+      role="row"
+    >
+      {columns}
+    </div>
+  );
+
+  const sort = ({ sortBy, sortDirection }) => {
+    const { sortBy: prevSortBy, sortDirection: prevSortDirection } = sortState;
+
+    if (prevSortDirection === SortDirection.DESC) {
+      sortBy = null;
+      sortDirection = null;
+    }
+
+    const tempFiles = [...files];
+    if (sortBy && sortDirection) {
+      tempFiles.sort((a, b) => {
+        if (a[sortBy] < b[sortBy])
+          return sortDirection === SortDirection.ASC ? -1 : 1;
+        if (a[sortBy] > b[sortBy])
+          return sortDirection === SortDirection.ASC ? 1 : -1;
+        return 0;
+      });
+    }
+    setSortedFiles(tempFiles);
+    console.log('sortedFiles: ', tempFiles, sortBy, sortDirection);
+    setSortState({ sortBy, sortDirection });
+  };
+
+  const handleRowClick = ({ index }) => {
+    const newSelectedRows = new Set(selectedRows);
+    const selectedFile = sortedFiles[index];
+
+    if (newSelectedRows.has(selectedFile.id)) {
+      newSelectedRows.delete(selectedFile.id);
+    } else {
+      newSelectedRows.add(selectedFile.id);
+    }
+    console.log('newSelectedRows: ', newSelectedRows);
+    setSelectedRows(newSelectedRows);
+  };
+
+  const handleNewAccountClick = async () => {
+    toast.info('You will be redirected to the service to connect your account');
+    const generateOauthUrlResponse = await generateOauthurl({
+      accessToken: accessToken,
+      environment: 'DEVELOPMENT',
+      integrationName: integrationName,
+    });
+    if (generateOauthUrlResponse.status === 200) {
+      console.log('generateOauthUrlResponse: ', generateOauthUrlResponse);
+      const oauthUrl = generateOauthUrlResponse.data.oauth_url;
+      window.open(oauthUrl, '_blank');
+    } else {
+      toast.error('Error generating oauth url');
+      console.log(
+        'Error generating oauth url: ',
+        generateOauthUrlResponse.error
+      );
+    }
   };
 
   return (
@@ -163,19 +261,26 @@ const ThirdPartyHome = ({
           {!isLoading && connected?.length === 0 ? (
             <button
               className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
-              onClick={() => handleServiceOAuthFlow(integrationData)}
+              onClick={() => {
+                handleNewAccountClick();
+              }}
             >
               Connect account
             </button>
           ) : (
             <select
               className="cc-py-2 cc-px-4 cc-rounded-md cc-w-44"
-              onChange={(e) => {
-                const selectedAccount = connected.find(
-                  (account) =>
-                    account.data_source_external_id === e.target.value
-                );
-                setViewSelectedAccountData(selectedAccount || null);
+              onChange={async (e) => {
+                if (e.target.value === 'add-account') {
+                  handleNewAccountClick();
+                  e.target.value = ''; // Reset the select value
+                } else {
+                  const selectedAccount = connected.find(
+                    (account) =>
+                      account.data_source_external_id === e.target.value
+                  );
+                  setViewSelectedAccountData(selectedAccount || null);
+                }
               }}
             >
               <option value="">Select Account</option>
@@ -192,6 +297,12 @@ const ThirdPartyHome = ({
                   </option>
                 );
               })}
+              {canConnectMore && (
+                <>
+                  <hr className="cc-border-gray-300 cc-my-1" />
+                  <option value="add-account">Add Account</option>
+                </>
+              )}
             </select>
           )}
         </div>
@@ -233,57 +344,186 @@ const ThirdPartyHome = ({
                   <p className="cc-text-gray-500 cc-text-sm">No files synced</p>
                 </div>
               ) : (
-                <div className="cc-w-full cc-grow cc-h-full cc-flex">
+                <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4">
                   <InfiniteLoader
                     isRowLoaded={isRowLoaded}
                     loadMoreRows={loadMoreRows}
                     rowCount={hasMoreFiles ? files.length + 1 : files.length}
                   >
                     {({ onRowsRendered, registerChild }) => (
-                      <Table
-                        width={688}
-                        height={300}
-                        headerHeight={20}
-                        rowHeight={30}
-                        rowCount={files.length}
-                        rowGetter={({ index }) => files[index]}
-                        onRowsRendered={onRowsRendered}
-                        ref={registerChild}
-                        onRowClick={({ index }) => setSelectedRowIndex(index)}
-                        rowClassName={({ index }) =>
-                          index === selectedRowIndex ? 'selectedRow' : ''
-                        }
-                      >
-                        <Column label="File Name" dataKey="name" width={288} />
-                        <Column
-                          label="Status"
-                          dataKey="sync_status"
-                          width={200}
-                          cellRenderer={statusCellRenderer}
-                        />
-                        <Column
-                          label="Last Sync Time"
-                          dataKey="last_sync"
-                          width={200}
-                          cellRenderer={dateCellRenderer}
-                        />
-                      </Table>
+                      <div className="cc-flex cc-grow cc-w-full cc-h-full">
+                        <Table
+                          headerRowRenderer={headerRowRenderer}
+                          width={688}
+                          height={200}
+                          headerHeight={20}
+                          rowHeight={30}
+                          rowCount={sortedFiles.length}
+                          rowGetter={({ index }) => sortedFiles[index]}
+                          onRowsRendered={onRowsRendered}
+                          ref={registerChild}
+                          onRowClick={({ index }) => handleRowClick({ index })}
+                          rowClassName={({ index }) => {
+                            const selectedFile = sortedFiles[index];
+                            const selectedFileId = selectedFile?.id;
+
+                            let className = 'cc-p-2 hover:cc-cursor-pointer ';
+
+                            if (index >= 0) {
+                              className +=
+                                index % 2 === 0
+                                  ? `${
+                                      selectedRows.has(selectedFileId)
+                                        ? 'cc-bg-blue-100 '
+                                        : 'cc-bg-white hover:cc-bg-gray-50 '
+                                    } `
+                                  : `${
+                                      selectedRows.has(selectedFileId)
+                                        ? 'cc-bg-blue-100 '
+                                        : 'cc-bg-gray-100 hover:cc-bg-gray-50 '
+                                    }`;
+                            }
+
+                            return className;
+                          }}
+                          sort={sort}
+                          sortBy={sortState.sortBy}
+                          sortDirection={sortState.sortDirection}
+                        >
+                          <Column
+                            label="File Name"
+                            dataKey="name"
+                            width={288}
+                            headerRenderer={headerRenderer}
+                            sortBy={sortState.sortBy}
+                          />
+                          <Column
+                            label="Status"
+                            dataKey="sync_status"
+                            width={200}
+                            cellRenderer={statusCellRenderer}
+                            headerRenderer={headerRenderer}
+                          />
+                          <Column
+                            label="Last Sync Time"
+                            dataKey="last_sync"
+                            width={200}
+                            cellRenderer={dateCellRenderer}
+                            headerRenderer={headerRenderer}
+                          />
+                        </Table>
+                        {/* <AutoSizer>
+                          {({ width, height }) => (
+                            <Table
+                              width={688}
+                              height={300}
+                              headerHeight={20}
+                              headerClassName="cc-text-left cc-text-sm cc-font-semibold cc-text-gray-500 cc-border-b cc-border-gray-300 cc-p-2"
+                              rowHeight={30}
+                              rowCount={files.length}
+                              rowGetter={({ index }) => files[index]}
+                              onRowsRendered={onRowsRendered}
+                              ref={registerChild}
+                              onHeaderClick={({ columnData, dataKey }) => {
+                                console.log('dataKey: ', dataKey);
+                                console.log('columnData: ', columnData);
+
+                                // sort({
+                                //   sortBy: dataKey,
+                                //   sortDirection:
+                                //     sortState.sortBy === dataKey
+                                //       ? sortState.sortDirection === 'ASC'
+                                //         ? 'DESC'
+                                //         : 'ASC'
+                                //       : 'ASC',
+                                // });
+                              }}
+                              onRowClick={({ index }) =>
+                                setSelectedRowIndex(index)
+                              }
+                              rowClassName={({ index }) =>
+                                index === selectedRowIndex ? 'selectedRow' : ''
+                              }
+                              // sort={sort}
+                              // sortBy={sortState.sortBy}
+                              // sortDirection={sortState.sortDirection}
+                            >
+                              <Column
+                                label="File Name"
+                                dataKey="name"
+                                width={288}
+                                headerRenderer={headerRenderer}
+                              />
+                              <Column
+                                label="Status"
+                                dataKey="sync_status"
+                                width={200}
+                                cellRenderer={statusCellRenderer}
+                                headerRenderer={headerRenderer}
+                              />
+                              <Column
+                                label="Last Sync Time"
+                                dataKey="last_sync"
+                                width={200}
+                                cellRenderer={dateCellRenderer}
+                                headerRenderer={headerRenderer}
+                              />
+                            </Table>
+                          )}
+                        </AutoSizer> */}
+                      </div>
                     )}
                   </InfiniteLoader>
+
+                  <button
+                    className={`cc-mt-4 ${
+                      selectedRows.size > 0
+                        ? 'cc-bg-black cc-cursor-pointer cc-text-white'
+                        : 'cc-bg-gray-300'
+                    } cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md cc-flex cc-items-center cc-space-x-2 cc-justify-center`}
+                    onClick={() => {
+                      selectedRows.forEach(async (fileId) => {
+                        const resyncFileResponse = await resyncFile({
+                          accessToken: accessToken,
+                          environment: 'DEVELOPMENT',
+                          fileId: fileId,
+                        });
+                        if (resyncFileResponse.status === 200) {
+                          const fileData = resyncFileResponse.data;
+
+                          // Update the file in the files array
+                          const fileIndex = files.findIndex(
+                            (file) => file.id === fileData.id
+                          );
+
+                          // Update the file in the sortedFiles array
+                          const sortedFileIndex = sortedFiles.findIndex(
+                            (file) => file.id === fileData.id
+                          );
+
+                          const newFiles = [...files];
+                          const newSortedFiles = [...sortedFiles];
+
+                          newFiles[fileIndex] = fileData;
+                          newSortedFiles[sortedFileIndex] = fileData;
+
+                          setFiles(newFiles);
+                          setSortedFiles(newSortedFiles);
+
+                          setSelectedRows((prevSelectedRows) => {
+                            prevSelectedRows.delete(fileData.id);
+                            return prevSelectedRows;
+                          });
+                        }
+                      });
+
+                      toast.success('Resync initiated');
+                    }}
+                    disabled={selectedRows.size === 0}
+                  >
+                    <span>Resync Selected Files</span>
+                  </button>
                 </div>
-                // <List
-                //   height={375}
-                //   itemCount={viewSelectedAccountData.synced_files.length}
-                //   itemSize={35}
-                //   width={'100%'}
-                // >
-                //   {({ index, style }) => (
-                //     <FileData
-                //       style={style}
-                //       file={viewSelectedAccountData.synced_files[index]}
-                //     />
-                //   )}
-                // </List>
               ))}
 
             {activeTab === 'config' && (
