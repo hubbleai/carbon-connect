@@ -103,10 +103,6 @@ const ThirdPartyHome = ({
   };
 
   useEffect(() => {
-    console.log('files: ', files, !files.length);
-    console.log('sortedFiles: ', sortedFiles, !sortedFiles.length);
-
-    // if (!sortedFiles.length) return;
     if (!files.length) return;
     setSortedFiles(files);
   }, [files]);
@@ -153,6 +149,20 @@ const ThirdPartyHome = ({
     }
 
     return <span className={pillClass}>{cellData}</span>;
+  };
+
+  const checkboxCellRenderer = ({ rowData }) => {
+    return (
+      <input
+        type="checkbox"
+        checked={selectedRows.has(rowData.id)}
+        onChange={(e) => {
+          handleCheckboxChange(rowData.id, e.target.checked);
+          e.stopPropagation(); // Prevents row click event
+        }}
+        onClick={(e) => e.stopPropagation()} // Prevents row click event
+      />
+    );
   };
 
   const headerRenderer = ({ label, dataKey }) => (
@@ -213,6 +223,16 @@ const ThirdPartyHome = ({
     setSelectedRows(newSelectedRows);
   };
 
+  const handleCheckboxChange = (fileId, isChecked) => {
+    const newSelectedRows = new Set(selectedRows);
+    if (isChecked) {
+      newSelectedRows.add(fileId);
+    } else {
+      newSelectedRows.delete(fileId);
+    }
+    setSelectedRows(newSelectedRows);
+  };
+
   const handleNewAccountClick = async () => {
     toast.info('You will be redirected to the service to connect your account');
     const generateOauthUrlResponse = await generateOauthurl({
@@ -235,7 +255,14 @@ const ThirdPartyHome = ({
 
   return (
     <div className="cc-h-full cc-w-full cc-flex cc-flex-col">
-      <div className="cc-flex cc-flex-row cc-w-full cc-h-28 cc-items-center cc-px-4 cc-justify-between cc-bg-gray-200 cc-rounded-[6px] cc-space-x-2">
+      <div
+        className="cc-flex cc-flex-row cc-w-full cc-h-28 cc-items-center cc-px-4 cc-justify-between cc-bg-gray-200 cc-rounded-[6px] cc-space-x-2"
+        style={{
+          backgroundColor:
+            integrationData?.branding?.header?.primaryBackgroundColor ??
+            '#F5F5F5',
+        }}
+      >
         <div className="cc-flex cc-flex-row cc-items-center cc-space-x-4">
           <HiArrowLeft
             onClick={() => {
@@ -246,21 +273,47 @@ const ThirdPartyHome = ({
           />
 
           <div className="cc-flex cc-bg-white cc-border cc-rounded-md cc-w-28 cc-h-28 cc-translate-y-6 cc-items-center cc-justify-center">
-            {integrationData?.icon}
+            <img
+              className="cc-w-16 cc-h-16"
+              src={integrationData?.logo}
+              alt="Integration Logo"
+            />
           </div>
 
-          <div className="cc-flex cc-flex-col cc-space-y-2 cc-mr-2">
-            <div className="cc-flex cc-space-x-2 cc-text-xl cc-items-center cc-text-black">
+          <div className="cc-flex cc-flex-col cc-space-y-2 cc-mr-2 cc-grow">
+            <div
+              className="cc-flex cc-space-x-2 cc-text-xl cc-items-center cc-text-black"
+              style={{
+                color:
+                  integrationData?.branding?.header?.primaryTextColor ??
+                  '#000000',
+              }}
+            >
               <p>{integrationData?.name}</p>
             </div>
-            <div className="cc-text-xs cc-text-gray-500 cc-truncate">
+            <div
+              className="cc-text-xs cc-text-gray-500 cc-truncate"
+              style={{
+                color:
+                  integrationData?.branding?.header?.secondaryTextColor ??
+                  '#000000',
+              }}
+            >
               {integrationData?.description}
             </div>
           </div>
 
           {!isLoading && connected?.length === 0 ? (
             <button
-              className="cc-bg-black cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
+              className="cc-text-white cc-cursor-pointer cc-py-2 cc-px-4 cc-text-sm cc-rounded-md"
+              style={{
+                backgroundColor:
+                  integrationData?.branding?.header?.primaryButtonColor ??
+                  '#000000',
+                color:
+                  integrationData?.branding?.header?.primaryLabelColor ??
+                  '#FFFFFF',
+              }}
               onClick={() => {
                 handleNewAccountClick();
               }}
@@ -362,34 +415,63 @@ const ThirdPartyHome = ({
                           rowGetter={({ index }) => sortedFiles[index]}
                           onRowsRendered={onRowsRendered}
                           ref={registerChild}
-                          onRowClick={({ index }) => handleRowClick({ index })}
-                          rowClassName={({ index }) => {
+                          onRowClick={({ index }) => {
                             const selectedFile = sortedFiles[index];
-                            const selectedFileId = selectedFile?.id;
+                            if (!selectedFile) return;
+                            handleCheckboxChange(
+                              selectedFile.id,
+                              !selectedRows.has(selectedFile.id)
+                            );
 
-                            let className = 'cc-p-2 hover:cc-cursor-pointer ';
+                            // handleRowClick({ index });
+                          }}
+                          rowClassName={
+                            ({ index }) => {
+                              let className =
+                                'cc-p-2 hover:cc-cursor-pointer hover:cc-bg-gray-50 ';
 
-                            if (index >= 0) {
                               className +=
                                 index % 2 === 0
-                                  ? `${
-                                      selectedRows.has(selectedFileId)
-                                        ? 'cc-bg-blue-100 '
-                                        : 'cc-bg-white hover:cc-bg-gray-50 '
-                                    } `
-                                  : `${
-                                      selectedRows.has(selectedFileId)
-                                        ? 'cc-bg-blue-100 '
-                                        : 'cc-bg-gray-100 hover:cc-bg-gray-50 '
-                                    }`;
+                                  ? 'cc-bg-white'
+                                  : 'cc-bg-gray-100';
+
+                              return className;
                             }
 
-                            return className;
-                          }}
+                            // {
+                            //   const selectedFile = sortedFiles[index];
+                            //   const selectedFileId = selectedFile?.id;
+
+                            //   let className = 'cc-p-2 hover:cc-cursor-pointer ';
+
+                            //   if (index >= 0) {
+                            //     className +=
+                            //       index % 2 === 0
+                            //         ? `${
+                            //             selectedRows.has(selectedFileId)
+                            //               ? 'cc-bg-blue-100 '
+                            //               : 'cc-bg-white hover:cc-bg-gray-50 '
+                            //           } `
+                            //         : `${
+                            //             selectedRows.has(selectedFileId)
+                            //               ? 'cc-bg-blue-100 '
+                            //               : 'cc-bg-gray-100 hover:cc-bg-gray-50 '
+                            //           }`;
+                            //   }
+
+                            //   return className;
+                            // }
+                          }
                           sort={sort}
                           sortBy={sortState.sortBy}
                           sortDirection={sortState.sortDirection}
                         >
+                          <Column
+                            label=""
+                            dataKey=""
+                            width={50}
+                            cellRenderer={checkboxCellRenderer}
+                          />
                           <Column
                             label="File Name"
                             dataKey="name"
@@ -488,6 +570,8 @@ const ThirdPartyHome = ({
                           environment: 'DEVELOPMENT',
                           fileId: fileId,
                         });
+
+                        console.log('resyncFileResponse: ', resyncFileResponse);
                         if (resyncFileResponse.status === 200) {
                           const fileData = resyncFileResponse.data;
 
@@ -517,7 +601,7 @@ const ThirdPartyHome = ({
                         }
                       });
 
-                      toast.success('Resync initiated');
+                      toast.info('Resync initiated');
                     }}
                     disabled={selectedRows.size === 0}
                   >

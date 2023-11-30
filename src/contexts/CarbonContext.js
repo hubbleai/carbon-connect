@@ -13,7 +13,20 @@ import {
   SiZendesk,
 } from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
-import zoteroLogo from '../zotero.png';
+import zoteroLogoPng from '../zotero.png';
+
+import BoxLogo from '../logos/box.svg';
+import ConfluenceLogo from '../logos/confluence.svg';
+import DropboxLogo from '../logos/dropbox.svg';
+// import GmailLogo from '../logos/gmail.svg';
+import GoogleDriveLogo from '../logos/google_drive.svg';
+import IntercomLogo from '../logos/intercom.svg';
+import NotionLogo from '../logos/notion.svg';
+import OneDriveLogo from '../logos/onedrive.svg';
+import SharePointLogo from '../logos/sharepoint.svg';
+// import SlackLogo from '../logos/slack.svg';
+import ZendeskLogo from '../logos/zendesk.svg';
+import ZoteroLogo from '../logos/zotero.svg';
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -26,11 +39,24 @@ const integrationsList = [
     description: 'Lets your users connect their Box accounts to Carbon.',
     announcementName: 'to connect Box',
     icon: <SiBox className="cc-w-7 cc-h-7" />,
+    logo: BoxLogo,
     active: true,
     data_source_type: 'BOX',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#d1f2ff',
+        primaryButtonColor: '#04adef',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'CONFLUENCE',
@@ -39,11 +65,24 @@ const integrationsList = [
     description: 'Lets your users connect their Confluence accounts to Carbon.',
     announcementName: 'to connect Confluence',
     icon: <SiConfluence className="cc-w-7 cc-h-7" />,
+    logo: ConfluenceLogo,
     active: true,
     data_source_type: 'CONFLUENCE',
     requiresOAuth: true,
     multiStep: true,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#d6e7ff',
+        primaryButtonColor: '#2381fc',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'DROPBOX',
@@ -52,11 +91,24 @@ const integrationsList = [
     description: 'Lets your users connect their Dropbox accounts to Carbon.',
     announcementName: 'to connect Dropbox',
     icon: <BsDropbox className="cc-w-7 cc-h-7" />,
+    logo: DropboxLogo,
     active: true,
     data_source_type: 'DROPBOX',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#d6ecfc',
+        primaryButtonColor: '#007ee5',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'LOCAL_FILES',
@@ -70,6 +122,18 @@ const integrationsList = [
     requiresOAuth: false,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#dadfe8',
+        primaryButtonColor: '#000000',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'GOOGLE_DRIVE',
@@ -78,11 +142,24 @@ const integrationsList = [
     description: 'Lets your users connect their Google Drive to Carbon.',
     announcementName: 'to connect Google Drive',
     icon: <FcGoogle className="cc-w-7 cc-h-7" />,
+    logo: GoogleDriveLogo,
     active: true,
     data_source_type: 'GOOGLE_DRIVE',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#c9ddff',
+        primaryButtonColor: '#3777e3',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'INTERCOM',
@@ -91,11 +168,24 @@ const integrationsList = [
     description: 'Lets your users connect their Intercom to Carbon.',
     announcementName: 'to connect Intercom',
     icon: <FaIntercom className="cc-w-7 cc-h-7" />,
+    logo: IntercomLogo,
     active: true,
     data_source_type: 'INTERCOM',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#d6ecfc',
+        primaryButtonColor: '#007ee5',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'NOTION',
@@ -104,11 +194,24 @@ const integrationsList = [
     description: 'Lets your users connect their Notion accounts to Carbon.',
     announcementName: 'to connect Notion',
     icon: <RxNotionLogo className="cc-w-7 cc-h-7" />,
+    logo: NotionLogo,
     active: true,
     data_source_type: 'NOTION',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: true,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#dadfe8',
+        primaryButtonColor: '#000000',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'ONEDRIVE',
@@ -117,11 +220,24 @@ const integrationsList = [
     description: 'Lets your users connect their OneDrive accounts to Carbon.',
     announcementName: 'to connect OneDrive',
     icon: <GrOnedrive className="cc-w-7 cc-h-7" />,
+    logo: OneDriveLogo,
     active: true,
     data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#d6ebff',
+        primaryButtonColor: '#0363b8',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'SHAREPOINT',
@@ -130,11 +246,24 @@ const integrationsList = [
     description: 'Lets your users connect their Sharepoint accounts to Carbon.',
     announcementName: 'to connect Sharepoint',
     icon: <SiMicrosoftsharepoint className="cc-w-7 cc-h-7" />,
+    logo: SharePointLogo,
     active: true,
     data_source_type: 'SHAREPOINT',
     requiresOAuth: true,
     multiStep: true,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#c8f5f7',
+        primaryButtonColor: '#036b70',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'WEB_SCRAPER',
@@ -148,6 +277,18 @@ const integrationsList = [
     requiresOAuth: false,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#dadfe8',
+        primaryButtonColor: '#000000',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'ZENDESK',
@@ -156,11 +297,24 @@ const integrationsList = [
     description: 'Lets your users connect their Zendesk accounts to Carbon.',
     announcementName: 'to connect Zendesk',
     icon: <SiZendesk className="cc-w-7 cc-h-7" />,
+    logo: ZendeskLogo,
     active: true,
     data_source_type: 'ZENDESK',
     requiresOAuth: true,
     multiStep: true,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#dadfe8',
+        primaryButtonColor: '#000000',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
   {
     id: 'ZOTERO',
@@ -168,12 +322,25 @@ const integrationsList = [
     name: 'Zotero',
     description: 'Lets your users connect their Zotero accounts to Carbon.',
     announcementName: 'to connect Zotero',
-    icon: <img src={zoteroLogo} className="cc-w-7 cc-h-7" />, // <SiZotero className="cc-w-7 cc-h-7" />,
+    icon: <img src={zoteroLogoPng} className="cc-w-7 cc-h-7" />, // <SiZotero className="cc-w-7 cc-h-7" />,
+    logo: ZoteroLogo,
     active: true,
     data_source_type: 'ZOTERO',
     requiresOAuth: true,
     multiStep: false,
     supportsMultipleAccounts: false,
+    branding: {
+      header: {
+        primaryBackgroundColor: '#ffc4c9',
+        primaryButtonColor: '#CC2836',
+        primaryLabelColor: '#FFFFFF',
+        primaryTextColor: '#000000',
+        secondaryTextColor: '#000000',
+
+        // secondaryBackgroundColor: '#0061D5',
+        // secondaryButtonColor: '#143B83',
+      },
+    },
   },
 ];
 
