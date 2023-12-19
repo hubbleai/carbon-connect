@@ -20,9 +20,9 @@
   "license": "ISC",
   "type": "module",
   "devDependencies": {
-    "@babel/core": "^7.22.5",
-    "@babel/preset-env": "^7.22.5",
-    "@babel/preset-react": "^7.22.5",
+    "@babel/core": ">=7.23.2",
+    "@babel/preset-env": ">=7.23.2",
+    "@babel/preset-react": ">=7.23.2",
     "@radix-ui/react-dialog": "^1.0.4",
     "@rollup/plugin-babel": "^6.0.3",
     "@rollup/plugin-commonjs": "^25.0.1",
