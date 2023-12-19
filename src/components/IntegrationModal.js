@@ -32,6 +32,7 @@ const IntegrationModal = ({
   activeStep,
   setActiveStep,
   zIndex = 1000,
+  enableToasts = true,
 }) => {
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
@@ -358,11 +359,13 @@ const IntegrationModal = ({
           )}
         </Dialog.Content>
 
-        <ToastContainer
-          position="bottom-right"
-          pauseOnFocusLoss={false}
-          pauseOnHover={false}
-        />
+        {enableToasts && (
+          <ToastContainer
+            position="bottom-right"
+            pauseOnFocusLoss={false}
+            pauseOnHover={false}
+          />
+        )}
       </Dialog.Portal>
     </Dialog.Root>
   );

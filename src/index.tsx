@@ -158,6 +158,7 @@ export interface CarbonConnectProps {
   navigateBackURL?: string | null;
   backButtonText?: string;
   zIndex?: number;
+  enableToasts?: boolean;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -207,6 +208,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   navigateBackURL = null,
   backButtonText = 'Go Back',
   zIndex = 1000,
+  enableToasts = true,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -242,6 +244,8 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       activeStep={activeStep}
       setActiveStep={setActiveStep}
       backButtonText={backButtonText}
+      enableToasts={enableToasts}
+      zIndex={zIndex}
     >
       <IntegrationModal
         orgName={orgName}
@@ -265,6 +269,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
         setActiveStep={setActiveStep}
         backButtonText={backButtonText}
         zIndex={zIndex}
+        enableToasts={enableToasts}
       >
         {children}
       </IntegrationModal>
