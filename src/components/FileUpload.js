@@ -198,7 +198,7 @@ function FileUpload({ setActiveStep }) {
               null;
 
             const useOCR =
-              fileTypeConfig?.useOCR || filesConfig?.useOCR || false;
+              fileTypeConfig?.useOcr || filesConfig?.useOcr || false;
 
             const generateSparseVectors =
               fileTypeConfig?.generateSparseVectors ||
