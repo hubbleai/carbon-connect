@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import './index.css';
+import { EmbeddingModel } from 'carbon-connect-js/dist/types';
 export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
@@ -7,18 +8,19 @@ export declare enum ActionType {
     CANCEL = "CANCEL"
 }
 export declare enum IntegrationName {
-    LOCAL_FILES = "LOCAL_FILES",
-    NOTION = "NOTION",
-    WEB_SCRAPER = "WEB_SCRAPER",
+    BOX = "BOX",
+    CONFLUENCE = "CONFLUENCE",
+    DROPBOX = "DROPBOX",
     GOOGLE_DRIVE = "GOOGLE_DRIVE",
     INTERCOM = "INTERCOM",
-    DROPBOX = "DROPBOX",
+    LOCAL_FILES = "LOCAL_FILES",
+    NOTION = "NOTION",
     ONEDRIVE = "ONEDRIVE",
-    BOX = "BOX",
-    ZENDESK = "ZENDESK",
+    S3 = "S3",
     SHAREPOINT = "SHAREPOINT",
-    ZOTERO = "ZOTERO",
-    CONFLUENCE = "CONFLUENCE"
+    WEB_SCRAPER = "WEB_SCRAPER",
+    ZENDESK = "ZENDESK",
+    ZOTERO = "ZOTERO"
 }
 export declare enum SyncStatus {
     READY = "READY",
@@ -30,12 +32,15 @@ export interface FileType {
     extension: string;
     chunkSize?: number;
     overlapSize?: number;
+    useOcr?: boolean;
+    generateSparseVectors?: boolean;
 }
 export interface BaseIntegration {
     id: IntegrationName;
     chunkSize?: number;
     overlapSize?: number;
     skipEmbeddingGeneration?: boolean;
+    embeddingModel?: EmbeddingModel;
     enableAutoSync?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
@@ -43,6 +48,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
     allowMultipleFiles: boolean;
     maxFilesCount?: number;
     allowedFileTypes?: FileType[];
+    useOcr?: boolean;
+    generateSparseVectors?: boolean;
 }
 export interface WebScraperIntegration extends BaseIntegration {
     recursionDepth?: number;
@@ -135,6 +142,7 @@ export interface CarbonConnectProps {
     backButtonText?: string;
     zIndex?: number;
     enableToasts?: boolean;
+    embeddingModel?: EmbeddingModel;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

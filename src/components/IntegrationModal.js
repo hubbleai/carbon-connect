@@ -16,24 +16,7 @@ import SharepointScreen from './SharepointScreen';
 import ConfluenceScreen from './ConfluenceScreen';
 // import { setFlag } from '../utils/helpers';
 
-const IntegrationModal = ({
-  maxFileSize,
-  children,
-  onSuccess,
-  onError,
-  primaryBackgroundColor,
-  primaryTextColor,
-  secondaryBackgroundColor,
-  secondaryTextColor,
-  allowMultipleFiles,
-  tags = {},
-  environment = 'PRODUCTION',
-  entryPoint = null,
-  activeStep,
-  setActiveStep,
-  zIndex = 1000,
-  enableToasts = true,
-}) => {
+const IntegrationModal = ({ children }) => {
   const [activeIntegrations, setActiveIntegrations] = useState([]);
 
   const activeIntegrationsRef = useRef(activeIntegrations);
@@ -47,6 +30,22 @@ const IntegrationModal = ({
     alwaysOpen,
     showModal,
     manageModalOpenState,
+    primaryBackgroundColor,
+    primaryTextColor,
+    secondaryBackgroundColor,
+    secondaryTextColor,
+    maxFileSize,
+    onSuccess,
+    onError,
+    allowMultipleFiles,
+    tags,
+    environment,
+    entryPoint,
+    activeStep,
+    setActiveStep,
+    zIndex,
+    enableToasts,
+    embeddingModel,
   } = useCarbon();
 
   const findModifications = (newIntegrations, oldIntegrations) => {

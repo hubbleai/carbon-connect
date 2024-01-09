@@ -190,6 +190,7 @@ export const CarbonProvider = ({
   backButtonText,
   enableToasts,
   zIndex,
+  embeddingModel,
 }) => {
   const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(false);
@@ -403,6 +404,7 @@ export const CarbonProvider = ({
     backButtonText,
     enableToasts,
     zIndex,
+    embeddingModel,
   };
 
   return (

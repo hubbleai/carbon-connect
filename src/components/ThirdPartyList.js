@@ -21,6 +21,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     onSuccess,
     manageModalOpenState,
     primaryTextColor,
+    embeddingModel,
   } = useCarbon();
 
   const handleServiceOAuthFlow = async (service) => {
@@ -45,6 +46,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             chunk_size: chunkSize,
             chunk_overlap: overlapSize,
             skip_embedding_generation: skipEmbeddingGeneration,
+            embedding_model: embeddingModel,
           }),
         }
       );

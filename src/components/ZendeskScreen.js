@@ -45,6 +45,7 @@ function ZendeskScreen({
     authenticatedFetch,
     secondaryBackgroundColor,
     secondaryTextColor,
+    embeddingModel,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -59,6 +60,8 @@ function ZendeskScreen({
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
+      const embeddingModelValue =
+        service?.embeddingModel || embeddingModel || null;
       const subdomain = zendeskSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -75,6 +78,7 @@ function ZendeskScreen({
         chunk_overlap: overlapSize,
         skip_embedding_generation: skipEmbeddingGeneration,
         zendesk_subdomain: subdomain,
+        embedding_model: embeddingModelValue,
       };
 
       const response = await authenticatedFetch(
