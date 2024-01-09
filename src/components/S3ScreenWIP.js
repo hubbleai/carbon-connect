@@ -4,7 +4,7 @@ import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
-import { SiConfluence } from 'react-icons/si';
+import { SiZendesk } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -12,7 +12,7 @@ import { BASE_URL, onSuccessEvents } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 
-function ConfluenceScreen({
+function S3Screen({
   setActiveStep,
   entryPoint,
   environment,
@@ -22,18 +22,15 @@ function ConfluenceScreen({
   primaryBackgroundColor,
   primaryTextColor,
 }) {
-  const [confluenceSubdomain, setConfluenceSubdomain] = useState('');
-  const [submitButtonHoveredState, setSubmitButtonHoveredState] =
-    useState(false);
+  const [accessKey, setAccessKey] = useState('');
+  const [accessKeySecret, setAccessKeySecret] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [service, setService] = useState(null);
 
   useEffect(() => {
     setService(
-      processedIntegrations.find(
-        (integration) => integration.id === 'CONFLUENCE'
-      )
+      processedIntegrations.find((integration) => integration.id === 'ZENDESK')
     );
   }, [processedIntegrations]);
 
@@ -47,41 +44,17 @@ function ConfluenceScreen({
     authenticatedFetch,
     secondaryBackgroundColor,
     secondaryTextColor,
-    embeddingModel,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
     try {
-      if (!confluenceSubdomain) {
+      if (!zendeskSubdomain) {
         toast.error('Please enter a subdomain.');
         return;
       }
       setIsLoading(true);
-      const chunkSize =
-        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
-      const overlapSize =
-        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
-      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
-      const embeddingModelValue =
-        service?.embeddingModel || embeddingModel || null;
-      const subdomain = confluenceSubdomain
-        .replace('https://www.', '')
-        .replace('http://www.', '')
-        .replace('https://', '')
-        .replace('http://', '')
-        .replace('.confluence.com', '')
-        .replace(/\/$/, '')
-        .trim();
 
-      const requestObject = {
-        tags: tags,
-        service: service?.data_source_type,
-        chunk_size: chunkSize,
-        chunk_overlap: overlapSize,
-        skip_embedding_generation: skipEmbeddingGeneration,
-        confluence_subdomain: subdomain,
-        embedding_model: embeddingModelValue,
-      };
+      const requestObject = {};
 
       const response = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
@@ -101,7 +74,7 @@ function ConfluenceScreen({
           data: null,
           action: onSuccessEvents.INITIATE,
           event: onSuccessEvents.INITIATE,
-          integration: 'CONFULENCE',
+          integration: 'ZENDESK',
         });
         setIsLoading(false);
         const oAuthURLResponseData = await response.json();
@@ -115,7 +88,7 @@ function ConfluenceScreen({
         data: [{ message: 'Error getting oAuth URL. Please try again.' }],
         action: onSuccessEvents.ERROR,
         event: onSuccessEvents.ERROR,
-        integration: 'CONFULENCE',
+        integration: 'ZENDESK',
       });
     }
   };
@@ -124,17 +97,13 @@ function ConfluenceScreen({
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-relative cc-justify-center">
-          {/* {!entryPoint && (
+          {!entryPoint && (
             <HiArrowLeft
               onClick={() => setActiveStep(1)}
               className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
             />
-          )} */}
-          <HiArrowLeft
-            onClick={() => setActiveStep(entryPoint ? 0 : 1)}
-            className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
-          />
-          <SiConfluence className="cc-text-3xl cc-text-black" />
+          )}
+          <SiZendesk className="cc-text-3xl cc-text-black" />
         </div>
       </Dialog.Title>
 
@@ -142,7 +111,7 @@ function ConfluenceScreen({
         <div className="py-4 cc-flex cc-grow cc-w-full">
           <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
             <span className="cc-text-sm">
-              Please enter the Confluence{' '}
+              Please enter the Zendesk{' '}
               <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
                 your-subdomain
               </span>{' '}
@@ -154,9 +123,9 @@ function ConfluenceScreen({
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="your-subdomain.confluence.com"
-                value={confluenceSubdomain}
-                onChange={(e) => setConfluenceSubdomain(e.target.value)}
+                placeholder="your-subdomain.zendesk.com"
+                value={zendeskSubdomain}
+                onChange={(e) => setZendeskSubdomain(e.target.value)}
               />
             </div>
           </div>
@@ -170,13 +139,13 @@ function ConfluenceScreen({
         >
           <HiInformationCircle className="cc-w-8 cc-h-8" />
           <span className="text-xs">
-            By connecting to Confluence, you are providing us with access to
-            your Confluence profile and Help Center articles.
+            By connecting to Zendesk, you are providing us with access to your
+            Zendesk profile and Help Center articles.
           </span>
         </p>
 
         <button
-          className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+          className={`cc-w-full cc-h-10 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
           style={{
             backgroundColor: submitButtonHoveredState
               ? darkenColor(primaryBackgroundColor, -10)
@@ -199,4 +168,4 @@ function ConfluenceScreen({
   );
 }
 
-export default ConfluenceScreen;
+export default S3Screen;

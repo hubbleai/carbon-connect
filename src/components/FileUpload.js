@@ -58,6 +58,7 @@ function FileUpload({ setActiveStep }) {
     authenticatedFetch,
     navigateBackURL,
     manageModalOpenState,
+    embeddingModel,
   } = useCarbon();
 
   useEffect(() => {
@@ -190,13 +191,26 @@ function FileUpload({ setActiveStep }) {
               filesConfig?.skipEmbeddingGeneration ||
               false;
 
+            const embeddingModelValue =
+              fileTypeConfig?.embeddingModel ||
+              filesConfig?.embeddingModel ||
+              embeddingModel ||
+              null;
+
+            const useOCR =
+              fileTypeConfig?.useOcr || filesConfig?.useOcr || false;
+
+            const generateSparseVectors =
+              fileTypeConfig?.generateSparseVectors ||
+              filesConfig?.generateSparseVectors ||
+              false;
+
             const uploadResponse = await authenticatedFetch(
-              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}`,
+              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}&set_page_as_boundary=${setPageAsBoundary}&embedding_model=${embeddingModelValue}&use_ocr=${useOCR}&generate_sparse_vectors=${generateSparseVectors}`,
               {
                 method: 'POST',
                 body: formData,
                 headers: {
-                  // 'Content-Type': 'multipart/form-data',
                   Authorization: `Token ${accessToken}`,
                 },
               }

@@ -26,7 +26,7 @@ Feature.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
+const CarbonAnnouncement = ({}) => {
   const [connectButtonHoveredState, setConnectButtonHoveredState] =
     useState(false);
 
@@ -46,6 +46,7 @@ const CarbonAnnouncement = ({ setActiveStep, activeIntegrations }) => {
     navigateBackURL,
     manageModalOpenState,
     backButtonText,
+    setActiveStep,
   } = useCarbon();
 
   const isEntryPoint = Boolean(entryPoint);

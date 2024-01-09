@@ -49,6 +49,7 @@ function SharepointScreen({
     authenticatedFetch,
     secondaryBackgroundColor,
     secondaryTextColor,
+    embeddingModel,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -71,6 +72,8 @@ function SharepointScreen({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const tenant = microsoftTenant;
       const sitename = sharepointSiteName;
+      const embeddingModelValue =
+        service?.embeddingModel || embeddingModel || null;
 
       const requestObject = {
         tags: tags,
@@ -80,6 +83,7 @@ function SharepointScreen({
         skip_embedding_generation: skipEmbeddingGeneration,
         microsoft_tenant: tenant,
         sharepoint_site_name: sitename,
+        embedding_model: embeddingModelValue,
       };
 
       const response = await authenticatedFetch(

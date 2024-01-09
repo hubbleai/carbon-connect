@@ -6,6 +6,7 @@ import IntegrationModal from './components/IntegrationModal';
 
 // @ts-ignore
 import { CarbonProvider } from './contexts/CarbonContext';
+import { EmbeddingModel } from 'carbon-connect-js/dist/types';
 
 // Enums
 export enum ActionType {
@@ -16,18 +17,19 @@ export enum ActionType {
 }
 
 export enum IntegrationName {
-  LOCAL_FILES = 'LOCAL_FILES',
-  NOTION = 'NOTION',
-  WEB_SCRAPER = 'WEB_SCRAPER',
+  BOX = 'BOX',
+  CONFLUENCE = 'CONFLUENCE',
+  DROPBOX = 'DROPBOX',
   GOOGLE_DRIVE = 'GOOGLE_DRIVE',
   INTERCOM = 'INTERCOM',
-  DROPBOX = 'DROPBOX',
+  LOCAL_FILES = 'LOCAL_FILES',
+  NOTION = 'NOTION',
   ONEDRIVE = 'ONEDRIVE',
-  BOX = 'BOX',
-  ZENDESK = 'ZENDESK',
+  S3 = 'S3',
   SHAREPOINT = 'SHAREPOINT',
+  WEB_SCRAPER = 'WEB_SCRAPER',
+  ZENDESK = 'ZENDESK',
   ZOTERO = 'ZOTERO',
-  CONFLUENCE = 'CONFLUENCE',
 }
 
 export enum SyncStatus {
@@ -41,12 +43,15 @@ export interface FileType {
   extension: string;
   chunkSize?: number;
   overlapSize?: number;
+  useOcr?: boolean;
+  generateSparseVectors?: boolean;
 }
 export interface BaseIntegration {
   id: IntegrationName;
   chunkSize?: number;
   overlapSize?: number;
   skipEmbeddingGeneration?: boolean;
+  embeddingModel?: EmbeddingModel;
   enableAutoSync?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
@@ -54,6 +59,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
   allowMultipleFiles: boolean;
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
+  useOcr?: boolean;
+  generateSparseVectors?: boolean;
 }
 export interface WebScraperIntegration extends BaseIntegration {
   recursionDepth?: number;
@@ -159,6 +166,7 @@ export interface CarbonConnectProps {
   backButtonText?: string;
   zIndex?: number;
   enableToasts?: boolean;
+  embeddingModel?: EmbeddingModel;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -209,6 +217,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   backButtonText = 'Go Back',
   zIndex = 1000,
   enableToasts = true,
+  embeddingModel = 'OPENAI',
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -246,33 +255,9 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       backButtonText={backButtonText}
       enableToasts={enableToasts}
       zIndex={zIndex}
+      embeddingModel={embeddingModel}
     >
-      <IntegrationModal
-        orgName={orgName}
-        brandIcon={brandIcon}
-        environment={environment}
-        entryPoint={entryPoint}
-        tags={tags}
-        maxFileSize={maxFileSize}
-        enabledIntegrations={enabledIntegrations}
-        onSuccess={onSuccess}
-        onError={onError}
-        primaryBackgroundColor={primaryBackgroundColor}
-        primaryTextColor={primaryTextColor}
-        secondaryBackgroundColor={secondaryBackgroundColor}
-        secondaryTextColor={secondaryTextColor}
-        allowMultipleFiles={allowMultipleFiles}
-        open={open}
-        setOpen={setOpen}
-        alwaysOpen={alwaysOpen}
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-        backButtonText={backButtonText}
-        zIndex={zIndex}
-        enableToasts={enableToasts}
-      >
-        {children}
-      </IntegrationModal>
+      <IntegrationModal>{children}</IntegrationModal>
     </CarbonProvider>
   );
 };
