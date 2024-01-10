@@ -443,7 +443,7 @@ function FileUpload({ setActiveStep }) {
             }}
           >
             <div className="cc-flex w-full cc-items-center cc-justify-center cc-space-x-2">
-              <CiFileOn className="cc-w-3 cc-h-3 " />
+              <CiFileOn className="cc-w-4 cc-h-4 " />
               <span>File Picker</span>
             </div>
           </button>
@@ -461,7 +461,7 @@ function FileUpload({ setActiveStep }) {
               }}
             >
               <div className="cc-flex w-full cc-items-center cc-justify-center cc-space-x-2">
-                <CiFolderOn className="cc-w-3 cc-h-3 " />
+                <CiFolderOn className="cc-w-4 cc-h-4 " />
                 <span>Folder Picker</span>
               </div>
             </button>
