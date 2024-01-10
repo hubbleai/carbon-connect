@@ -7,6 +7,11 @@ export declare enum ActionType {
     UPDATE = "UPDATE",
     CANCEL = "CANCEL"
 }
+export declare enum FilePickerMode {
+    FILES = "FILES",
+    FOLDERS = "FOLDERS",
+    BOTH = "BOTH"
+}
 export declare enum IntegrationName {
     BOX = "BOX",
     CONFLUENCE = "CONFLUENCE",
@@ -32,6 +37,7 @@ export interface FileType {
     extension: string;
     chunkSize?: number;
     overlapSize?: number;
+    setPageAsBoundary?: boolean;
     useOcr?: boolean;
     generateSparseVectors?: boolean;
 }
@@ -48,6 +54,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
     allowMultipleFiles: boolean;
     maxFilesCount?: number;
     allowedFileTypes?: FileType[];
+    setPageAsBoundary?: boolean;
+    filePickerMode?: FilePickerMode;
     useOcr?: boolean;
     generateSparseVectors?: boolean;
 }

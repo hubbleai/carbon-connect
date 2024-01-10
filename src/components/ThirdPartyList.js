@@ -132,9 +132,10 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                 <div className="cc-flex cc-flex-row cc-items-center">
                   <span className="cc-mr-4">{integration.icon}</span>
                   <h1 className="cc-text-base cc-font-roboto cc-items-center cc-justify-center cc-font-medium">
-                    {integration.data_source_type === 'GOOGLE_DRIVE'
+                    {integration.integrationsListViewTitle || integration.name}
+                    {/* {integration.data_source_type === 'GOOGLE_DRIVE'
                       ? 'Connect your Google Drive'
-                      : integration.name}
+                      : integration.name} */}
                   </h1>
                 </div>
                 <div className="cc-flex cc-flex-col">

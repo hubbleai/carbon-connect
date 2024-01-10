@@ -18,7 +18,9 @@ import {
   BsFiletypeTxt,
   BsFiletypeDocx,
   BsFiletypePptx,
+  BsExclamationTriangle,
 } from 'react-icons/bs';
+import { CiFileOn, CiFolderOn } from 'react-icons/ci';
 import { toast } from 'react-toastify';
 import { LuLoader2 } from 'react-icons/lu';
 
@@ -28,10 +30,47 @@ import { useCarbon } from '../contexts/CarbonContext';
 
 const defaultSupportedFileTypes = ['txt', 'csv', 'pdf', 'docx', 'pptx'];
 
+const FileItemIcon = ({ fileObject, allowedFileTypes }) => {
+  const fileExt = fileObject.name.split('.').pop();
+  console.log('Allowed file types: ', allowedFileTypes);
+
+  if (!allowedFileTypes.includes(fileExt)) {
+    return (
+      <BsExclamationTriangle className="cc-w-10 cc-h-10 cc-mx-auto cc-text-yellow-500" />
+    );
+  }
+
+  if (fileExt === 'pdf') {
+    return <BsFiletypePdf className="cc-w-10 cc-h-10 cc-mx-auto" />;
+  }
+  if (fileExt === 'csv') {
+    return <BsFiletypeCsv className="cc-w-10 cc-h-10  cc-mx-auto" />;
+  }
+  if (fileExt === 'txt') {
+    return <BsFiletypeTxt className="cc-w-10 cc-h-10 cc-mx-auto" />;
+  }
+  if (fileExt === 'docx') {
+    return <BsFiletypeDocx className="cc-w-10 cc-h-10 cc-mx-auto" />;
+  }
+  if (fileExt === 'pptx') {
+    return <BsFiletypePptx className="cc-w-10 cc-h-10 cc-mx-auto" />;
+  }
+  if (fileExt === 'md') {
+    return <AiOutlineFileMarkdown className="cc-w-10 cc-h-10 cc-mx-auto" />;
+  }
+  return <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />;
+};
+
 function FileUpload({ setActiveStep }) {
   const [uploadButtonHoveredState, setUploadButtonHoveredState] =
     useState(false);
+  const [filePickerType, setFilePickerType] = useState(null);
+  const [showUI, setShowUI] = useState(false);
   const [files, setFiles] = useState([]);
+  const [successfulFiles, setSuccessfulFiles] = useState([]);
+  const [failedFiles, setFailedFiles] = useState([]);
+  const fileInputRef = useRef(null);
+
   const [syncResponse, setSyncResponse] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [filesConfig, setFilesConfig] = useState([]);
@@ -87,6 +126,17 @@ function FileUpload({ setActiveStep }) {
       setFilesConfig(newFilesConfig);
     }
   }, [processedIntegrations]);
+
+  useEffect(() => {
+    if (filesConfig.filePickerMode === 'FILES') {
+      setFilePickerType('FILES');
+    } else if (filesConfig.filePickerMode === 'FOLDERS') {
+      setFilePickerType('FOLDERS');
+    } else if (filesConfig.filePickerMode === 'BOTH') {
+      setFilePickerType(null);
+    }
+    setShowUI(true);
+  }, [filesConfig]);
 
   const onFilesSelected = (files) => {
     try {
@@ -158,9 +208,6 @@ function FileUpload({ setActiveStep }) {
       await Promise.all(
         files.map(async (file, index) => {
           try {
-            const formData = new FormData();
-            formData.append('file', file);
-
             const fileType = file.name.split('.').pop();
             const allowedFileTypes = filesConfig.allowedFileTypes
               ? filesConfig.allowedFileTypes.map((config) => config.extension)
@@ -171,10 +218,30 @@ function FileUpload({ setActiveStep }) {
             );
 
             if (!fileTypeConfig) {
-              failedUploads.push(file.name);
+              // failedUploads.push({
+              //   name: file.name,
+              //   message: 'Unsupported Format',
+              // });
               return;
             }
 
+            const fileSize = file.size / 1000000;
+
+            if (fileSize > allowedMaxFileSize) {
+              failedUploads.push({
+                name: file.name,
+                message: `File size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
+              });
+              return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const setPageAsBoundary =
+              fileTypeConfig?.setPageAsBoundary ||
+              filesConfig?.setPageAsBoundary ||
+              false;
             const chunkSize =
               fileTypeConfig?.chunkSize ||
               filesConfig?.chunkSize ||
@@ -239,7 +306,7 @@ function FileUpload({ setActiveStep }) {
                 successfulUploads.push(appendTagsResponseData);
               } else {
                 failedUploads.push({
-                  fileName: file.name,
+                  name: file.name,
                   message: 'Failed to add tags to the file.',
                 });
               }
@@ -247,12 +314,12 @@ function FileUpload({ setActiveStep }) {
               const errorData = await uploadResponse.json(); // Get the error response body
 
               failedUploads.push({
-                fileName: file.name,
+                name: file.name,
                 message: errorData.message || 'Failed to upload file.',
               });
             }
           } catch (error) {
-            // console.log(error);
+            console.log(error);
           }
         })
       );
@@ -287,6 +354,8 @@ function FileUpload({ setActiveStep }) {
           integration: 'LOCAL_FILES',
         });
       }
+      setSuccessfulFiles(successfulUploads);
+      setFailedFiles(failedUploads);
       setSyncResponse(true);
       setIsLoading(false);
     } catch (error) {
@@ -302,11 +371,40 @@ function FileUpload({ setActiveStep }) {
     }
   };
 
-  const navigateBack = () => {
-    if (navigateBackURL) window.open(navigateBackURL, '_self');
-    else manageModalOpenState(false);
+  const handleFolderSelection = (event) => {
+    const items = event.target.files;
+    const topLevelFiles = [];
+
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].webkitRelativePath.split('/').length === 2) {
+        topLevelFiles.push(items[i]);
+      }
+    }
+    const maxFilesCount = allowedMaxFilesCount - files.length;
+    if (topLevelFiles.length > maxFilesCount) {
+      toast.error(
+        `You can only upload a maximum of ${maxFilesCount} files at a time.`
+      );
+      return;
+    }
+    setFiles((prevList) => {
+      if (prevList.length + topLevelFiles.length > allowedMaxFilesCount) {
+        toast.error(
+          `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+        );
+        return prevList;
+      }
+
+      return [...prevList, ...topLevelFiles];
+    });
   };
 
+  const handleTriggerClick = () => {
+    fileInputRef.current.click(); // Trigger the hidden file input
+  };
+
+  if (filePickerType === null) {
+  }
   return (
     <div className="cc-flex cc-flex-col cc-items-center cc-relative cc-h-full">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
@@ -327,236 +425,354 @@ function FileUpload({ setActiveStep }) {
           />
         </div>
       </Dialog.Title>
-      {!syncResponse && (
-        <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
-          {((!allowMultipleFiles && files.length === 0) ||
-            allowMultipleFiles) && (
-            <FileUploader
-              multiple={allowMultipleFiles}
-              handleChange={onFilesSelected}
-              name="file"
-              types={
-                filesConfig.allowedFileTypes
-                  ? filesConfig.allowedFileTypes.map(
-                      (config) => config.extension
-                    )
-                  : defaultSupportedFileTypes
-              }
-              maxSize={allowedMaxFileSize}
-              label="Upload or drag a file here to embed."
-              onTypeError={(e) => {
-                toast.error(
-                  `The file format is not supported. The supported formats are: ${
-                    filesConfig.allowedFileTypes
-                      ? filesConfig.allowedFileTypes
-                          .map((config) => config.extension.toUpperCase())
-                          .join(', ')
-                      : defaultSupportedFileTypes.join(', ')
-                  }`
-                );
-                onError({
-                  status: 400,
-                  data: [
-                    {
-                      message: `The file format is not supported. The supported formats are: ${
-                        filesConfig.allowedFileTypes
-                          ? filesConfig.allowedFileTypes
-                              .map((config) => config.extension.toUpperCase())
-                              .join(', ')
-                          : defaultSupportedFileTypes.join(', ')
-                      }`,
-                    },
-                  ],
-                  action: onSuccessEvents.UPDATE,
-                  event: onSuccessEvents.UPDATE,
-                  integration: 'LOCAL_FILES',
-                });
+
+      {!showUI ? (
+        <></>
+      ) : filePickerType === null ? (
+        <div className="cc-w-full cc-h-full cc-flex cc-flex-row cc-space-x-4 cc-justify-center cc-items-center">
+          <button
+            className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+            style={{
+              backgroundColor: uploadButtonHoveredState
+                ? darkenColor(primaryBackgroundColor, -10)
+                : primaryBackgroundColor,
+              color: primaryTextColor,
+            }}
+            onClick={() => {
+              setFilePickerType('FILES');
+            }}
+          >
+            <div className="cc-flex w-full cc-items-center cc-justify-center cc-space-x-2">
+              <CiFileOn className="cc-w-3 cc-h-3 " />
+              <span>File Picker</span>
+            </div>
+          </button>
+          {allowMultipleFiles && (
+            <button
+              className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
+              style={{
+                backgroundColor: uploadButtonHoveredState
+                  ? darkenColor(primaryBackgroundColor, -10)
+                  : primaryBackgroundColor,
+                color: primaryTextColor,
               }}
-              onSizeError={(e) => {
-                toast.error(
-                  `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`
-                );
-                onError({
-                  status: 400,
-                  data: [
-                    {
-                      message: `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
-                    },
-                  ],
-                  action: onSuccessEvents.UPDATE,
-                  event: onSuccessEvents.UPDATE,
-                  integration: 'LOCAL_FILES',
-                });
+              onClick={() => {
+                setFilePickerType('FOLDERS');
               }}
-              dropMessageStyle={{
-                backgroundColor: '#d1d1d1',
-                border: 1,
-                borderStyle: 'dashed',
-                borderColor: '#919191',
-              }}
-              hoverTitle={
-                allowedMaxFilesCount - files.length > 0
-                  ? ' '
-                  : 'Cannot select more files'
-              }
-              disabled={
-                allowedMaxFilesCount - files.length > 0 || isLoading
-                  ? false
-                  : true
-              }
             >
-              <div
-                className="cc-rounded-lg cc-flex cc-py-2 cc-h-24 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0"
-                onClick={() => {
-                  if (isLoading === true) {
-                    toast.error(
-                      'Please wait for the file to upload before uploading another file.'
-                    );
-                    return;
-                  }
-                  if (allowedMaxFilesCount - files.length <= 0) {
-                    toast.error(
-                      `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
-                    );
-                    return;
-                  }
-                }}
-              >
-                <div>
-                  <p className="cc-text-[#484848]">
-                    {`Drag and drop ${
-                      allowMultipleFiles
-                        ? `up to ${allowedMaxFilesCount - files.length} files`
-                        : 'file'
-                    } here.`}
-                  </p>
-                  <p className="cc-text-[#919191]">
-                    Max {allowedMaxFileSize} MB per file
-                  </p>
-                </div>
+              <div className="cc-flex w-full cc-items-center cc-justify-center cc-space-x-2">
+                <CiFolderOn className="cc-w-3 cc-h-3 " />
+                <span>Folder Picker</span>
               </div>
-            </FileUploader>
+            </button>
           )}
-
-          {files.length > 0 && (
-            <>
-              <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto cc-h-[19rem]">
-                {files.map((file, fileIndex) => (
-                  <div
-                    className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
-                    key={fileIndex}
-                  >
-                    <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
-                      {file.name.split('.').pop() === 'pdf' ? (
-                        <BsFiletypePdf className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      ) : file.name.split('.').pop() === 'csv' ? (
-                        <BsFiletypeCsv className="cc-w-10 cc-h-10  cc-mx-auto" />
-                      ) : file.name.split('.').pop() === 'txt' ? (
-                        <BsFiletypeTxt className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      ) : file.name.split('.').pop() === 'docx' ? (
-                        <BsFiletypeDocx className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      ) : file.name.split('.').pop() === 'pptx' ? (
-                        <BsFiletypePptx className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      ) : file.name.split('.').pop() === 'md' ? (
-                        <AiOutlineFileMarkdown className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      ) : (
-                        <AiOutlineFileUnknown className="cc-w-10 cc-h-10 cc-mx-auto" />
-                      )}
-                    </div>
-
-                    <div className="cc-flex cc-flex-col cc-w-8/12">
-                      <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
-                        {file.name}
-                      </h1>
-                      <p className="cc-text-sm cc-text-gray-400">
-                        {formatFileSize(file.size)}
-                      </p>
-                    </div>
-                    <HiX
-                      className="cc-ml-auto cc-text-gray-400 cc-cursor-pointer cc-w-1/12"
-                      onClick={() => onFileRemoved(fileIndex)}
-                    />
+        </div>
+      ) : (
+        <>
+          {!syncResponse && (
+            <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
+              {((!allowMultipleFiles && files.length === 0) ||
+                allowMultipleFiles) && (
+                <div className="cc-flex cc-flex-col">
+                  {/* <div className="cc-flex cc-w-full cc-justify-between cc-text-xs">
+                    <p className="cc-text-gray-600">
+                      Allowed Files: {allowedMaxFilesCount}
+                    </p>
+                    <p className="cc-text-gray-600">
+                      Currently selected: {files.length}
+                    </p>
                   </div>
-                ))}
-              </div>
-              {!allowMultipleFiles && <div className="cc-h-28"></div>}
-              <button
-                className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
-                style={{
-                  backgroundColor: uploadButtonHoveredState
-                    ? darkenColor(primaryBackgroundColor, -10)
-                    : primaryBackgroundColor,
-                  color: primaryTextColor,
-                }}
-                onClick={() => {
-                  if (isLoading === true) {
-                    toast.error(
-                      'Please wait for the file to upload before uploading another file.'
-                    );
-                    return;
-                  }
+                  <p className="cc-flex cc-w-full cc-text-gray-600 cc-text-xs">
+                    Max Size: {allowedMaxFileSize} MB per file
+                  </p> */}
+                  <div className="cc-flex cc-flex-row cc-items-center cc-space-x-2 cc-w-full">
+                    {filePickerType === 'FILES' ? (
+                      <div className="cc-w-full">
+                        <FileUploader
+                          multiple={allowMultipleFiles}
+                          handleChange={onFilesSelected}
+                          name="file"
+                          types={
+                            filesConfig.allowedFileTypes
+                              ? filesConfig.allowedFileTypes.map(
+                                  (config) => config.extension
+                                )
+                              : defaultSupportedFileTypes
+                          }
+                          maxSize={allowedMaxFileSize}
+                          label="Upload or drag a file here to embed."
+                          onTypeError={(e) => {
+                            toast.error(
+                              `The file format is not supported. The supported formats are: ${
+                                filesConfig.allowedFileTypes
+                                  ? filesConfig.allowedFileTypes
+                                      .map((config) =>
+                                        config.extension.toUpperCase()
+                                      )
+                                      .join(', ')
+                                  : defaultSupportedFileTypes.join(', ')
+                              }`
+                            );
+                            onError({
+                              status: 400,
+                              data: [
+                                {
+                                  message: `The file format is not supported. The supported formats are: ${
+                                    filesConfig.allowedFileTypes
+                                      ? filesConfig.allowedFileTypes
+                                          .map((config) =>
+                                            config.extension.toUpperCase()
+                                          )
+                                          .join(', ')
+                                      : defaultSupportedFileTypes.join(', ')
+                                  }`,
+                                },
+                              ],
+                              action: onSuccessEvents.UPDATE,
+                              event: onSuccessEvents.UPDATE,
+                              integration: 'LOCAL_FILES',
+                            });
+                          }}
+                          onSizeError={(e) => {
+                            toast.error(
+                              `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`
+                            );
+                            onError({
+                              status: 400,
+                              data: [
+                                {
+                                  message: `The file size is too large. The maximum size allowed is: ${allowedMaxFileSize} MB`,
+                                },
+                              ],
+                              action: onSuccessEvents.UPDATE,
+                              event: onSuccessEvents.UPDATE,
+                              integration: 'LOCAL_FILES',
+                            });
+                          }}
+                          dropMessageStyle={{
+                            backgroundColor: '#d1d1d1',
+                            border: 1,
+                            borderStyle: 'dashed',
+                            borderColor: '#919191',
+                          }}
+                          hoverTitle={
+                            allowedMaxFilesCount - files.length > 0
+                              ? ' '
+                              : 'Cannot select more files'
+                          }
+                          disabled={
+                            allowedMaxFilesCount - files.length > 0 || isLoading
+                              ? false
+                              : true
+                          }
+                        >
+                          <div
+                            className="cc-rounded-lg cc-flex cc-py-4 cc-h-28 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-black cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0"
+                            onClick={() => {
+                              if (isLoading === true) {
+                                toast.error(
+                                  'Please wait for the file to upload before uploading another file.'
+                                );
+                                return;
+                              }
+                              if (allowedMaxFilesCount - files.length <= 0) {
+                                toast.error(
+                                  `You can only upload a maximum of ${allowedMaxFilesCount} files at a time.`
+                                );
+                                return;
+                              }
+                            }}
+                          >
+                            <div>
+                              <CiFileOn className="cc-w-6 cc-h-6 cc-mx-auto cc-mb-2" />
+                              <p className="cc-text-[#484848]">
+                                {`Drag and drop ${
+                                  allowMultipleFiles
+                                    ? `up to ${
+                                        allowedMaxFilesCount - files.length
+                                      } files`
+                                    : 'file'
+                                } here.`}
+                              </p>
+                              <p className="cc-text-[#919191]">
+                                Max {allowedMaxFileSize} MB per file
+                              </p>
+                            </div>
+                          </div>
+                        </FileUploader>
+                      </div>
+                    ) : (
+                      <button
+                        onClick={handleTriggerClick}
+                        className="cc-rounded-lg cc-flex cc-py-4 cc-h-28 cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-[#484848] cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0"
+                      >
+                        <div>
+                          <CiFolderOn className="cc-w-6 cc-h-6 cc-mx-auto cc-mb-2" />
+                          <p className="cc-text-[#484848]">
+                            {`Select folders with up to ${
+                              allowedMaxFilesCount - files.length
+                            } files`}
+                          </p>
+                          <p className="cc-text-[#919191]">
+                            Max {allowedMaxFileSize} MB per file
+                          </p>
+                        </div>
+                      </button>
+                    )}
 
-                  if (files.length > 0) uploadSelectedFiles();
-                  else toast.error('Please select a file to upload');
-                }}
-                onMouseEnter={() => setUploadButtonHoveredState(true)}
-                onMouseLeave={() => setUploadButtonHoveredState(false)}
-              >
-                {isLoading ? (
-                  <LuLoader2 className={`cc-animate-spin`} />
-                ) : (
-                  <HiUpload />
-                )}
-                <p>{`Upload File(s)`}</p>
-              </button>
-            </>
-          )}
-        </div>
-      )}
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      webkitdirectory="true"
+                      multiple={allowMultipleFiles}
+                      onChange={handleFolderSelection}
+                      className="cc-hidden"
+                    />
+                    {/* {allowMultipleFiles &&
+                      ['BOTH', 'FOLDERS'].includes(
+                        filesConfig.FilePickerMode
+                      ) && (
+                        <button
+                          onClick={handleTriggerClick}
+                          className="cc-rounded-lg cc-flex cc-py-2 cc-h-fit cc-w-full cc-mt-4 cc-mb-1 cc-cursor-pointer cc-text-center cc-border cc-border-dashed cc-border-[#919191] cc-justify-center cc-items-center cc-gap-x-2 cc-overflow-hidden cc-text-[#484848] cc-space-x-2 cc-outline-none focus:cc-outline-none hover:cc-bg-[#d1d1d1] hover:cc-border-0"
+                        >
+                          Folder Picker
+                        </button>
+                      )} */}
+                  </div>
+                </div>
+              )}
 
-      {syncResponse && (
-        <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto cc-h-full cc-items-center cc-text-xl cc-justify-center">
-          {syncResponse ? (
-            <>
-              <HiCheckCircle className="cc-text-green-500 cc-w-8 cc-h-8" />
-              <p className="cc-text-center">{`File(s) uploaded successfully`}</p>
-            </>
-          ) : (
-            <>
-              <HiXCircle className="cc-text-red-500 cc-w-8 cc-h-8" />
-              <p className="cc-text-center">
-                There is an error uploading your files. Please try again later.
-              </p>
-            </>
+              {files.length > 0 && (
+                <>
+                  <div className="cc-w-full cc-flex cc-flex-col cc-space-y-4 cc-overflow-y-auto cc-h-[19rem]">
+                    {files.map((file, fileIndex) => (
+                      <div
+                        className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
+                        key={fileIndex}
+                      >
+                        <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
+                          <FileItemIcon
+                            fileObject={file}
+                            allowedFileTypes={
+                              filesConfig.allowedFileTypes
+                                ? filesConfig.allowedFileTypes.map(
+                                    (config) => config.extension
+                                  )
+                                : defaultSupportedFileTypes
+                            }
+                          />
+                        </div>
+
+                        <div className="cc-flex cc-flex-col cc-w-8/12">
+                          <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
+                            {file.name}
+                          </h1>
+                          <p className="cc-text-sm cc-text-gray-400">
+                            {formatFileSize(file.size)}
+                          </p>
+                        </div>
+                        <HiX
+                          className="cc-ml-auto cc-text-gray-400 cc-cursor-pointer cc-w-1/12"
+                          onClick={() => onFileRemoved(fileIndex)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  {!allowMultipleFiles && <div className="cc-h-28"></div>}
+                  <button
+                    className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
+                    style={{
+                      backgroundColor: uploadButtonHoveredState
+                        ? darkenColor(primaryBackgroundColor, -10)
+                        : primaryBackgroundColor,
+                      color: primaryTextColor,
+                    }}
+                    onClick={() => {
+                      if (isLoading === true) {
+                        toast.error(
+                          'Please wait for the file to upload before uploading another file.'
+                        );
+                        return;
+                      }
+
+                      if (files.length > 0) uploadSelectedFiles();
+                      else toast.error('Please select a file to upload');
+                    }}
+                    onMouseEnter={() => setUploadButtonHoveredState(true)}
+                    onMouseLeave={() => setUploadButtonHoveredState(false)}
+                  >
+                    {isLoading ? (
+                      <LuLoader2 className={`cc-animate-spin`} />
+                    ) : (
+                      <HiUpload />
+                    )}
+                    <p>{`Upload File(s)`}</p>
+                  </button>
+                </>
+              )}
+            </div>
           )}
-        </div>
+
+          {syncResponse && (
+            <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto cc-h-full cc-items-center cc-text-xl">
+              {syncResponse ? (
+                <>
+                  {successfulFiles.map((file, index) => (
+                    <div
+                      className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
+                      key={index}
+                    >
+                      <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
+                        <HiCheckCircle className="cc-text-green-500 cc-w-8 cc-h-8" />
+                      </div>
+
+                      <div className="cc-flex cc-flex-col cc-w-8/12">
+                        <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
+                          {file.name}
+                        </h1>
+                        <p className="cc-text-sm cc-text-gray-400">
+                          {file.message}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+
+                  {failedFiles.map((file, index) => (
+                    <div
+                      className="cc-relative cc-flex cc-flex-row cc-space-x-2 cc-w-full cc-items-center"
+                      key={index}
+                    >
+                      <div className="cc-w-1/6 cc-text-[#484848] cc-h-10">
+                        <BsExclamationTriangle className="cc-text-yellow-500 cc-w-8 cc-h-8" />
+                      </div>
+
+                      <div className="cc-flex cc-flex-col cc-w-8/12">
+                        <h1 className="cc-text-base cc-font-medium cc-mb-1 cc-w-full cc-truncate">
+                          {file.name}
+                        </h1>
+                        <p className="cc-text-sm cc-text-gray-400">
+                          {file.message}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <HiXCircle className="cc-text-red-500 cc-w-8 cc-h-8" />
+                  <p className="cc-text-center">
+                    There is an error uploading your files. Please try again
+                    later.
+                  </p>
+                </>
+              )}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 }
-
-// FileUpload.propTypes = {
-//   setActiveStep: PropTypes.func.isRequired,
-//   entryPoint: PropTypes.number,
-//   environment: PropTypes.string.isRequired,
-//   tags: PropTypes.object,
-//   maxFileSize: PropTypes.number,
-//   onSuccess: PropTypes.func.isRequired,
-//   onError: PropTypes.func.isRequired,
-//   primaryBackgroundColor: PropTypes.string,
-//   primaryTextColor: PropTypes.string,
-//   secondaryBackgroundColor: PropTypes.string,
-//   secondaryTextColor: PropTypes.string,
-// };
-
-// FileUpload.defaultProps = {
-//   entryPoint: 0,
-//   tags: [],
-//   maxFileSize: 20000000, // 20 MB
-//   primaryBackgroundColor: '#ffffff',
-//   primaryTextColor: '#000000',
-//   secondaryBackgroundColor: '#f2f2f2',
-//   secondaryTextColor: '#4f4f4f',
-// };
 
 export default FileUpload;

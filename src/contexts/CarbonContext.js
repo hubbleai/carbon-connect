@@ -65,6 +65,18 @@ const integrationsList = [
     requiresOAuth: false,
   },
   {
+    id: 'GMAIL',
+    subpath: 'gmail',
+    name: 'Gmail',
+    description: 'Lets your users connect their Gmail to Carbon.',
+    announcementName: 'to connect Gmail',
+    icon: <FcGoogle className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'GMAIL',
+    requiresOAuth: true,
+    integrationsListViewTitle: 'Connect your Gmail',
+  },
+  {
     id: 'GOOGLE_DRIVE',
     subpath: 'google',
     name: 'Google Drive',
@@ -74,6 +86,7 @@ const integrationsList = [
     active: true,
     data_source_type: 'GOOGLE_DRIVE',
     requiresOAuth: true,
+    integrationsListViewTitle: 'Connect your Google Drive',
   },
   {
     id: 'INTERCOM',

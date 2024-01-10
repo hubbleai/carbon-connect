@@ -15,6 +15,11 @@ export enum ActionType {
   UPDATE = 'UPDATE',
   CANCEL = 'CANCEL',
 }
+export enum FilePickerMode {
+  FILES = 'FILES',
+  FOLDERS = 'FOLDERS',
+  BOTH = 'BOTH',
+}
 
 export enum IntegrationName {
   BOX = 'BOX',
@@ -43,6 +48,7 @@ export interface FileType {
   extension: string;
   chunkSize?: number;
   overlapSize?: number;
+  setPageAsBoundary?: boolean;
   useOcr?: boolean;
   generateSparseVectors?: boolean;
 }
@@ -59,6 +65,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
   allowMultipleFiles: boolean;
   maxFilesCount?: number;
   allowedFileTypes?: FileType[];
+  setPageAsBoundary?: boolean;
+  filePickerMode?: FilePickerMode;
   useOcr?: boolean;
   generateSparseVectors?: boolean;
 }
@@ -188,6 +196,8 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       maxFileSize: 20000000,
       allowMultipleFiles: true,
       skipEmbeddingGeneration: false,
+      setPageAsBoundary: false,
+      filePickerMode: 'FILES',
       allowedFileTypes: [
         {
           extension: 'csv',
