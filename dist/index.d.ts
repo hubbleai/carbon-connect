@@ -25,7 +25,8 @@ export declare enum IntegrationName {
     SHAREPOINT = "SHAREPOINT",
     WEB_SCRAPER = "WEB_SCRAPER",
     ZENDESK = "ZENDESK",
-    ZOTERO = "ZOTERO"
+    ZOTERO = "ZOTERO",
+    GMAIL = "GMAIL",
 }
 export declare enum SyncStatus {
     READY = "READY",
