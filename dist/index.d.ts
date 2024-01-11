@@ -17,6 +17,7 @@ export declare enum IntegrationName {
     CONFLUENCE = "CONFLUENCE",
     DROPBOX = "DROPBOX",
     GOOGLE_DRIVE = "GOOGLE_DRIVE",
+    GMAIL = "GMAIL",
     INTERCOM = "INTERCOM",
     LOCAL_FILES = "LOCAL_FILES",
     NOTION = "NOTION",
@@ -25,8 +26,7 @@ export declare enum IntegrationName {
     SHAREPOINT = "SHAREPOINT",
     WEB_SCRAPER = "WEB_SCRAPER",
     ZENDESK = "ZENDESK",
-    ZOTERO = "ZOTERO",
-    GMAIL = "GMAIL",
+    ZOTERO = "ZOTERO"
 }
 export declare enum SyncStatus {
     READY = "READY",
