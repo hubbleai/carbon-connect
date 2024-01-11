@@ -4,7 +4,7 @@ import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
-import { SiZendesk } from 'react-icons/si';
+import { FaAws } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -24,6 +24,8 @@ function S3Screen({
 }) {
   const [accessKey, setAccessKey] = useState('');
   const [accessKeySecret, setAccessKeySecret] = useState('');
+  const [submitButtonHoveredState, setSubmitButtonHoveredState] =
+    useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [service, setService] = useState(null);
@@ -46,18 +48,32 @@ function S3Screen({
     secondaryTextColor,
   } = useCarbon();
 
-  const fetchOauthURL = async () => {
+  const connectS3Account = async () => {
     try {
-      if (!zendeskSubdomain) {
-        toast.error('Please enter a subdomain.');
+      if (!accessKey) {
+        toast.error('Please provide the access key.');
         return;
       }
+      if (!accessKeySecret) {
+        toast.error('Please provide the access key secret.');
+        return;
+      }
+      onSuccess({
+        status: 200,
+        data: null,
+        action: onSuccessEvents.INITIATE,
+        event: onSuccessEvents.INITIATE,
+        integration: 'S3',
+      });
       setIsLoading(true);
 
-      const requestObject = {};
+      const requestObject = {
+        access_key: accessKey,
+        access_key_secret: accessKeySecret,
+      };
 
       const response = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/oauth_url`,
+        `${BASE_URL[environment]}/integrations/s3`,
         {
           method: 'POST',
           headers: {
@@ -72,23 +88,22 @@ function S3Screen({
         onSuccess({
           status: 200,
           data: null,
-          action: onSuccessEvents.INITIATE,
-          event: onSuccessEvents.INITIATE,
+          action: onSuccessEvents.ADD,
+          event: onSuccessEvents.ADD,
           integration: 'ZENDESK',
         });
         setIsLoading(false);
-        const oAuthURLResponseData = await response.json();
-        window.open(oAuthURLResponseData.oauth_url, '_blank');
+        toast.info('S3 sync initiated.');
       }
     } catch (error) {
-      toast.error('Error getting oAuth URL. Please try again.');
+      toast.error('Error connecting your S3. Please try again.');
       setIsLoading(false);
       onError({
         status: 400,
-        data: [{ message: 'Error getting oAuth URL. Please try again.' }],
+        data: [{ message: 'Error connecting your S3. Please try again.' }],
         action: onSuccessEvents.ERROR,
         event: onSuccessEvents.ERROR,
-        integration: 'ZENDESK',
+        integration: 'S3',
       });
     }
   };
@@ -103,7 +118,7 @@ function S3Screen({
               className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
             />
           )}
-          <SiZendesk className="cc-text-3xl cc-text-black" />
+          <FaAws className="cc-text-3xl cc-text-black" />
         </div>
       </Dialog.Title>
 
@@ -111,9 +126,13 @@ function S3Screen({
         <div className="py-4 cc-flex cc-grow cc-w-full">
           <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
             <span className="cc-text-sm">
-              Please enter the Zendesk{' '}
+              Please enter your S3{' '}
               <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
-                your-subdomain
+                access key
+              </span>{' '}
+              and{' '}
+              <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
+                access key secret
               </span>{' '}
               of the account you wish to connect.
             </span>
@@ -123,9 +142,19 @@ function S3Screen({
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="your-subdomain.zendesk.com"
-                value={zendeskSubdomain}
-                onChange={(e) => setZendeskSubdomain(e.target.value)}
+                placeholder="Access key"
+                value={accessKey}
+                onChange={(e) => setAccessKey(e.target.value)}
+              />
+            </div>
+            <div className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10">
+              <input
+                type="password"
+                className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
+                style={{ borderRadius: '0.375rem' }}
+                placeholder="Access key secret"
+                value={accessKeySecret}
+                onChange={(e) => setAccessKeySecret(e.target.value)}
               />
             </div>
           </div>
@@ -139,8 +168,8 @@ function S3Screen({
         >
           <HiInformationCircle className="cc-w-8 cc-h-8" />
           <span className="text-xs">
-            By connecting to Zendesk, you are providing us with access to your
-            Zendesk profile and Help Center articles.
+            By connecting to S3, you are providing us with access to your data
+            hosted on S3.
           </span>
         </p>
 
@@ -152,7 +181,7 @@ function S3Screen({
               : primaryBackgroundColor,
             color: primaryTextColor,
           }}
-          onClick={fetchOauthURL}
+          onClick={connectS3Account}
           onMouseEnter={() => setSubmitButtonHoveredState(true)}
           onMouseLeave={() => setSubmitButtonHoveredState(false)}
         >

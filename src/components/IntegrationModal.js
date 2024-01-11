@@ -14,6 +14,7 @@ import WebScraper from '../components/WebScraper';
 import ZendeskScreen from './ZendeskScreen';
 import SharepointScreen from './SharepointScreen';
 import ConfluenceScreen from './ConfluenceScreen';
+import S3Screen from './S3Screen';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({ children }) => {
@@ -312,6 +313,20 @@ const IntegrationModal = ({ children }) => {
             />
           )}
 
+          {activeStep === 'S3' && (
+            <S3Screen
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
+              onSuccess={onSuccess}
+              onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
+            />
+          )}
           {activeStep === 'SHAREPOINT' && (
             <SharepointScreen
               setActiveStep={setActiveStep}

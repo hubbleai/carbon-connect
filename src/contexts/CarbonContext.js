@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
 import { RxNotionLogo } from 'react-icons/rx';
 import { CgWebsite } from 'react-icons/cg';
-import { FaIntercom } from 'react-icons/fa';
+import { FaAws, FaIntercom } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
 import {
@@ -120,6 +120,18 @@ const integrationsList = [
     active: true,
     data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
+  },
+  {
+    id: 'S3',
+    subpath: 's3',
+    name: 'S3',
+    description: 'Lets your users connect their data on S3 to Carbon.',
+    announcementName: 'to connect S3',
+    icon: <FaAws className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'S3',
+    requiresOAuth: false,
+    multiStep: true,
   },
   {
     id: 'SHAREPOINT',
