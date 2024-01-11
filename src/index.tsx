@@ -15,6 +15,7 @@ export enum ActionType {
   UPDATE = 'UPDATE',
   CANCEL = 'CANCEL',
 }
+
 export enum FilePickerMode {
   FILES = 'FILES',
   FOLDERS = 'FOLDERS',
