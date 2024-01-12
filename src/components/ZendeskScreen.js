@@ -62,6 +62,7 @@ function ZendeskScreen({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
+      const generateSparseVectors = service?.generateSparseVectors || false;
       const subdomain = zendeskSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -79,6 +80,7 @@ function ZendeskScreen({
         skip_embedding_generation: skipEmbeddingGeneration,
         zendesk_subdomain: subdomain,
         embedding_model: embeddingModelValue,
+        generate_sparse_vectors: generateSparseVectors,
       };
 
       const response = await authenticatedFetch(

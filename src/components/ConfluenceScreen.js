@@ -64,6 +64,7 @@ function ConfluenceScreen({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
+      const generateSparseVectors = service?.generateSparseVectors || false;
       const subdomain = confluenceSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -81,6 +82,7 @@ function ConfluenceScreen({
         skip_embedding_generation: skipEmbeddingGeneration,
         confluence_subdomain: subdomain,
         embedding_model: embeddingModelValue,
+        generate_sparse_vectors: generateSparseVectors,
       };
 
       const response = await authenticatedFetch(

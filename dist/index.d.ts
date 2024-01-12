@@ -49,6 +49,7 @@ export interface BaseIntegration {
     skipEmbeddingGeneration?: boolean;
     embeddingModel?: EmbeddingModel;
     enableAutoSync?: boolean;
+    generateSparseVectors?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
@@ -58,7 +59,6 @@ export interface LocalFilesIntegration extends BaseIntegration {
     setPageAsBoundary?: boolean;
     filePickerMode?: FilePickerMode;
     useOcr?: boolean;
-    generateSparseVectors?: boolean;
 }
 export interface WebScraperIntegration extends BaseIntegration {
     recursionDepth?: number;
@@ -152,6 +152,7 @@ export interface CarbonConnectProps {
     zIndex?: number;
     enableToasts?: boolean;
     embeddingModel?: EmbeddingModel;
+    generateSparseVectors?: boolean;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

@@ -31,6 +31,9 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
+      const generateSparseVectors = service?.generateSparseVectors || false;
+      const embeddingModelValue = service?.embeddingModel || null;
+
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -46,7 +49,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             chunk_size: chunkSize,
             chunk_overlap: overlapSize,
             skip_embedding_generation: skipEmbeddingGeneration,
-            embedding_model: embeddingModel,
+            embedding_model: embeddingModelValue,
+            generate_sparse_vectors: generateSparseVectors,
           }),
         }
       );

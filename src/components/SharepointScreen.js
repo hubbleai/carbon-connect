@@ -74,6 +74,7 @@ function SharepointScreen({
       const sitename = sharepointSiteName;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
+      const generateSparseVectors = service?.generateSparseVectors || false;
 
       const requestObject = {
         tags: tags,
@@ -84,6 +85,7 @@ function SharepointScreen({
         microsoft_tenant: tenant,
         sharepoint_site_name: sitename,
         embedding_model: embeddingModelValue,
+        generate_sparse_vectors: generateSparseVectors,
       };
 
       const response = await authenticatedFetch(
