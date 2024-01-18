@@ -216,6 +216,8 @@ export const CarbonProvider = ({
   enableToasts,
   zIndex,
   embeddingModel,
+  generateSparseVectors,
+  prependFilenameToChunks,
 }) => {
   const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(false);
@@ -305,6 +307,11 @@ export const CarbonProvider = ({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
+
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
         {
@@ -320,6 +327,8 @@ export const CarbonProvider = ({
             chunk_overlap: overlapSizeValue,
             skip_embedding_generation: skipEmbeddingGeneration,
             embedding_model: embeddingModelValue,
+            generate_sparse_vectors: generateSparseVectorsValue,
+            prepend_filename_to_chunks: prependFilenameToChunksValue,
           }),
         }
       );
@@ -339,7 +348,7 @@ export const CarbonProvider = ({
       }
     } catch (err) {
       console.log(
-        '[CarbonContext.js: 285] Error in handleServiceOAuthFlow: ',
+        '[CarbonContext.js: 351] Error in handleServiceOAuthFlow: ',
         err
       );
     }
@@ -425,6 +434,8 @@ export const CarbonProvider = ({
     enableToasts,
     zIndex,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   };
 
   return (

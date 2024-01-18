@@ -46,6 +46,8 @@ function ZendeskScreen({
     secondaryBackgroundColor,
     secondaryTextColor,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -62,7 +64,11 @@ function ZendeskScreen({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
-      const generateSparseVectors = service?.generateSparseVectors || false;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
+
       const subdomain = zendeskSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -80,7 +86,8 @@ function ZendeskScreen({
         skip_embedding_generation: skipEmbeddingGeneration,
         zendesk_subdomain: subdomain,
         embedding_model: embeddingModelValue,
-        generate_sparse_vectors: generateSparseVectors,
+        generate_sparse_vectors: generateSparseVectorsValue,
+        prepend_filename_to_chunks: prependFilenameToChunksValue,
       };
 
       const response = await authenticatedFetch(

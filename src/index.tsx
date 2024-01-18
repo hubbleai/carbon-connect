@@ -53,6 +53,7 @@ export interface FileType {
   setPageAsBoundary?: boolean;
   useOcr?: boolean;
   generateSparseVectors?: boolean;
+  prependFilenameToChunks?: boolean;
 }
 export interface BaseIntegration {
   id: IntegrationName;
@@ -62,6 +63,7 @@ export interface BaseIntegration {
   embeddingModel?: EmbeddingModel;
   enableAutoSync?: boolean;
   generateSparseVectors?: boolean;
+  prependFilenameToChunks?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
   maxFileSize: number;
@@ -76,6 +78,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
 export interface WebScraperIntegration extends BaseIntegration {
   recursionDepth?: number;
   maxPagesToScrape?: number;
+  skipHTMLTags?: string[];
+  skipCSSClasses?: string[];
 }
 
 export type Integration =
@@ -179,6 +183,7 @@ export interface CarbonConnectProps {
   enableToasts?: boolean;
   embeddingModel?: EmbeddingModel;
   generateSparseVectors?: boolean;
+  prependFilenameToChunks?: boolean;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -232,6 +237,8 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   zIndex = 1000,
   enableToasts = true,
   embeddingModel = 'OPENAI',
+  generateSparseVectors = false,
+  prependFilenameToChunks = false,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
@@ -270,6 +277,8 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       enableToasts={enableToasts}
       zIndex={zIndex}
       embeddingModel={embeddingModel}
+      generateSparseVectors={generateSparseVectors}
+      prependFilenameToChunks={prependFilenameToChunks}
     >
       <IntegrationModal>{children}</IntegrationModal>
     </CarbonProvider>

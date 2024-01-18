@@ -41,6 +41,7 @@ export interface FileType {
     setPageAsBoundary?: boolean;
     useOcr?: boolean;
     generateSparseVectors?: boolean;
+    prependFilenameToChunks?: boolean;
 }
 export interface BaseIntegration {
     id: IntegrationName;
@@ -50,6 +51,7 @@ export interface BaseIntegration {
     embeddingModel?: EmbeddingModel;
     enableAutoSync?: boolean;
     generateSparseVectors?: boolean;
+    prependFilenameToChunks?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
@@ -63,6 +65,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
 export interface WebScraperIntegration extends BaseIntegration {
     recursionDepth?: number;
     maxPagesToScrape?: number;
+    skipHTMLTags?: string[];
+    skipCSSClasses?: string[];
 }
 export type Integration = LocalFilesIntegration | WebScraperIntegration | BaseIntegration;
 export interface LocalFile {
@@ -153,6 +157,7 @@ export interface CarbonConnectProps {
     enableToasts?: boolean;
     embeddingModel?: EmbeddingModel;
     generateSparseVectors?: boolean;
+    prependFilenameToChunks?: boolean;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

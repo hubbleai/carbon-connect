@@ -48,6 +48,8 @@ function ConfluenceScreen({
     secondaryBackgroundColor,
     secondaryTextColor,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -64,7 +66,10 @@ function ConfluenceScreen({
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
-      const generateSparseVectors = service?.generateSparseVectors || false;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
       const subdomain = confluenceSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -82,7 +87,8 @@ function ConfluenceScreen({
         skip_embedding_generation: skipEmbeddingGeneration,
         confluence_subdomain: subdomain,
         embedding_model: embeddingModelValue,
-        generate_sparse_vectors: generateSparseVectors,
+        prepend_filename_to_chunks: prependFilenameToChunksValue,
+        generate_sparse_vectors: generateSparseVectorsValue,
       };
 
       const response = await authenticatedFetch(

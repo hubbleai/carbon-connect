@@ -22,6 +22,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     manageModalOpenState,
     primaryTextColor,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   const handleServiceOAuthFlow = async (service) => {
@@ -32,7 +34,12 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const generateSparseVectors = service?.generateSparseVectors || false;
-      const embeddingModelValue = service?.embeddingModel || null;
+      const embeddingModelValue =
+        service?.embeddingModel || embeddingModel || null;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
 
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
@@ -50,7 +57,8 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
             chunk_overlap: overlapSize,
             skip_embedding_generation: skipEmbeddingGeneration,
             embedding_model: embeddingModelValue,
-            generate_sparse_vectors: generateSparseVectors,
+            generate_sparse_vectors: generateSparseVectorsValue,
+            prepend_filename_to_chunks: prependFilenameToChunksValue,
           }),
         }
       );

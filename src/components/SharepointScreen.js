@@ -50,6 +50,8 @@ function SharepointScreen({
     secondaryBackgroundColor,
     secondaryTextColor,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -74,7 +76,10 @@ function SharepointScreen({
       const sitename = sharepointSiteName;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
-      const generateSparseVectors = service?.generateSparseVectors || false;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
 
       const requestObject = {
         tags: tags,
@@ -85,7 +90,8 @@ function SharepointScreen({
         microsoft_tenant: tenant,
         sharepoint_site_name: sitename,
         embedding_model: embeddingModelValue,
-        generate_sparse_vectors: generateSparseVectors,
+        generate_sparse_vectors: generateSparseVectorsValue,
+        prepend_filename_to_chunks: prependFilenameToChunksValue,
       };
 
       const response = await authenticatedFetch(

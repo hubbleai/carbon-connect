@@ -98,6 +98,8 @@ function FileUpload({ setActiveStep }) {
     navigateBackURL,
     manageModalOpenState,
     embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   useEffect(() => {
@@ -267,13 +269,20 @@ function FileUpload({ setActiveStep }) {
             const useOCR =
               fileTypeConfig?.useOcr || filesConfig?.useOcr || false;
 
-            const generateSparseVectors =
+            const generateSparseVectorsValue =
               fileTypeConfig?.generateSparseVectors ||
               filesConfig?.generateSparseVectors ||
+              generateSparseVectors ||
+              false;
+
+            const prependFilenameToChunksValue =
+              fileTypeConfig?.prependFilenameToChunks ||
+              filesConfig?.prependFilenameToChunks ||
+              prependFilenameToChunks ||
               false;
 
             const uploadResponse = await authenticatedFetch(
-              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}&set_page_as_boundary=${setPageAsBoundary}&embedding_model=${embeddingModelValue}&use_ocr=${useOCR}&generate_sparse_vectors=${generateSparseVectors}`,
+              `${BASE_URL[environment]}/uploadfile?chunk_size=${chunkSize}&chunk_overlap=${overlapSize}&skip_embedding_generation=${skipEmbeddingGeneration}&set_page_as_boundary=${setPageAsBoundary}&embedding_model=${embeddingModelValue}&use_ocr=${useOCR}&generate_sparse_vectors=${generateSparseVectorsValue}&prepend_filename_to_chunks=${prependFilenameToChunksValue}`,
               {
                 method: 'POST',
                 body: formData,

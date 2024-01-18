@@ -6,6 +6,7 @@ import carbonLogo from '../carbon.svg';
 import { useCarbon } from '../contexts/CarbonContext';
 import { darkenColor } from '../utils/helpers';
 import * as Dialog from '@radix-ui/react-dialog';
+import { generateOauthurl } from 'carbon-connect-js';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">

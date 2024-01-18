@@ -79,6 +79,9 @@ function WebScraper({
     authenticatedFetch,
     navigateBackURL,
     manageModalOpenState,
+    embeddingModel,
+    generateSparseVectors,
+    prependFilenameToChunks,
   } = useCarbon();
 
   const submitScrapeRequest = async () => {
@@ -100,7 +103,13 @@ function WebScraper({
         service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
       const enableAutoSync = service?.enableAutoSync || false;
-      const generateSparseVectors = service?.generateSparseVectors || false;
+      const generateSparseVectorsValue =
+        service?.generateSparseVectors || generateSparseVectors || false;
+      const prependFilenameToChunksValue =
+        service?.prependFilenameToChunks || prependFilenameToChunks || false;
+
+      const htmlTagsToSkip = service?.htmlTagsToSkip || [];
+      const cssClassesToSkip = service?.cssClassesToSkip || [];
 
       setIsLoading(true);
       const urlPattern = new RegExp(
@@ -139,7 +148,10 @@ function WebScraper({
               chunk_overlap: overlapSize,
               skip_embedding_generation: skipEmbeddingGeneration,
               enable_auto_sync: enableAutoSync,
-              generate_sparse_vectors: generateSparseVectors,
+              generate_sparse_vectors: generateSparseVectorsValue,
+              prepend_filename_to_chunks: prependFilenameToChunksValue,
+              html_tags_to_skip: htmlTagsToSkip,
+              css_classes_to_skip: cssClassesToSkip,
             }))
           : validUrls.map((url) => ({
               url: url,
@@ -150,7 +162,10 @@ function WebScraper({
               chunk_overlap: overlapSize,
               skip_embedding_generation: skipEmbeddingGeneration,
               enable_auto_sync: enableAutoSync,
-              generate_sparse_vectors: generateSparseVectors,
+              generate_sparse_vectors: generateSparseVectorsValue,
+              prepend_filename_to_chunks: prependFilenameToChunksValue,
+              html_tags_to_skip: htmlTagsToSkip,
+              css_classes_to_skip: cssClassesToSkip,
             }));
 
       const uploadResponse = await authenticatedFetch(
