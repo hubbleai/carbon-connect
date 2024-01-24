@@ -22,6 +22,7 @@ export declare enum IntegrationName {
     LOCAL_FILES = "LOCAL_FILES",
     NOTION = "NOTION",
     ONEDRIVE = "ONEDRIVE",
+    OUTLOOK = "OUTLOOK",
     S3 = "S3",
     SHAREPOINT = "SHAREPOINT",
     WEB_SCRAPER = "WEB_SCRAPER",

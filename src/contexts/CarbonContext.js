@@ -6,6 +6,7 @@ import { CgWebsite } from 'react-icons/cg';
 import { FaAws, FaIntercom } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { GrOnedrive } from 'react-icons/gr';
+import { PiMicrosoftOutlookLogoFill } from 'react-icons/pi';
 import {
   SiBox,
   SiConfluence,
@@ -119,6 +120,17 @@ const integrationsList = [
     icon: <GrOnedrive className="cc-w-7 cc-h-7" />,
     active: true,
     data_source_type: 'ONEDRIVE',
+    requiresOAuth: true,
+  },
+  {
+    id: 'OUTLOOK',
+    subpath: 'outlook',
+    name: 'Outlook',
+    description: 'Lets your users connect their Outlook accounts to Carbon.',
+    announcementName: 'to connect Outlook',
+    icon: <PiMicrosoftOutlookLogoFill className="cc-w-7 cc-h-7" />,
+    active: true,
+    data_source_type: 'OUTLOOK',
     requiresOAuth: true,
   },
   {
