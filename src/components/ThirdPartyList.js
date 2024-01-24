@@ -9,86 +9,24 @@ import { useCarbon } from '../contexts/CarbonContext';
 
 const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
   const {
-    accessToken,
-    tags,
-    environment,
     processedIntegrations,
-    topLevelChunkSize,
-    topLevelOverlapSize,
-    defaultChunkSize,
-    defaultOverlapSize,
-    authenticatedFetch,
-    onSuccess,
     manageModalOpenState,
     primaryTextColor,
-    embeddingModel,
-    generateSparseVectors,
-    prependFilenameToChunks,
+    handleServiceOAuthFlow,
+    entryPoint,
   } = useCarbon();
-
-  const handleServiceOAuthFlow = async (service) => {
-    try {
-      const chunkSize =
-        service?.chunkSize || topLevelChunkSize || defaultChunkSize;
-      const overlapSize =
-        service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
-      const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
-      const generateSparseVectors = service?.generateSparseVectors || false;
-      const embeddingModelValue =
-        service?.embeddingModel || embeddingModel || null;
-      const generateSparseVectorsValue =
-        service?.generateSparseVectors || generateSparseVectors || false;
-      const prependFilenameToChunksValue =
-        service?.prependFilenameToChunks || prependFilenameToChunks || false;
-
-      const oAuthURLResponse = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/oauth_url`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: `Token ${accessToken}`,
-          },
-          body: JSON.stringify({
-            tags: tags,
-            scope: service?.scope,
-            service: service?.data_source_type,
-            chunk_size: chunkSize,
-            chunk_overlap: overlapSize,
-            skip_embedding_generation: skipEmbeddingGeneration,
-            embedding_model: embeddingModelValue,
-            generate_sparse_vectors: generateSparseVectorsValue,
-            prepend_filename_to_chunks: prependFilenameToChunksValue,
-          }),
-        }
-      );
-
-      if (oAuthURLResponse.status === 200) {
-        // setFlag(service?.data_source_type, true);
-        onSuccess({
-          status: 200,
-          data: null,
-          integration: service?.data_source_type,
-          action: onSuccessEvents.INITIATE,
-          event: onSuccessEvents.INITIATE,
-        });
-        const oAuthURLResponseData = await oAuthURLResponse.json();
-
-        window.open(oAuthURLResponseData.oauth_url, '_blank');
-      }
-    } catch (err) {
-      console.log('[ThirdPartyList.js] Error in handleServiceOAuthFlow: ', err);
-    }
-  };
 
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-space-x-4">
-          <HiArrowLeft
-            onClick={() => setActiveStep(0)}
-            className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
-          />
+          {entryPoint !== 'INTEGRATIONS_HOME' ? (
+            <HiArrowLeft
+              onClick={() => setActiveStep(0)}
+              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400"
+            />
+          ) : null}
+
           <h1 className="cc-grow">Integrations</h1>
           <HiX
             onClick={() => manageModalOpenState(false)}
@@ -134,7 +72,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                       }
                     }
                   } catch (err) {
-                    console.log(
+                    console.error(
                       '[ThirdPartyList.js] Error in handleServiceOAuthFlow: ',
                       err
                     );

@@ -7,6 +7,7 @@ import { useCarbon } from '../contexts/CarbonContext';
 import { darkenColor } from '../utils/helpers';
 import * as Dialog from '@radix-ui/react-dialog';
 import { generateOauthurl } from 'carbon-connect-js';
+import googleLogo from '../google.png';
 
 const Feature = ({ Icon, title, children }) => (
   <li className="cc-flex cc-flex-row cc-items-start cc-w-full cc-space-x-2 cc-py-2 cc-px-4 cc-text-black">
@@ -36,7 +37,6 @@ const CarbonAnnouncement = ({}) => {
     brandIcon,
     primaryBackgroundColor,
     primaryTextColor,
-    secondaryBackgroundColor,
     secondaryTextColor,
     entryPoint,
     entryPointIntegrationObject,
@@ -200,7 +200,7 @@ const CarbonAnnouncement = ({}) => {
             </p>
           )}
 
-          {entryPoint === 'GOOGLE_DRIVE' ? (
+          {entryPoint === 'GOOGLE_DRIVE' || entryPoint === 'GMAIL' ? (
             <div
               className="cc-bg-google-blue cc-w-52 cc-h-11 cc-rounded-sm cc-shadow-md cc-relative cc-cursor-pointer hover:cc-shadow-lg active:cc-bg-button-active-blue cc-flex cc-flex-row cc-p-0.5 cc-space-x-[1.125rem] cc-items-center"
               onClick={handleButtonClick}
@@ -208,7 +208,7 @@ const CarbonAnnouncement = ({}) => {
               <div className="cc-bg-white cc-w-10 cc-h-10 cc-rounded-sm cc-flex">
                 <img
                   className="cc-w-5 cc-h-5 cc-items-center cc-justify-center cc-m-auto"
-                  src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+                  src={googleLogo}
                   alt="Google logo"
                 />
               </div>

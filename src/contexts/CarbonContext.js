@@ -297,9 +297,14 @@ export const CarbonProvider = ({
       console.log('[CarbonContext.js: 235] Error in fetchTokens: ', err);
     }
   };
+  const generateOAuthURLs = async () => {
+    console.log('generateOAuthURLs');
+  };
 
   const handleServiceOAuthFlow = async (service) => {
     try {
+      // const oauthWindow = window.open('', '_blank');
+      // oauthWindow.document.write('Loading...');
       const chunkSizeValue =
         service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
       const overlapSizeValue =
@@ -334,7 +339,6 @@ export const CarbonProvider = ({
       );
 
       if (oAuthURLResponse.status === 200) {
-        // setFlag(service?.data_source_type, true);
         onSuccess({
           status: 200,
           data: null,
@@ -343,6 +347,8 @@ export const CarbonProvider = ({
           event: onSuccessEvents.INITIATE,
         });
         const oAuthURLResponseData = await oAuthURLResponse.json();
+
+        // oauthWindow.location.href = oAuthURLResponseData.oauth_url;
 
         window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
@@ -353,6 +359,10 @@ export const CarbonProvider = ({
       );
     }
   };
+
+  useEffect(() => {
+    generateOAuthURLs();
+  }, [accessToken]);
 
   useEffect(() => {
     let temp = [];

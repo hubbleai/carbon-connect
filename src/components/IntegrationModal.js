@@ -280,6 +280,13 @@ const IntegrationModal = ({ children }) => {
             />
           )}
 
+          {activeStep === 'INTEGRATIONS_HOME' && (
+            <ThirdPartyList
+              setActiveStep={setActiveStep}
+              activeIntegrations={activeIntegrations}
+            />
+          )}
+
           {activeStep === 'LOCAL_FILES' && (
             <FileUpload
               setActiveStep={setActiveStep}

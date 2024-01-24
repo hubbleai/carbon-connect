@@ -241,7 +241,9 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   prependFilenameToChunks = false,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
-    entryPoint === 'LOCAL_FILES' || entryPoint === 'WEB_SCRAPER'
+    entryPoint === 'LOCAL_FILES' ||
+      entryPoint === 'WEB_SCRAPER' ||
+      entryPoint === 'INTEGRATIONS_HOME'
       ? entryPoint
       : 0
   );
