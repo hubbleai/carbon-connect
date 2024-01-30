@@ -344,8 +344,8 @@ export const CarbonProvider = ({
 
   const handleServiceOAuthFlow = async (service) => {
     try {
-      // const oauthWindow = window.open('', '_blank');
-      // oauthWindow.document.write('Loading...');
+      const oauthWindow = window.open('', '_blank');
+      oauthWindow.document.write('Loading...');
       const chunkSizeValue =
         service?.chunkSize || chunkSize || DEFAAULT_CHUNK_SIZE;
       const overlapSizeValue =
@@ -389,9 +389,9 @@ export const CarbonProvider = ({
         });
         const oAuthURLResponseData = await oAuthURLResponse.json();
 
-        // oauthWindow.location.href = oAuthURLResponseData.oauth_url;
+        oauthWindow.location.href = oAuthURLResponseData.oauth_url;
 
-        window.open(oAuthURLResponseData.oauth_url, '_blank');
+        // window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (err) {
       console.log(

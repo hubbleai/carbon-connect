@@ -53,6 +53,8 @@ function AdditionalStepForOauthUrl({
         toast.error('Please enter a subdomain.');
         return;
       }
+      const oauthWindow = window.open('', '_blank');
+      oauthWindow.document.write('Loading...');
       setIsLoading(true);
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
@@ -99,7 +101,9 @@ function AdditionalStepForOauthUrl({
         });
         setIsLoading(false);
         const oAuthURLResponseData = await response.json();
-        window.open(oAuthURLResponseData.oauth_url, '_blank');
+        oauthWindow.location.href = oAuthURLResponseData.oauth_url;
+
+        // window.open(oAuthURLResponseData.oauth_url, '_blank');
       }
     } catch (error) {
       toast.error('Error getting oAuth URL. Please try again.');
