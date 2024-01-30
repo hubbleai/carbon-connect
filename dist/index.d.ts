@@ -16,6 +16,7 @@ export declare enum IntegrationName {
     BOX = "BOX",
     CONFLUENCE = "CONFLUENCE",
     DROPBOX = "DROPBOX",
+    FRESHDESK = "FRESHDESK",
     GOOGLE_DRIVE = "GOOGLE_DRIVE",
     GMAIL = "GMAIL",
     INTERCOM = "INTERCOM",

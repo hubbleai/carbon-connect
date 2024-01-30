@@ -32,17 +32,13 @@ function S3Screen({
 
   useEffect(() => {
     setService(
-      processedIntegrations.find((integration) => integration.id === 'ZENDESK')
+      processedIntegrations.find((integration) => integration.id === 'S3')
     );
   }, [processedIntegrations]);
 
   const {
     accessToken,
     processedIntegrations,
-    topLevelChunkSize,
-    topLevelOverlapSize,
-    defaultChunkSize,
-    defaultOverlapSize,
     authenticatedFetch,
     secondaryBackgroundColor,
     secondaryTextColor,
@@ -112,13 +108,11 @@ function S3Screen({
     <div className="cc-flex cc-flex-col cc-h-[540px] cc-items-center cc-relative">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
         <div className="cc-w-full cc-flex cc-items-center cc-relative cc-justify-center">
-          {!entryPoint && (
-            <HiArrowLeft
-              onClick={() => setActiveStep(1)}
-              className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
-            />
-          )}
-          <FaAws className="cc-text-3xl cc-text-black" />
+          <HiArrowLeft
+            onClick={() => setActiveStep(entryPoint ? 0 : 1)}
+            className="cc-cursor-pointer cc-h-6 cc-w-6 cc-text-gray-400 cc-absolute cc-left-0"
+          />
+          {service?.icon}
         </div>
       </Dialog.Title>
 

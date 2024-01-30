@@ -15,6 +15,7 @@ import ZendeskScreen from './ZendeskScreen';
 import SharepointScreen from './SharepointScreen';
 import ConfluenceScreen from './ConfluenceScreen';
 import S3Screen from './S3Screen';
+import FreshdeskScreen from './FreshdeskScreen';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({ children }) => {
@@ -58,6 +59,9 @@ const IntegrationModal = ({ children }) => {
         const oldIntegration = oldIntegrations.find(
           (oldIntegration) => oldIntegration.id === newIntegration.id
         );
+
+        // if (newIntegration.data_source_type === 'GOOGLE_DRIVE')
+        //   console.log('Integration: ', newIntegration, oldIntegration);
 
         if (!oldIntegration) {
           const onSuccessObject = {
@@ -179,7 +183,9 @@ const IntegrationModal = ({ children }) => {
       }
 
       return response;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const fetchUserIntegrationsHelper = async () => {
@@ -366,6 +372,21 @@ const IntegrationModal = ({ children }) => {
 
           {activeStep === 'CONFLUENCE' && (
             <ConfluenceScreen
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
+              onSuccess={onSuccess}
+              onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
+            />
+          )}
+
+          {activeStep === 'FRESHDESK' && (
+            <FreshdeskScreen
               setActiveStep={setActiveStep}
               entryPoint={entryPoint}
               environment={environment}

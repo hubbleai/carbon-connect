@@ -4,7 +4,7 @@ import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
-import { SiMicrosoftsharepoint } from 'react-icons/si';
+import { SiZendesk } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -12,7 +12,7 @@ import { BASE_URL, onSuccessEvents } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 
-function SharepointScreen({
+function FreshdeskScreen({
   setActiveStep,
   entryPoint,
   environment,
@@ -22,9 +22,8 @@ function SharepointScreen({
   primaryBackgroundColor,
   primaryTextColor,
 }) {
-  const [microsoftTenant, setMicrosoftTenant] = useState('');
-  const [sharepointSiteName, setSharepointSiteName] = useState('');
-
+  const [freshdeskdomain, setFreshdeskdomain] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [submitButtonHoveredState, setSubmitButtonHoveredState] =
     useState(false);
 
@@ -34,7 +33,7 @@ function SharepointScreen({
   useEffect(() => {
     setService(
       processedIntegrations.find(
-        (integration) => integration.id === 'SHAREPOINT'
+        (integration) => integration.id === 'FRESHDESK'
       )
     );
   }, [processedIntegrations]);
@@ -56,24 +55,20 @@ function SharepointScreen({
 
   const fetchOauthURL = async () => {
     try {
-      if (!microsoftTenant) {
-        toast.error('Please enter a tenant value.');
+      if (!freshdeskdomain) {
+        toast.error('Please enter a subdomain.');
         return;
       }
-
-      if (!sharepointSiteName) {
-        toast.error('Please enter a sitename value.');
+      if (!apiKey) {
+        toast.error('Please enter an API key.');
         return;
       }
-
       setIsLoading(true);
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
-      const tenant = microsoftTenant;
-      const sitename = sharepointSiteName;
       const embeddingModelValue =
         service?.embeddingModel || embeddingModel || null;
       const generateSparseVectorsValue =
@@ -81,14 +76,22 @@ function SharepointScreen({
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
 
+      const domain = freshdeskdomain
+        .replace('https://www.', '')
+        .replace('http://www.', '')
+        .replace('https://', '')
+        .replace('http://', '')
+        .replace(/\/$/, '')
+        .trim();
+
       const requestObject = {
         tags: tags,
         service: service?.data_source_type,
         chunk_size: chunkSize,
         chunk_overlap: overlapSize,
         skip_embedding_generation: skipEmbeddingGeneration,
-        microsoft_tenant: tenant,
-        sharepoint_site_name: sitename,
+        domain: domain,
+        api_key: apiKey,
         embedding_model: embeddingModelValue,
         generate_sparse_vectors: generateSparseVectorsValue,
         prepend_filename_to_chunks: prependFilenameToChunksValue,
@@ -112,7 +115,7 @@ function SharepointScreen({
           data: null,
           action: onSuccessEvents.INITIATE,
           event: onSuccessEvents.INITIATE,
-          integration: 'SHAREPOINT',
+          integration: 'FRESHDESK',
         });
         setIsLoading(false);
         const oAuthURLResponseData = await response.json();
@@ -126,7 +129,7 @@ function SharepointScreen({
         data: [{ message: 'Error getting oAuth URL. Please try again.' }],
         action: onSuccessEvents.ERROR,
         event: onSuccessEvents.ERROR,
-        integration: 'SHAREPOINT',
+        integration: 'FRESHDESK',
       });
     }
   };
@@ -147,13 +150,13 @@ function SharepointScreen({
         <div className="py-4 cc-flex cc-grow cc-w-full">
           <div className="cc-flex cc-flex-col cc-justify-start cc-h-full cc-items-start cc-w-full cc-space-y-4">
             <span className="cc-text-sm">
-              Please enter the <strong>Sharepoint</strong>{' '}
+              Please enter the Freshdesk{' '}
               <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
-                tenant
+                domain
               </span>{' '}
-              and the{' '}
+              and{' '}
               <span className="cc-bg-gray-200 cc-px-1 cc-py-0.5 cc-rounded cc-font-mono cc-text-red-400">
-                site name
+                API key
               </span>{' '}
               of the account you wish to connect.
             </span>
@@ -163,9 +166,9 @@ function SharepointScreen({
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="Your Tenant Name"
-                value={microsoftTenant}
-                onChange={(e) => setMicrosoftTenant(e.target.value)}
+                placeholder="domain.freshdesk.com"
+                value={freshdeskdomain}
+                onChange={(e) => setFreshdeskdomain(e.target.value)}
               />
             </div>
             <div className="cc-flex cc-space-x-2 cc-items-center cc-w-full cc-h-10">
@@ -173,9 +176,9 @@ function SharepointScreen({
                 type="text"
                 className="cc-p-2 cc-flex-grow cc-text-gray-700 cc-text-sm cc-border-4 cc-border-gray-400"
                 style={{ borderRadius: '0.375rem' }}
-                placeholder="Your Site Name"
-                value={sharepointSiteName}
-                onChange={(e) => setSharepointSiteName(e.target.value)}
+                placeholder="API key"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
               />
             </div>
           </div>
@@ -189,8 +192,9 @@ function SharepointScreen({
         >
           <HiInformationCircle className="cc-w-8 cc-h-8" />
           <span className="text-xs">
-            By connecting to Sharepoint, you are providing us with access to
-            your Sharepoint profile and content.
+            By connecting to Freshdesk, you are providing us with access to your
+            Freshdesk account. We will use this access to import your data into
+            Carbon. We will not modify your data in any way.
           </span>
         </p>
 
@@ -218,4 +222,4 @@ function SharepointScreen({
   );
 }
 
-export default SharepointScreen;
+export default FreshdeskScreen;

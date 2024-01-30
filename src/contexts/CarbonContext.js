@@ -1,20 +1,24 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import { BsGoogle, BsCloudUpload, BsDropbox } from 'react-icons/bs';
-import { RxNotionLogo } from 'react-icons/rx';
-import { CgWebsite } from 'react-icons/cg';
-import { FaAws, FaIntercom } from 'react-icons/fa';
-import { FcGoogle } from 'react-icons/fc';
-import { GrOnedrive } from 'react-icons/gr';
-import { PiMicrosoftOutlookLogoFill } from 'react-icons/pi';
-import {
-  SiBox,
-  SiConfluence,
-  SiMicrosoftsharepoint,
-  SiZendesk,
-} from 'react-icons/si';
 import { BASE_URL, onSuccessEvents } from '../constants';
-import zoteroLogo from '../zotero.png';
+
+import BoxLogo from '../logos/box.svg';
+import ConfluenceLogo from '../logos/confluence.svg';
+import DropboxLogo from '../logos/dropbox.svg';
+import FreshdeskLogo from '../logos/freshdesk.svg';
+import GmailLogo from '../logos/gmail.svg';
+import GoogleDriveLogo from '../logos/google_drive.svg';
+import IntercomLogo from '../logos/intercom.svg';
+import NotionLogo from '../logos/notion.svg';
+import OneDriveLogo from '../logos/onedrive.svg';
+import OutlookLogo from '../logos/outlook.svg';
+import S3Logo from '../logos/s3.svg';
+import SharePointLogo from '../logos/sharepoint.svg';
+import FileUploadIcon from '../logos/file_upload.svg';
+import WebScraperIcon from '../logos/web_scraper.svg';
+// import SlackLogo from '../logos/slack.svg';
+import ZendeskLogo from '../logos/zendesk.svg';
+import ZoteroLogo from '../logos/zotero.svg';
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -26,7 +30,8 @@ const integrationsList = [
     name: 'Box',
     description: 'Lets your users connect their Box accounts to Carbon.',
     announcementName: 'to connect Box',
-    icon: <SiBox className="cc-w-7 cc-h-7" />,
+    icon: <img src={BoxLogo} className="cc-w-7 cc-h-7" />,
+    logo: BoxLogo,
     active: true,
     data_source_type: 'BOX',
     requiresOAuth: true,
@@ -37,7 +42,8 @@ const integrationsList = [
     name: 'Confluence',
     description: 'Lets your users connect their Confluence accounts to Carbon.',
     announcementName: 'to connect Confluence',
-    icon: <SiConfluence className="cc-w-7 cc-h-7" />,
+    icon: <img src={ConfluenceLogo} className="cc-w-7 cc-h-7" />,
+    logo: ConfluenceLogo,
     active: true,
     data_source_type: 'CONFLUENCE',
     requiresOAuth: true,
@@ -49,10 +55,24 @@ const integrationsList = [
     name: 'Dropbox',
     description: 'Lets your users connect their Dropbox accounts to Carbon.',
     announcementName: 'to connect Dropbox',
-    icon: <BsDropbox className="cc-w-7 cc-h-7" />,
+    icon: <img src={DropboxLogo} className="cc-w-7 cc-h-7" />,
+    logo: DropboxLogo,
     active: true,
     data_source_type: 'DROPBOX',
     requiresOAuth: true,
+  },
+  {
+    id: 'FRESHDESK',
+    subpath: 'freshdesk',
+    name: 'Freshdesk',
+    description: 'Lets your users connect their Freshdesk accounts to Carbon.',
+    announcementName: 'to connect Freshdesk',
+    icon: <img src={FreshdeskLogo} className="cc-w-7 cc-h-7" />,
+    logo: FreshdeskLogo,
+    active: true,
+    data_source_type: 'FRESHDESK',
+    requiresOAuth: true,
+    multiStep: true,
   },
   {
     id: 'LOCAL_FILES',
@@ -60,7 +80,8 @@ const integrationsList = [
     name: 'File Upload',
     description: 'Lets your users upload local files to Carbon.',
     announcementName: 'to upload local files',
-    icon: <BsCloudUpload className="cc-w-7 cc-h-7" />,
+    icon: <img src={FileUploadIcon} className="cc-w-7 cc-h-7" />,
+    logo: FileUploadIcon,
     active: true,
     data_source_type: 'LOCAL_FILES',
     requiresOAuth: false,
@@ -71,7 +92,8 @@ const integrationsList = [
     name: 'Gmail',
     description: 'Lets your users connect their Gmail to Carbon.',
     announcementName: 'to connect Gmail',
-    icon: <FcGoogle className="cc-w-7 cc-h-7" />,
+    icon: <img src={GmailLogo} className="cc-w-7 cc-h-7" />,
+    logo: GmailLogo,
     active: true,
     data_source_type: 'GMAIL',
     requiresOAuth: true,
@@ -83,7 +105,8 @@ const integrationsList = [
     name: 'Google Drive',
     description: 'Lets your users connect their Google Drive to Carbon.',
     announcementName: 'to connect Google Drive',
-    icon: <FcGoogle className="cc-w-7 cc-h-7" />,
+    icon: <img src={GoogleDriveLogo} className="cc-w-7 cc-h-7" />,
+    logo: GoogleDriveLogo,
     active: true,
     data_source_type: 'GOOGLE_DRIVE',
     requiresOAuth: true,
@@ -95,7 +118,8 @@ const integrationsList = [
     name: 'Intercom',
     description: 'Lets your users connect their Intercom to Carbon.',
     announcementName: 'to connect Intercom',
-    icon: <FaIntercom className="cc-w-7 cc-h-7" />,
+    icon: <img src={IntercomLogo} className="cc-w-7 cc-h-7" />,
+    logo: IntercomLogo,
     active: true,
     data_source_type: 'INTERCOM',
     requiresOAuth: true,
@@ -106,7 +130,8 @@ const integrationsList = [
     name: 'Notion',
     description: 'Lets your users connect their Notion accounts to Carbon.',
     announcementName: 'to connect Notion',
-    icon: <RxNotionLogo className="cc-w-7 cc-h-7" />,
+    icon: <img src={NotionLogo} className="cc-w-7 cc-h-7" />,
+    logo: NotionLogo,
     active: true,
     data_source_type: 'NOTION',
     requiresOAuth: true,
@@ -117,7 +142,8 @@ const integrationsList = [
     name: 'OneDrive',
     description: 'Lets your users connect their OneDrive accounts to Carbon.',
     announcementName: 'to connect OneDrive',
-    icon: <GrOnedrive className="cc-w-7 cc-h-7" />,
+    icon: <img src={OneDriveLogo} className="cc-w-7 cc-h-7" />,
+    logo: OneDriveLogo,
     active: true,
     data_source_type: 'ONEDRIVE',
     requiresOAuth: true,
@@ -128,7 +154,8 @@ const integrationsList = [
     name: 'Outlook',
     description: 'Lets your users connect their Outlook accounts to Carbon.',
     announcementName: 'to connect Outlook',
-    icon: <PiMicrosoftOutlookLogoFill className="cc-w-7 cc-h-7" />,
+    icon: <img src={OutlookLogo} className="cc-w-7 cc-h-7" />,
+    logo: OutlookLogo,
     active: true,
     data_source_type: 'OUTLOOK',
     requiresOAuth: true,
@@ -139,7 +166,8 @@ const integrationsList = [
     name: 'S3',
     description: 'Lets your users connect their data on S3 to Carbon.',
     announcementName: 'to connect S3',
-    icon: <FaAws className="cc-w-7 cc-h-7" />,
+    icon: <img src={S3Logo} className="cc-w-7 cc-h-7" />,
+    logo: S3Logo,
     active: true,
     data_source_type: 'S3',
     requiresOAuth: false,
@@ -151,7 +179,8 @@ const integrationsList = [
     name: 'Sharepoint',
     description: 'Lets your users connect their Sharepoint accounts to Carbon.',
     announcementName: 'to connect Sharepoint',
-    icon: <SiMicrosoftsharepoint className="cc-w-7 cc-h-7" />,
+    icon: <img src={SharePointLogo} className="cc-w-7 cc-h-7" />,
+    logo: SharePointLogo,
     active: true,
     data_source_type: 'SHAREPOINT',
     requiresOAuth: true,
@@ -163,7 +192,8 @@ const integrationsList = [
     name: 'Web Scraper',
     description: 'Lets your users Scrape websites to Carbon.',
     announcementName: 'for Web Scraping',
-    icon: <CgWebsite className="cc-w-7 cc-h-7" />,
+    icon: <img src={WebScraperIcon} className="cc-w-7 cc-h-7" />,
+    logo: WebScraperIcon,
     active: true,
     data_source_type: 'WEB_SCRAPER',
     requiresOAuth: false,
@@ -174,7 +204,8 @@ const integrationsList = [
     name: 'Zendesk',
     description: 'Lets your users connect their Zendesk accounts to Carbon.',
     announcementName: 'to connect Zendesk',
-    icon: <SiZendesk className="cc-w-7 cc-h-7" />,
+    icon: <img src={ZendeskLogo} className="cc-w-7 cc-h-7" />,
+    logo: ZendeskLogo,
     active: true,
     data_source_type: 'ZENDESK',
     requiresOAuth: true,
@@ -186,7 +217,8 @@ const integrationsList = [
     name: 'Zotero',
     description: 'Lets your users connect their Zotero accounts to Carbon.',
     announcementName: 'to connect Zotero',
-    icon: <img src={zoteroLogo} className="cc-w-7 cc-h-7" />, // <SiZotero className="cc-w-7 cc-h-7" />,
+    icon: <img src={ZoteroLogo} className="cc-w-7 cc-h-7" />,
+    logo: ZoteroLogo,
     active: true,
     data_source_type: 'ZOTERO',
     requiresOAuth: true,
@@ -309,9 +341,6 @@ export const CarbonProvider = ({
       console.log('[CarbonContext.js: 235] Error in fetchTokens: ', err);
     }
   };
-  const generateOAuthURLs = async () => {
-    console.log('generateOAuthURLs');
-  };
 
   const handleServiceOAuthFlow = async (service) => {
     try {
@@ -371,10 +400,6 @@ export const CarbonProvider = ({
       );
     }
   };
-
-  useEffect(() => {
-    generateOAuthURLs();
-  }, [accessToken]);
 
   useEffect(() => {
     let temp = [];
