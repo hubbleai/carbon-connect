@@ -4,7 +4,6 @@ import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
-import { SiMicrosoftsharepoint } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';

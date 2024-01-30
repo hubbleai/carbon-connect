@@ -86,7 +86,7 @@ function S3Screen({
           data: null,
           action: onSuccessEvents.ADD,
           event: onSuccessEvents.ADD,
-          integration: 'ZENDESK',
+          integration: 'S3',
         });
         setIsLoading(false);
         toast.info('S3 sync initiated.');

@@ -4,7 +4,6 @@ import { darkenColor } from '../utils/helpers';
 
 import * as Dialog from '@radix-ui/react-dialog';
 import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
-import { SiZendesk } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';
@@ -53,7 +52,7 @@ function FreshdeskScreen({
     prependFilenameToChunks,
   } = useCarbon();
 
-  const fetchOauthURL = async () => {
+  const connectFreshdeskAccount = async () => {
     try {
       if (!freshdeskdomain) {
         toast.error('Please enter a subdomain.');
@@ -63,7 +62,15 @@ function FreshdeskScreen({
         toast.error('Please enter an API key.');
         return;
       }
+      onSuccess({
+        status: 200,
+        data: null,
+        action: onSuccessEvents.INITIATE,
+        event: onSuccessEvents.INITIATE,
+        integration: 'FRSHDESK',
+      });
       setIsLoading(true);
+
       const chunkSize =
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
@@ -75,30 +82,29 @@ function FreshdeskScreen({
         service?.generateSparseVectors || generateSparseVectors || false;
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
-
       const domain = freshdeskdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
         .replace('https://', '')
         .replace('http://', '')
+        // .replace('.freshdesk.com', '')
         .replace(/\/$/, '')
         .trim();
 
       const requestObject = {
+        domain: domain,
+        api_key: apiKey,
         tags: tags,
-        service: service?.data_source_type,
         chunk_size: chunkSize,
         chunk_overlap: overlapSize,
         skip_embedding_generation: skipEmbeddingGeneration,
-        domain: domain,
-        api_key: apiKey,
         embedding_model: embeddingModelValue,
         generate_sparse_vectors: generateSparseVectorsValue,
         prepend_filename_to_chunks: prependFilenameToChunksValue,
       };
 
       const response = await authenticatedFetch(
-        `${BASE_URL[environment]}/integrations/oauth_url`,
+        `${BASE_URL[environment]}/integrations/freshdesk`,
         {
           method: 'POST',
           headers: {
@@ -113,20 +119,21 @@ function FreshdeskScreen({
         onSuccess({
           status: 200,
           data: null,
-          action: onSuccessEvents.INITIATE,
-          event: onSuccessEvents.INITIATE,
+          action: onSuccessEvents.ADD,
+          event: onSuccessEvents.ADD,
           integration: 'FRESHDESK',
         });
         setIsLoading(false);
-        const oAuthURLResponseData = await response.json();
-        window.open(oAuthURLResponseData.oauth_url, '_blank');
+        toast.info('Freshdesk sync initiated.');
       }
     } catch (error) {
-      toast.error('Error getting oAuth URL. Please try again.');
+      toast.error('Error connecting your Freshdesk. Please try again.');
       setIsLoading(false);
       onError({
         status: 400,
-        data: [{ message: 'Error getting oAuth URL. Please try again.' }],
+        data: [
+          { message: 'Error connecting your Freshdesk. Please try again.' },
+        ],
         action: onSuccessEvents.ERROR,
         event: onSuccessEvents.ERROR,
         integration: 'FRESHDESK',
@@ -206,7 +213,7 @@ function FreshdeskScreen({
               : primaryBackgroundColor,
             color: primaryTextColor,
           }}
-          onClick={fetchOauthURL}
+          onClick={connectFreshdeskAccount}
           onMouseEnter={() => setSubmitButtonHoveredState(true)}
           onMouseLeave={() => setSubmitButtonHoveredState(false)}
         >
