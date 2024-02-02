@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import './index.css';
-import { EmbeddingModel } from 'carbon-connect-js/dist/types';
+import React, { ReactNode } from "react";
+import "./index.css";
+import { EmbeddingModel } from "carbon-connect-js/dist/types";
 export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
@@ -69,6 +69,7 @@ export interface WebScraperIntegration extends BaseIntegration {
     maxPagesToScrape?: number;
     skipHTMLTags?: string[];
     skipCSSClasses?: string[];
+    cssSelectorsToSkip?: string[];
 }
 export type Integration = LocalFilesIntegration | WebScraperIntegration | BaseIntegration;
 export interface LocalFile {
