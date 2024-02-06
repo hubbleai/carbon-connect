@@ -83,7 +83,6 @@ function WebScraper({
     generateSparseVectors,
     prependFilenameToChunks,
   } = useCarbon();
-  console.log(service)
   const submitScrapeRequest = async () => {
     try {
       if (isLoading === true) {
