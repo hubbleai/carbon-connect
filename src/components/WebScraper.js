@@ -83,7 +83,7 @@ function WebScraper({
     generateSparseVectors,
     prependFilenameToChunks,
   } = useCarbon();
-
+  console.log(service)
   const submitScrapeRequest = async () => {
     try {
       if (isLoading === true) {
@@ -110,7 +110,7 @@ function WebScraper({
 
       const htmlTagsToSkip = service?.htmlTagsToSkip || [];
       const cssClassesToSkip = service?.cssClassesToSkip || [];
-      const cssSelectorsToSkip = service.cssSelectorsToSkip || [];
+      const cssSelectorsToSkip = service?.cssSelectorsToSkip || [];
 
       setIsLoading(true);
       const urlPattern = new RegExp(
@@ -168,7 +168,7 @@ function WebScraper({
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
-            css_selectros_to_skip: cssSelectorsToSkip
+            css_selectors_to_skip: cssSelectorsToSkip
           }));
 
       const uploadResponse = await authenticatedFetch(
@@ -288,8 +288,8 @@ function WebScraper({
             <div
               onClick={() => setActiveTab('webpages')}
               className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${activeTab === 'webpages'
-                  ? 'cc-border-b-2 cc-font-bold'
-                  : 'cc-border-b cc-font-normal'
+                ? 'cc-border-b-2 cc-font-bold'
+                : 'cc-border-b cc-font-normal'
                 } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
                 color:
@@ -302,8 +302,8 @@ function WebScraper({
             <div
               onClick={() => setActiveTab('sitemap')}
               className={`cc-flex cc-py-2 cc-px-4 cc-w-1/2 cc-rounded-t-md cc-text-center cc-cursor-pointer ${activeTab === 'sitemap'
-                  ? 'cc-border-b-2 cc-font-bold'
-                  : 'cc-border-b cc-font-normal'
+                ? 'cc-border-b-2 cc-font-bold'
+                : 'cc-border-b cc-font-normal'
                 } cc-items-center cc-space-x-2 cc-justify-center`}
               style={{
                 color:
