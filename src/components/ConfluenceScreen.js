@@ -49,6 +49,7 @@ function ConfluenceScreen({
     embeddingModel,
     generateSparseVectors,
     prependFilenameToChunks,
+    maxItemsPerChunk
   } = useCarbon();
 
   const fetchOauthURL = async () => {
@@ -71,6 +72,7 @@ function ConfluenceScreen({
         service?.generateSparseVectors || false;
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
+      const maxItemsPerChunkValue = service?.maxItemsPerChunk || maxItemsPerChunk || null;
       const subdomain = confluenceSubdomain
         .replace('https://www.', '')
         .replace('http://www.', '')
@@ -90,6 +92,7 @@ function ConfluenceScreen({
         embedding_model: embeddingModelValue,
         prepend_filename_to_chunks: prependFilenameToChunksValue,
         generate_sparse_vectors: generateSparseVectorsValue,
+        ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
       };
 
       const response = await authenticatedFetch(
