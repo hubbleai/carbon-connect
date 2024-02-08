@@ -145,9 +145,11 @@ function FileUpload({ setActiveStep }) {
     setShowUI(true);
   }, [filesConfig]);
 
+  const multipleFilesAllowed = filesConfig.allowMultipleFiles ?? allowMultipleFiles;
+
   const onFilesSelected = (files) => {
     try {
-      if (!allowMultipleFiles) setFiles([files]);
+      if (!multipleFilesAllowed) setFiles([files]);
       else {
         if (files.length > allowedMaxFilesCount) {
           toast.error(
@@ -371,7 +373,7 @@ function FileUpload({ setActiveStep }) {
       );
 
       if (failedUploads.length === 0) {
-        if (allowMultipleFiles)
+        if (multipleFilesAllowed)
           toast.success(
             `Successfully uploaded ${successfulUploads.length} of ${files.length} file(s)`
           );
@@ -493,7 +495,7 @@ function FileUpload({ setActiveStep }) {
               <span>File Picker</span>
             </div>
           </button>
-          {allowMultipleFiles && (
+          {multipleFilesAllowed && (
             <button
               className="cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2"
               style={{
@@ -517,8 +519,8 @@ function FileUpload({ setActiveStep }) {
         <>
           {!syncResponse && (
             <div className="cc-w-full cc-h-full cc-flex-col cc-flex cc-space-y-4 cc-justify-between">
-              {((!allowMultipleFiles && files.length === 0) ||
-                allowMultipleFiles) && (
+              {((!multipleFilesAllowed && files.length === 0) ||
+                multipleFilesAllowed) && (
                   <div className="cc-flex cc-flex-col">
                     {/* <div className="cc-flex cc-w-full cc-justify-between cc-text-xs">
                     <p className="cc-text-gray-600">
@@ -535,7 +537,7 @@ function FileUpload({ setActiveStep }) {
                       {filePickerType === 'FILES' ? (
                         <div className="cc-w-full">
                           <FileUploader
-                            multiple={allowMultipleFiles}
+                            multiple={multipleFilesAllowed}
                             handleChange={onFilesSelected}
                             name="file"
                             types={
@@ -630,7 +632,7 @@ function FileUpload({ setActiveStep }) {
                               <div>
                                 <CiFileOn className="cc-w-6 cc-h-6 cc-mx-auto cc-mb-2" />
                                 <p className="cc-text-[#484848]">
-                                  {`Drag and drop ${allowMultipleFiles
+                                  {`Drag and drop ${multipleFilesAllowed
                                     ? `up to ${allowedMaxFilesCount - files.length
                                     } files`
                                     : 'file'
@@ -665,11 +667,11 @@ function FileUpload({ setActiveStep }) {
                         type="file"
                         ref={fileInputRef}
                         webkitdirectory="true"
-                        multiple={allowMultipleFiles}
+                        multiple={multipleFilesAllowed}
                         onChange={handleFolderSelection}
                         className="cc-hidden"
                       />
-                      {/* {allowMultipleFiles &&
+                      {/* {multipleFilesAllowed &&
                       ['BOTH', 'FOLDERS'].includes(
                         filesConfig.FilePickerMode
                       ) && (
@@ -720,7 +722,7 @@ function FileUpload({ setActiveStep }) {
                       </div>
                     ))}
                   </div>
-                  {!allowMultipleFiles && <div className="cc-h-28"></div>}
+                  {!multipleFilesAllowed && <div className="cc-h-28"></div>}
                   <button
                     className={`cc-w-full cc-h-12 cc-flex cc-flex-row cc-items-center cc-justify-center cc-rounded-md cc-cursor-pointer cc-space-x-2`}
                     style={{
