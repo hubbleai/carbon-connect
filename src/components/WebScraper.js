@@ -84,7 +84,6 @@ function WebScraper({
     prependFilenameToChunks,
     maxItemsPerChunk
   } = useCarbon();
-
   const submitScrapeRequest = async () => {
     try {
       if (isLoading === true) {
@@ -112,6 +111,7 @@ function WebScraper({
 
       const htmlTagsToSkip = service?.htmlTagsToSkip || [];
       const cssClassesToSkip = service?.cssClassesToSkip || [];
+      const cssSelectorsToSkip = service?.cssSelectorsToSkip || [];
 
       setIsLoading(true);
       const urlPattern = new RegExp(
@@ -154,6 +154,7 @@ function WebScraper({
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
+            css_selectros_to_skip: cssSelectorsToSkip,
             ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
           }))
           : validUrls.map((url) => ({
@@ -169,6 +170,7 @@ function WebScraper({
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
+            css_selectors_to_skip: cssSelectorsToSkip,
             ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
           }));
 

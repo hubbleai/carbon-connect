@@ -84,6 +84,7 @@ export interface WebScraperIntegration extends BaseIntegration {
   maxPagesToScrape?: number;
   skipHTMLTags?: string[];
   skipCSSClasses?: string[];
+  cssSelectorsToSkip?: string[];
 }
 
 export type Integration =
