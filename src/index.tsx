@@ -1,51 +1,51 @@
-import React, { useState, ReactNode } from 'react';
-import './index.css';
+import React, { useState, ReactNode } from "react";
+import "./index.css";
 
 // @ts-ignore
-import IntegrationModal from './components/IntegrationModal';
+import IntegrationModal from "./components/IntegrationModal";
 
 // @ts-ignore
-import { CarbonProvider } from './contexts/CarbonContext';
-import { EmbeddingModel } from 'carbon-connect-js/dist/types';
+import { CarbonProvider } from "./contexts/CarbonContext";
+import { EmbeddingModel } from "carbon-connect-js/dist/types";
 
 // Enums
 export enum ActionType {
-  INITIATE = 'INITIATE',
-  ADD = 'ADD',
-  UPDATE = 'UPDATE',
-  CANCEL = 'CANCEL',
+  INITIATE = "INITIATE",
+  ADD = "ADD",
+  UPDATE = "UPDATE",
+  CANCEL = "CANCEL",
 }
 
 export enum FilePickerMode {
-  FILES = 'FILES',
-  FOLDERS = 'FOLDERS',
-  BOTH = 'BOTH',
+  FILES = "FILES",
+  FOLDERS = "FOLDERS",
+  BOTH = "BOTH",
 }
 
 export enum IntegrationName {
-  BOX = 'BOX',
-  CONFLUENCE = 'CONFLUENCE',
-  DROPBOX = 'DROPBOX',
-  FRESHDESK = 'FRESHDESK',
-  GOOGLE_DRIVE = 'GOOGLE_DRIVE',
-  GMAIL = 'GMAIL',
-  INTERCOM = 'INTERCOM',
-  LOCAL_FILES = 'LOCAL_FILES',
-  NOTION = 'NOTION',
-  ONEDRIVE = 'ONEDRIVE',
-  OUTLOOK = 'OUTLOOK',
-  S3 = 'S3',
-  SHAREPOINT = 'SHAREPOINT',
-  WEB_SCRAPER = 'WEB_SCRAPER',
-  ZENDESK = 'ZENDESK',
-  ZOTERO = 'ZOTERO',
+  BOX = "BOX",
+  CONFLUENCE = "CONFLUENCE",
+  DROPBOX = "DROPBOX",
+  FRESHDESK = "FRESHDESK",
+  GOOGLE_DRIVE = "GOOGLE_DRIVE",
+  GMAIL = "GMAIL",
+  INTERCOM = "INTERCOM",
+  LOCAL_FILES = "LOCAL_FILES",
+  NOTION = "NOTION",
+  ONEDRIVE = "ONEDRIVE",
+  OUTLOOK = "OUTLOOK",
+  S3 = "S3",
+  SHAREPOINT = "SHAREPOINT",
+  WEB_SCRAPER = "WEB_SCRAPER",
+  ZENDESK = "ZENDESK",
+  ZOTERO = "ZOTERO",
 }
 
 export enum SyncStatus {
-  READY = 'READY',
-  QUEUED_FOR_SYNCING = 'QUEUED_FOR_SYNCING',
-  SYNCING = 'SYNCING',
-  SYNC_ERROR = 'SYNC_ERROR',
+  READY = "READY",
+  QUEUED_FOR_SYNCING = "QUEUED_FOR_SYNCING",
+  SYNCING = "SYNCING",
+  SYNC_ERROR = "SYNC_ERROR",
 }
 
 export interface FileType {
@@ -56,6 +56,7 @@ export interface FileType {
   useOcr?: boolean;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 export interface BaseIntegration {
   id: IntegrationName;
@@ -66,6 +67,7 @@ export interface BaseIntegration {
   enableAutoSync?: boolean;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
   maxFileSize: number;
@@ -82,6 +84,7 @@ export interface WebScraperIntegration extends BaseIntegration {
   maxPagesToScrape?: number;
   skipHTMLTags?: string[];
   skipCSSClasses?: string[];
+  cssSelectorsToSkip?: string[];
 }
 
 export type Integration =
@@ -186,6 +189,7 @@ export interface CarbonConnectProps {
   embeddingModel?: EmbeddingModel;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -197,55 +201,56 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   onError = () => {},
   tags = [],
   maxFileSize = 20000000,
-  environment = 'PRODUCTION',
+  environment = "PRODUCTION",
   entryPoint = null,
   enabledIntegrations = [
     {
-      id: 'LOCAL_FILES',
+      id: "LOCAL_FILES",
       chunkSize: 100,
       overlapSize: 10,
       maxFileSize: 20000000,
       allowMultipleFiles: true,
       skipEmbeddingGeneration: false,
       setPageAsBoundary: false,
-      filePickerMode: 'FILES',
+      filePickerMode: "FILES",
       allowedFileTypes: [
         {
-          extension: 'csv',
+          extension: "csv",
         },
         {
-          extension: 'txt',
+          extension: "txt",
         },
         {
-          extension: 'pdf',
+          extension: "pdf",
         },
       ],
     },
   ],
-  primaryBackgroundColor = '#000000',
-  primaryTextColor = '#FFFFFF',
-  secondaryBackgroundColor = '#FFFFFF',
-  secondaryTextColor = '#000000',
+  primaryBackgroundColor = "#000000",
+  primaryTextColor = "#FFFFFF",
+  secondaryBackgroundColor = "#FFFFFF",
+  secondaryTextColor = "#000000",
   allowMultipleFiles = false,
   open = false,
   setOpen = null,
   chunkSize = 1500,
   overlapSize = 20,
-  tosURL = 'https://carbon.ai/terms',
-  privacyPolicyURL = 'https://carbon.ai/privacy',
+  tosURL = "https://carbon.ai/terms",
+  privacyPolicyURL = "https://carbon.ai/privacy",
   alwaysOpen = false,
   navigateBackURL = null,
-  backButtonText = 'Go Back',
+  backButtonText = "Go Back",
   zIndex = 1000,
   enableToasts = true,
-  embeddingModel = 'OPENAI',
+  embeddingModel = "OPENAI",
   generateSparseVectors = false,
   prependFilenameToChunks = false,
+  maxItemsPerChunk = null,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
-    entryPoint === 'LOCAL_FILES' ||
-      entryPoint === 'WEB_SCRAPER' ||
-      entryPoint === 'INTEGRATIONS_HOME'
+    entryPoint === "LOCAL_FILES" ||
+      entryPoint === "WEB_SCRAPER" ||
+      entryPoint === "INTEGRATIONS_HOME"
       ? entryPoint
       : 0
   );
@@ -283,6 +288,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       embeddingModel={embeddingModel}
       generateSparseVectors={generateSparseVectors}
       prependFilenameToChunks={prependFilenameToChunks}
+      maxItemsPerChunk={maxItemsPerChunk}
     >
       <IntegrationModal>{children}</IntegrationModal>
     </CarbonProvider>
