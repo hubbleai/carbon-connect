@@ -44,6 +44,7 @@ export interface FileType {
     useOcr?: boolean;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 export interface BaseIntegration {
     id: IntegrationName;
@@ -54,6 +55,7 @@ export interface BaseIntegration {
     enableAutoSync?: boolean;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
@@ -161,6 +163,7 @@ export interface CarbonConnectProps {
     embeddingModel?: EmbeddingModel;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

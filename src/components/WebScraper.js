@@ -82,6 +82,7 @@ function WebScraper({
     embeddingModel,
     generateSparseVectors,
     prependFilenameToChunks,
+    maxItemsPerChunk
   } = useCarbon();
   const submitScrapeRequest = async () => {
     try {
@@ -106,6 +107,7 @@ function WebScraper({
         service?.generateSparseVectors || generateSparseVectors || false;
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
+      const maxItemsPerChunkValue = service?.maxItemsPerChunk || maxItemsPerChunk || null;
 
       const htmlTagsToSkip = service?.htmlTagsToSkip || [];
       const cssClassesToSkip = service?.cssClassesToSkip || [];
@@ -152,7 +154,8 @@ function WebScraper({
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
-            css_selectros_to_skip: cssSelectorsToSkip
+            css_selectros_to_skip: cssSelectorsToSkip,
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
           }))
           : validUrls.map((url) => ({
             url: url,
@@ -167,7 +170,8 @@ function WebScraper({
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
-            css_selectors_to_skip: cssSelectorsToSkip
+            css_selectors_to_skip: cssSelectorsToSkip,
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
           }));
 
       const uploadResponse = await authenticatedFetch(

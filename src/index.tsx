@@ -56,6 +56,7 @@ export interface FileType {
   useOcr?: boolean;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 export interface BaseIntegration {
   id: IntegrationName;
@@ -66,6 +67,7 @@ export interface BaseIntegration {
   enableAutoSync?: boolean;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
   maxFileSize: number;
@@ -187,6 +189,7 @@ export interface CarbonConnectProps {
   embeddingModel?: EmbeddingModel;
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
+  maxItemsPerChunk?: number;
 }
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
@@ -242,6 +245,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
   embeddingModel = "OPENAI",
   generateSparseVectors = false,
   prependFilenameToChunks = false,
+  maxItemsPerChunk = null,
 }) => {
   const [activeStep, setActiveStep] = useState<string | number>(
     entryPoint === "LOCAL_FILES" ||
@@ -284,6 +288,7 @@ const CarbonConnect: React.FC<CarbonConnectProps> = ({
       embeddingModel={embeddingModel}
       generateSparseVectors={generateSparseVectors}
       prependFilenameToChunks={prependFilenameToChunks}
+      maxItemsPerChunk={maxItemsPerChunk}
     >
       <IntegrationModal>{children}</IntegrationModal>
     </CarbonProvider>
