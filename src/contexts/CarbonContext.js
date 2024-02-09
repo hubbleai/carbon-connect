@@ -262,6 +262,7 @@ export const CarbonProvider = ({
   embeddingModel,
   generateSparseVectors,
   prependFilenameToChunks,
+  maxItemsPerChunk
 }) => {
   const [showModal, setShowModal] = useState(open);
   const [loading, setLoading] = useState(false);
@@ -357,6 +358,8 @@ export const CarbonProvider = ({
         service?.generateSparseVectors || generateSparseVectors || false;
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
+      const maxItemsPerChunkValue =
+        service?.maxItemsPerChunk || maxItemsPerChunk || false;
 
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
@@ -375,6 +378,7 @@ export const CarbonProvider = ({
             embedding_model: embeddingModelValue,
             generate_sparse_vectors: generateSparseVectorsValue,
             prepend_filename_to_chunks: prependFilenameToChunksValue,
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
           }),
         }
       );
@@ -483,6 +487,7 @@ export const CarbonProvider = ({
     embeddingModel,
     generateSparseVectors,
     prependFilenameToChunks,
+    maxItemsPerChunk
   };
 
   return (

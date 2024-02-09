@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import './index.css';
-import { EmbeddingModel } from 'carbon-connect-js/dist/types';
+import React, { ReactNode } from "react";
+import "./index.css";
+import { EmbeddingModel } from "carbon-connect-js/dist/types";
 export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
@@ -44,6 +44,7 @@ export interface FileType {
     useOcr?: boolean;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 export interface BaseIntegration {
     id: IntegrationName;
@@ -54,6 +55,7 @@ export interface BaseIntegration {
     enableAutoSync?: boolean;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
     maxFileSize: number;
@@ -160,6 +162,7 @@ export interface CarbonConnectProps {
     embeddingModel?: EmbeddingModel;
     generateSparseVectors?: boolean;
     prependFilenameToChunks?: boolean;
+    maxItemsPerChunk?: number;
 }
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };
