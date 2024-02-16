@@ -108,6 +108,8 @@ function WebScraper({
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
       const maxItemsPerChunkValue = service?.maxItemsPerChunk || maxItemsPerChunk || null;
+      const embeddingModelValue = service?.embeddingModel || embeddingModel || null;
+
 
       const htmlTagsToSkip = service?.htmlTagsToSkip || [];
       const cssClassesToSkip = service?.cssClassesToSkip || [];
@@ -155,7 +157,8 @@ function WebScraper({
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
             css_selectros_to_skip: cssSelectorsToSkip,
-            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
+            ...(embeddingModelValue && { embedding_model: embeddingModelValue })
           }))
           : validUrls.map((url) => ({
             url: url,
@@ -171,7 +174,8 @@ function WebScraper({
             html_tags_to_skip: htmlTagsToSkip,
             css_classes_to_skip: cssClassesToSkip,
             css_selectors_to_skip: cssSelectorsToSkip,
-            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
+            ...(embeddingModelValue && { embedding_model: embeddingModelValue })
           }));
 
       const uploadResponse = await authenticatedFetch(
