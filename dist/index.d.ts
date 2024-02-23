@@ -1,6 +1,6 @@
-import React, { ReactNode } from 'react';
-import './index.css';
-import { EmbeddingModel } from 'carbon-connect-js/dist/types';
+import React, { ReactNode } from "react";
+import "./index.css";
+import { EmbeddingModel } from "carbon-connect-js/dist/types";
 export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
