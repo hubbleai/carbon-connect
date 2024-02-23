@@ -98,7 +98,7 @@ function WebScraper({
         service?.chunkSize || topLevelChunkSize || defaultChunkSize;
       const overlapSize =
         service?.overlapSize || topLevelOverlapSize || defaultOverlapSize;
-      const recursionDepth = service?.recursionDepth || DEFAULT_RECURSION_DEPTH;
+      const recursionDepth = service?.recursionDepth ?? DEFAULT_RECURSION_DEPTH;
       const maxPagesToScrape =
         service?.maxPagesToScrape || DEFAULT_MAX_PAGES_TO_SCRAPE;
       const skipEmbeddingGeneration = service?.skipEmbeddingGeneration || false;
