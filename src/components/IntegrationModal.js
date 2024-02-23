@@ -16,6 +16,7 @@ import SharepointScreen from './SharepointScreen';
 import ConfluenceScreen from './ConfluenceScreen';
 import S3Screen from './S3Screen';
 import FreshdeskScreen from './FreshdeskScreen';
+import GitbookScreen from './GitbookScreen';
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({ children }) => {
@@ -232,7 +233,7 @@ const IntegrationModal = ({ children }) => {
   const fetchUserIntegrations = async () => {
     try {
       await fetchUserIntegrationsHelper();
-    } catch (error) {}
+    } catch (error) { }
   };
 
   useEffect(() => {
@@ -399,6 +400,23 @@ const IntegrationModal = ({ children }) => {
               secondaryTextColor={secondaryTextColor}
             />
           )}
+
+          {
+            activeStep === 'GITBOOK' && (
+              <GitbookScreen
+                setActiveStep={setActiveStep}
+                entryPoint={entryPoint}
+                environment={environment}
+                tags={tags}
+                onSuccess={onSuccess}
+                onError={onError}
+                primaryBackgroundColor={primaryBackgroundColor}
+                primaryTextColor={primaryTextColor}
+                secondaryBackgroundColor={secondaryBackgroundColor}
+                secondaryTextColor={secondaryTextColor}
+              />
+            )
+          }
         </Dialog.Content>
 
         {enableToasts && (

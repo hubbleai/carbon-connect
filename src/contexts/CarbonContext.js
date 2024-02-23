@@ -19,6 +19,7 @@ import WebScraperIcon from '../logos/web_scraper.svg';
 // import SlackLogo from '../logos/slack.svg';
 import ZendeskLogo from '../logos/zendesk.svg';
 import ZoteroLogo from '../logos/zotero.svg';
+import GitbookLogo from '../logos/gitbook.svg'
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -85,6 +86,19 @@ const integrationsList = [
     active: true,
     data_source_type: 'LOCAL_FILES',
     requiresOAuth: false,
+  },
+  {
+    id: 'GITBOOK',
+    subpath: 'gitbook',
+    name: 'Gitbook',
+    description: 'Lets your users connect their Gitbook accounts to Carbon.',
+    announcementName: 'to connect Gitbook',
+    icon: <img src={GitbookLogo} className="cc-w-7 cc-h-7" />,
+    logo: GitbookLogo,
+    active: true,
+    data_source_type: 'GITBOOK',
+    requiresOAuth: false,
+    multiStep: true,
   },
   {
     id: 'GMAIL',
@@ -223,7 +237,7 @@ const integrationsList = [
     data_source_type: 'ZOTERO',
     requiresOAuth: true,
     multiStep: false,
-  },
+  }
 ];
 
 const CarbonContext = createContext();
