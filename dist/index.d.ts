@@ -17,6 +17,7 @@ export declare enum IntegrationName {
     CONFLUENCE = "CONFLUENCE",
     DROPBOX = "DROPBOX",
     FRESHDESK = "FRESHDESK",
+    GITBOOK = "GITBOOK",
     GOOGLE_DRIVE = "GOOGLE_DRIVE",
     GMAIL = "GMAIL",
     INTERCOM = "INTERCOM",
@@ -69,8 +70,8 @@ export interface LocalFilesIntegration extends BaseIntegration {
 export interface WebScraperIntegration extends BaseIntegration {
     recursionDepth?: number;
     maxPagesToScrape?: number;
-    skipHTMLTags?: string[];
-    skipCSSClasses?: string[];
+    htmlTagsToSkip?: string[];
+    cssClassesToSkip?: string[];
     cssSelectorsToSkip?: string[];
 }
 export type Integration = LocalFilesIntegration | WebScraperIntegration | BaseIntegration;

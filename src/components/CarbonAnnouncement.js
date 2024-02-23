@@ -28,7 +28,7 @@ Feature.propTypes = {
   children: PropTypes.node.isRequired,
 };
 
-const CarbonAnnouncement = ({}) => {
+const CarbonAnnouncement = ({ }) => {
   const [connectButtonHoveredState, setConnectButtonHoveredState] =
     useState(false);
 
@@ -54,8 +54,8 @@ const CarbonAnnouncement = ({}) => {
   const isWhiteLabeledOrg = Boolean(whiteLabelingData?.remove_branding);
   const isWhiteLabeledEntryPoint = Boolean(
     isEntryPoint &&
-      whiteLabelingData?.integrations &&
-      whiteLabelingData?.integrations?.[entryPoint]
+    whiteLabelingData?.integrations &&
+    whiteLabelingData?.integrations?.[entryPoint]
   );
 
   const handleButtonClick = () => {
@@ -155,9 +155,8 @@ const CarbonAnnouncement = ({}) => {
         <div className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-items-center">
           {isWhiteLabeledOrg ? (
             <p className="cc-text-xs cc-text-center cc-text-gray-400">
-              {`By continuing, you agree to ${
-                isWhiteLabeledEntryPoint ? orgName + "'s" : 'the following'
-              }`}
+              {`By continuing, you agree to ${isWhiteLabeledEntryPoint ? orgName + "'s" : 'the following'
+                }`}
 
               <br></br>
               <a
