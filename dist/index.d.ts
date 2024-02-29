@@ -1,6 +1,5 @@
 import React, { ReactNode } from "react";
 import "./index.css";
-import { EmbeddingModel } from "carbon-connect-js/dist/types";
 export declare enum ActionType {
     INITIATE = "INITIATE",
     ADD = "ADD",
@@ -166,5 +165,6 @@ export interface CarbonConnectProps {
     prependFilenameToChunks?: boolean;
     maxItemsPerChunk?: number;
 }
+type EmbeddingModel = "OPENAI" | "AZURE_OPENAI" | "COHERE_MULTILINGUAL_V3" | "VERTEX_MULTIMODAL";
 declare const CarbonConnect: React.FC<CarbonConnectProps>;
 export { CarbonConnect };

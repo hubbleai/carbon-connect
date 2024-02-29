@@ -6,7 +6,6 @@ import carbonLogo from '../carbon.svg';
 import { useCarbon } from '../contexts/CarbonContext';
 import { darkenColor } from '../utils/helpers';
 import * as Dialog from '@radix-ui/react-dialog';
-import { generateOauthurl } from 'carbon-connect-js';
 import googleLogo from '../google.png';
 
 const Feature = ({ Icon, title, children }) => (

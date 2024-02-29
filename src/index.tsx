@@ -6,7 +6,6 @@ import IntegrationModal from "./components/IntegrationModal";
 
 // @ts-ignore
 import { CarbonProvider } from "./contexts/CarbonContext";
-import { EmbeddingModel } from "carbon-connect-js/dist/types";
 
 // Enums
 export enum ActionType {
@@ -192,6 +191,12 @@ export interface CarbonConnectProps {
   prependFilenameToChunks?: boolean;
   maxItemsPerChunk?: number;
 }
+
+type EmbeddingModel =
+  | "OPENAI"
+  | "AZURE_OPENAI"
+  | "COHERE_MULTILINGUAL_V3"
+  | "VERTEX_MULTIMODAL";
 
 const CarbonConnect: React.FC<CarbonConnectProps> = ({
   orgName,
