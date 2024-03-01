@@ -81,6 +81,7 @@ function ConfluenceScreen({
         .replace('.confluence.com', '')
         .replace(/\/$/, '')
         .trim();
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? true
 
       const requestObject = {
         tags: tags,
@@ -92,7 +93,8 @@ function ConfluenceScreen({
         embedding_model: embeddingModelValue,
         prepend_filename_to_chunks: prependFilenameToChunksValue,
         generate_sparse_vectors: generateSparseVectorsValue,
-        ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
+        ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
+        sync_files_on_connection: syncFilesOnConnection
       };
 
       const response = await authenticatedFetch(
