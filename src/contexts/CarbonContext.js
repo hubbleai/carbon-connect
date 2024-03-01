@@ -20,6 +20,7 @@ import WebScraperIcon from '../logos/web_scraper.svg';
 import ZendeskLogo from '../logos/zendesk.svg';
 import ZoteroLogo from '../logos/zotero.svg';
 import GitbookLogo from '../logos/gitbook.svg'
+import SalesforceLogo from '../logos/salesforce.svg'
 
 const DEFAAULT_CHUNK_SIZE = 1500;
 const DEFAAULT_OVERLAP_SIZE = 20;
@@ -185,6 +186,19 @@ const integrationsList = [
     active: true,
     data_source_type: 'S3',
     requiresOAuth: false,
+    multiStep: true,
+  },
+  {
+    id: 'SALESFORCE',
+    subpath: 'salesforce',
+    name: 'Salesforce',
+    description: 'Lets your users connect their Salesforce accounts to Carbon.',
+    announcementName: 'to connect Salesforce',
+    icon: <img src={SalesforceLogo} className="cc-w-7 cc-h-7" />,
+    logo: SalesforceLogo,
+    active: true,
+    data_source_type: 'SALESFORCE',
+    requiresOAuth: true,
     multiStep: true,
   },
   {

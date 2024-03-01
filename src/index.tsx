@@ -35,6 +35,7 @@ export enum IntegrationName {
   ONEDRIVE = "ONEDRIVE",
   OUTLOOK = "OUTLOOK",
   S3 = "S3",
+  SALESFORCE = "SALESFORCE",
   SHAREPOINT = "SHAREPOINT",
   WEB_SCRAPER = "WEB_SCRAPER",
   ZENDESK = "ZENDESK",
@@ -68,6 +69,7 @@ export interface BaseIntegration {
   generateSparseVectors?: boolean;
   prependFilenameToChunks?: boolean;
   maxItemsPerChunk?: number;
+  syncFilesOnConnection?: boolean;
 }
 export interface LocalFilesIntegration extends BaseIntegration {
   maxFileSize: number;
