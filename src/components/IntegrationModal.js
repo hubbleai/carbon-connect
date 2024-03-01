@@ -17,6 +17,7 @@ import ConfluenceScreen from './ConfluenceScreen';
 import S3Screen from './S3Screen';
 import FreshdeskScreen from './FreshdeskScreen';
 import GitbookScreen from './GitbookScreen';
+import SalesforceScreen from "./SalesforceScreen";
 // import { setFlag } from '../utils/helpers';
 
 const IntegrationModal = ({ children }) => {
@@ -417,6 +418,22 @@ const IntegrationModal = ({ children }) => {
               />
             )
           }
+
+          {activeStep === 'SALESFORCE' && (
+            <SalesforceScreen
+              setActiveStep={setActiveStep}
+              entryPoint={entryPoint}
+              environment={environment}
+              tags={tags}
+              onSuccess={onSuccess}
+              onError={onError}
+              primaryBackgroundColor={primaryBackgroundColor}
+              primaryTextColor={primaryTextColor}
+              secondaryBackgroundColor={secondaryBackgroundColor}
+              secondaryTextColor={secondaryTextColor}
+            />
+          )}
+
         </Dialog.Content>
 
         {enableToasts && (
