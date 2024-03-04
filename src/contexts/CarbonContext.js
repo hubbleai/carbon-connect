@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import { BASE_URL, onSuccessEvents } from '../constants';
+import { BASE_URL, onSuccessEvents, SYNC_FILES_ON_CONNECT } from '../constants';
 
 import BoxLogo from '../logos/box.svg';
 import ConfluenceLogo from '../logos/confluence.svg';
@@ -388,7 +388,7 @@ export const CarbonProvider = ({
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
       const maxItemsPerChunkValue =
         service?.maxItemsPerChunk || maxItemsPerChunk || false;
-      const syncFilesOnConnection = service?.syncFilesOnConnection ?? true
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT
 
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,

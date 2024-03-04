@@ -12,3 +12,5 @@ export const onSuccessEvents = {
   REMOVE: 'REMOVE',
   UPDATE: 'UPDATE',
 };
+
+export const SYNC_FILES_ON_CONNECT = true

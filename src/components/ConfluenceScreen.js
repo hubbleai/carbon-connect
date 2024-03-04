@@ -7,7 +7,7 @@ import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
 import '../index.css';
-import { BASE_URL, onSuccessEvents } from '../constants';
+import { BASE_URL, onSuccessEvents, SYNC_FILES_ON_CONNECT } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 
@@ -81,7 +81,7 @@ function ConfluenceScreen({
         .replace('.confluence.com', '')
         .replace(/\/$/, '')
         .trim();
-      const syncFilesOnConnection = service?.syncFilesOnConnection ?? true
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT
 
       const requestObject = {
         tags: tags,
