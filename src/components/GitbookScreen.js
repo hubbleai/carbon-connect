@@ -81,6 +81,7 @@ function GitbookScreen({
                 service?.generateSparseVectors || generateSparseVectors || false;
             const prependFilenameToChunksValue =
                 service?.prependFilenameToChunks || prependFilenameToChunks || false;
+            const syncFilesOnConnection = service?.syncFilesOnConnection ?? true
 
             const requestObject = {
                 organization: organization,
@@ -92,6 +93,7 @@ function GitbookScreen({
                 embedding_model: embeddingModelValue,
                 generate_sparse_vectors: generateSparseVectorsValue,
                 prepend_filename_to_chunks: prependFilenameToChunksValue,
+                sync_files_on_connection: syncFilesOnConnection
             };
 
             const response = await authenticatedFetch(
@@ -106,6 +108,8 @@ function GitbookScreen({
                 }
             );
 
+            const responseData = await response.json();
+
             if (response.status === 200) {
                 onSuccess({
                     status: 200,
@@ -116,6 +120,18 @@ function GitbookScreen({
                 });
                 setIsLoading(false);
                 toast.info('Gitbook sync initiated.');
+                setGBToken('')
+                setOrganization('')
+            } else {
+                toast.error(responseData.detail);
+                setIsLoading(false);
+                onError({
+                    status: 400,
+                    data: [{ message: responseData.detail }],
+                    action: onSuccessEvents.ERROR,
+                    event: onSuccessEvents.ERROR,
+                    integration: 'GITBOOK',
+                });
             }
         } catch (error) {
             toast.error('Error connecting your Gitbook. Please try again.');
