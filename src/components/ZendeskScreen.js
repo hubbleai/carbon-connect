@@ -109,6 +109,8 @@ function ZendeskScreen({
         }
       );
 
+      const oAuthURLResponseData = await response.json();
+
       if (response.status === 200) {
         onSuccess({
           status: 200,
@@ -118,10 +120,9 @@ function ZendeskScreen({
           integration: 'ZENDESK',
         });
         setIsLoading(false);
-        const oAuthURLResponseData = await response.json();
         oauthWindow.location.href = oAuthURLResponseData.oauth_url;
-
-        // window.open(oAuthURLResponseData.oauth_url, '_blank');
+      } else {
+        oauthWindow.document.write(oAuthURLResponseData.detail);
       }
     } catch (error) {
       toast.error('Error getting oAuth URL. Please try again.');

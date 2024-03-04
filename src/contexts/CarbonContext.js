@@ -413,6 +413,8 @@ export const CarbonProvider = ({
         }
       );
 
+      const oAuthURLResponseData = await oAuthURLResponse.json();
+
       if (oAuthURLResponse.status === 200) {
         onSuccess({
           status: 200,
@@ -421,11 +423,12 @@ export const CarbonProvider = ({
           action: onSuccessEvents.INITIATE,
           event: onSuccessEvents.INITIATE,
         });
-        const oAuthURLResponseData = await oAuthURLResponse.json();
 
         oauthWindow.location.href = oAuthURLResponseData.oauth_url;
 
         // window.open(oAuthURLResponseData.oauth_url, '_blank');
+      } else {
+        oauthWindow.document.write(oAuthURLResponseData.detail);
       }
     } catch (err) {
       console.log(
