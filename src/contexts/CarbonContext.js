@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-import { BASE_URL, onSuccessEvents } from '../constants';
+import { BASE_URL, onSuccessEvents, SYNC_FILES_ON_CONNECT } from '../constants';
 
 import BoxLogo from '../logos/box.svg';
 import ConfluenceLogo from '../logos/confluence.svg';
@@ -388,6 +388,7 @@ export const CarbonProvider = ({
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
       const maxItemsPerChunkValue =
         service?.maxItemsPerChunk || maxItemsPerChunk || false;
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT
 
       const oAuthURLResponse = await authenticatedFetch(
         `${BASE_URL[environment]}/integrations/oauth_url`,
@@ -406,10 +407,13 @@ export const CarbonProvider = ({
             embedding_model: embeddingModelValue,
             generate_sparse_vectors: generateSparseVectorsValue,
             prepend_filename_to_chunks: prependFilenameToChunksValue,
-            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
+            ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
+            sync_files_on_connection: syncFilesOnConnection
           }),
         }
       );
+
+      const oAuthURLResponseData = await oAuthURLResponse.json();
 
       if (oAuthURLResponse.status === 200) {
         onSuccess({
@@ -419,11 +423,12 @@ export const CarbonProvider = ({
           action: onSuccessEvents.INITIATE,
           event: onSuccessEvents.INITIATE,
         });
-        const oAuthURLResponseData = await oAuthURLResponse.json();
 
         oauthWindow.location.href = oAuthURLResponseData.oauth_url;
 
         // window.open(oAuthURLResponseData.oauth_url, '_blank');
+      } else {
+        oauthWindow.document.write(oAuthURLResponseData.detail);
       }
     } catch (err) {
       console.log(
