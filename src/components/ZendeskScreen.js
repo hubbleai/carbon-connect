@@ -8,7 +8,7 @@ import { SiZendesk } from 'react-icons/si';
 import { toast } from 'react-toastify';
 
 import '../index.css';
-import { BASE_URL, onSuccessEvents } from '../constants';
+import { BASE_URL, onSuccessEvents, SYNC_FILES_ON_CONNECT } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 
@@ -72,6 +72,7 @@ function ZendeskScreen({
       const prependFilenameToChunksValue =
         service?.prependFilenameToChunks || prependFilenameToChunks || false;
       const maxItemsPerChunkValue = service?.maxItemsPerChunk || maxItemsPerChunk || null;
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT
 
       const subdomain = zendeskSubdomain
         .replace('https://www.', '')
@@ -92,7 +93,8 @@ function ZendeskScreen({
         embedding_model: embeddingModelValue,
         generate_sparse_vectors: generateSparseVectorsValue,
         prepend_filename_to_chunks: prependFilenameToChunksValue,
-        ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue })
+        ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
+        sync_files_on_connection: syncFilesOnConnection
       };
 
       const response = await authenticatedFetch(
@@ -107,6 +109,8 @@ function ZendeskScreen({
         }
       );
 
+      const oAuthURLResponseData = await response.json();
+
       if (response.status === 200) {
         onSuccess({
           status: 200,
@@ -116,10 +120,9 @@ function ZendeskScreen({
           integration: 'ZENDESK',
         });
         setIsLoading(false);
-        const oAuthURLResponseData = await response.json();
         oauthWindow.location.href = oAuthURLResponseData.oauth_url;
-
-        // window.open(oAuthURLResponseData.oauth_url, '_blank');
+      } else {
+        oauthWindow.document.write(oAuthURLResponseData.detail);
       }
     } catch (error) {
       toast.error('Error getting oAuth URL. Please try again.');

@@ -7,7 +7,7 @@ import { HiArrowLeft, HiUpload, HiInformationCircle } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 
 import '../index.css';
-import { BASE_URL, onSuccessEvents } from '../constants';
+import { BASE_URL, onSuccessEvents, SYNC_FILES_ON_CONNECT } from '../constants';
 import { LuLoader2 } from 'react-icons/lu';
 import { useCarbon } from '../contexts/CarbonContext';
 
@@ -81,7 +81,7 @@ function ConfluenceScreen({
         .replace('.confluence.com', '')
         .replace(/\/$/, '')
         .trim();
-      const syncFilesOnConnection = service?.syncFilesOnConnection ?? true
+      const syncFilesOnConnection = service?.syncFilesOnConnection ?? SYNC_FILES_ON_CONNECT
 
       const requestObject = {
         tags: tags,
@@ -109,6 +109,8 @@ function ConfluenceScreen({
         }
       );
 
+      const oAuthURLResponseData = await response.json();
+
       if (response.status === 200) {
         onSuccess({
           status: 200,
@@ -118,10 +120,9 @@ function ConfluenceScreen({
           integration: 'CONFULENCE',
         });
         setIsLoading(false);
-        const oAuthURLResponseData = await response.json();
         oauthWindow.location.href = oAuthURLResponseData.oauth_url;
-
-        // window.open(oAuthURLResponseData.oauth_url, '_blank');
+      } else {
+        oauthWindow.document.write(oAuthURLResponseData.detail);
       }
     } catch (error) {
       toast.error('Error getting oAuth URL. Please try again.');
