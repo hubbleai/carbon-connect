@@ -371,7 +371,8 @@ export const CarbonProvider = ({
     }
   };
 
-  const handleServiceOAuthFlow = async (service) => {
+  const handleServiceOAuthFlow = async (service, activeIntegration = null) => {
+
     try {
       const oauthWindow = window.open('', '_blank');
       oauthWindow.document.write('Loading...');
@@ -408,7 +409,8 @@ export const CarbonProvider = ({
             generate_sparse_vectors: generateSparseVectorsValue,
             prepend_filename_to_chunks: prependFilenameToChunksValue,
             ...(maxItemsPerChunkValue && { max_items_per_chunk: maxItemsPerChunkValue }),
-            sync_files_on_connection: syncFilesOnConnection
+            sync_files_on_connection: syncFilesOnConnection,
+            ...(activeIntegration && { data_source_id: activeIntegration.id }),
           }),
         }
       );
