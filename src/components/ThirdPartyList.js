@@ -16,6 +16,10 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
     entryPoint,
   } = useCarbon();
 
+  const activeIntegrationsList = activeIntegrations.map(
+    (i) => i.data_source_type
+  );
+
   return (
     <div className="cc-flex cc-flex-col cc-h-full cc-items-center">
       <Dialog.Title className="cc-text-lg cc-mb-4 cc-font-medium cc-w-full">
@@ -39,22 +43,23 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
       </Dialog.Title>
       <ul className="cc-flex cc-flex-col cc-space-y-3 cc-w-full cc-py-2 cc-overflow-y-auto">
         {processedIntegrations.map((integration) => {
-          const activeIntegrationsList = activeIntegrations.map(
-            (i) => i.data_source_type
-          );
-
           const integrationStatus = activeIntegrationsList.includes(
             integration.data_source_type
           );
 
+          // to support multiple integrations we will read the last one they connected
+          const matchingIntegrations = activeIntegrations.filter(
+            ai => ai.data_source_type == integration.data_source_type
+          ).sort((a, b) => b.id - a.id)
+          const activeIntegration = matchingIntegrations.length ? matchingIntegrations[0] : null
+
           return (
             <li
               key={integration.id}
-              className={`cc-border cc-rounded-md cc-h-fit cc-items-center cc-px-4 cc-w-full ${
-                !integration.active
-                  ? 'cc-bg-gray-200 cc-cursor-not-allowed'
-                  : 'cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100'
-              }`}
+              className={`cc-border cc-rounded-md cc-h-fit cc-items-center cc-px-4 cc-w-full ${!integration.active
+                ? 'cc-bg-gray-200 cc-cursor-not-allowed'
+                : 'cc-bg-white cc-cursor-pointer hover:cc-bg-gray-100'
+                }`}
             >
               <div
                 className="cc-flex cc-flex-row cc-items-center cc-w-full cc-space-x-3 cc-py-4 cc-justify-between"
@@ -68,7 +73,7 @@ const ThirdPartyList = ({ setActiveStep, activeIntegrations }) => {
                           setActiveStep(integration.data_source_type);
                           return;
                         }
-                        handleServiceOAuthFlow(integration);
+                        handleServiceOAuthFlow(integration, activeIntegration);
                       }
                     }
                   } catch (err) {
