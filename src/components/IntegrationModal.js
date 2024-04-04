@@ -7,6 +7,7 @@ import CarbonAnnouncement from '../components/CarbonAnnouncement';
 import ThirdPartyList from '../components/ThirdPartyList';
 import FileUpload from '../components/FileUpload';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { BASE_URL, onSuccessEvents } from '../constants';
 import { useCarbon } from '../contexts/CarbonContext';
